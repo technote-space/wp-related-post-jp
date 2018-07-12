@@ -1,0 +1,7 @@
+{
+    "require": {
+        "technote/wordpress-plugin-base": "^1.0"
+    },
+    "require-dev": {
+    }
+}
