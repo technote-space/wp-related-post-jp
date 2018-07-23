@@ -21,7 +21,7 @@ return array(
 				'use_keyword_search' => array(
 					'label'   => 'Whether to use indexed results for keyword search.',
 					'type'    => 'bool',
-					'default' => false,
+					'default' => true,
 				),
 			),
 		),
