@@ -16,7 +16,7 @@ return array(
 
 	8 => array(
 
-		'Query' => array(
+		'Search' => array(
 			10 => array(
 				'use_keyword_search' => array(
 					'label'   => 'Whether to use indexed results for keyword search.',

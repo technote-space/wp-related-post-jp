@@ -35,4 +35,7 @@ return array(
 	// menu image url
 	'menu_image'     => '',
 
+	// text domain
+	'text_domain'    => 'wrpj',
+
 );
