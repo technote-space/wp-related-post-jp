@@ -715,18 +715,16 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @param int $post_id
 	 * @param array $words
 	 * @param array $post_types
+	 * @param bool $is_count
 	 * @param int|null $count
+	 * @param int|null $page
 	 *
-	 * @return array
+	 * @return array|int
 	 */
-	public function get_ranking( $post_id, $words, $post_types, $count = null ) {
+	public function get_ranking( $post_id, $words, $post_types, $is_count = false, $count = null, $page = null ) {
 		if ( empty( $words ) ) {
 			return array();
 		}
-
-		$k1    = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
-		$b     = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
-		$avgdl = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
 
 		$table = array();
 		foreach ( $words as $word ) {
@@ -737,7 +735,43 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		$table = implode( ' UNION ', $table );
 		$table = "($table)";
 
-		return $this->app->db->select( array(
+		! isset( $count ) and $count = $this->control->get_ranking_count();
+		if ( isset( $page ) && $page > 1 ) {
+			$offset = ( $page - 1 ) * $count;
+		} else {
+			$offset = null;
+		}
+
+		if ( $is_count ) {
+			$field    = array(
+				'DISTINCT d.post_id' => array(
+					'COUNT',
+					'num'
+				)
+			);
+			$order_by = array();
+			$group_by = array();
+			$count    = null;
+		} else {
+			$k1       = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
+			$b        = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
+			$avgdl    = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
+			$field    = array(
+				"word.idf * t.n * ( w.tf * ( $k1 + 1 ) ) / ( w.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => array(
+					'SUM',
+					'score'
+				),
+				'd.post_id',
+			);
+			$order_by = array(
+				'score' => 'desc',
+			);
+			$group_by = array(
+				'd.post_id'
+			);
+		}
+
+		$results = $this->app->db->select( array(
 			array( 'rel_document_word', 'w' ),
 			array(
 				array( 'document', 'd' ),
@@ -769,17 +803,20 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		), array(
 			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
 			'd.post_id'   => array( '!=', $post_id ),
-		), array(
-			"word.idf * t.n * ( w.tf * ( $k1 + 1 ) ) / ( w.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => array(
-				'SUM',
-				'score'
-			),
-			'd.post_id',
-		), ! empty( $count ) ? $count : $this->control->get_ranking_count(), null, array(
-			'score' => 'desc',
-		), array(
-			'd.post_id'
-		) );
+		), $field, $count, $offset, $order_by, $group_by );
+
+		if ( $is_count ) {
+			if ( empty( $results ) ) {
+				return 0;
+			}
+			if ( $count == 1 ) {
+				return isset( $results['num'] ) ? $results['num'] - 0 : 0;
+			}
+
+			return isset( $results[0]['num'] ) ? $results[0]['num'] - 0 : 0;
+		}
+
+		return $results;
 	}
 
 }

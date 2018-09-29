@@ -193,6 +193,13 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @param \WP_Query $query
 	 */
 	private function pre_get_posts( $query ) {
+		if ( $this->is_related_post ) {
+			$this->is_related_post = false;
+			$this->related_post( $query );
+
+			return;
+		}
+
 		if ( $query->is_search() ) {
 			if ( $this->apply_filters( 'use_keyword_search' ) && $this->app->get_option( 'is_valid_posts_search', false ) ) {
 				$q = $query->get( 's' );
@@ -202,11 +209,6 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 					return;
 				}
 			}
-		}
-
-		if ( $this->is_related_post ) {
-			$this->is_related_post = false;
-			$this->related_post( $query );
 		}
 	}
 
@@ -230,16 +232,20 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		if ( empty( $posts_per_page ) ) {
 			$posts_per_page = get_option( 'posts_per_page' );
 		}
-		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
-		$ranking    = array();
-		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, $posts_per_page ) as $item ) {
+		$paged       = $query->get( 'paged' );
+		$post_types  = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
+		$ranking     = array();
+		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true );
+		$total_pages = ceil( $total / $posts_per_page );
+		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, false, $posts_per_page, $paged ) as $item ) {
 			$ranking[ $item['post_id'] ] = $item['score'];
 		}
 		if ( ! empty( $ranking ) ) {
 			$query->set( 's', '' );
 			$query->set( 'post__in', array_keys( $ranking ) );
 			$query->set( 'orderby', false );
-			$posts_results = function ( $posts, $query ) use ( &$posts_results, $ranking, $q ) {
+			$query->set( 'paged', '' );
+			$posts_results = function ( $posts, $query ) use ( &$posts_results, $ranking, $q, $total_pages, $paged ) {
 				/** @var array $posts */
 				/** @var \WP_Query $query */
 				usort( $posts, function ( $a, $b ) use ( $ranking ) {
@@ -251,6 +257,8 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 					return $ra == $rb ? 0 : ( $ra < $rb ) ? 1 : - 1;
 				} );
 				$query->set( 's', $q );
+				$query->set( 'paged', $paged );
+				$query->max_num_pages = $total_pages;
 				remove_filter( 'posts_results', $posts_results );
 
 				return $posts;
