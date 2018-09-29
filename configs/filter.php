@@ -39,8 +39,8 @@ return array(
 			'on_related_post' => array(),
 		),
 
-		'${prefix}pre_load_admin_page'  => array(
-			'pre_load_admin_page' => array(),
+		'${prefix}post_load_admin_page'  => array(
+			'post_load_admin_page' => array(),
 		),
 	),
 

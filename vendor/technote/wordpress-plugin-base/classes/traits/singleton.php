@@ -25,7 +25,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  */
 trait Singleton {
 
-
 	/** @var array */
 	private static $instances = array();
 

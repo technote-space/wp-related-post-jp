@@ -66,7 +66,6 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 			$prefix  = $this->get_page_prefix();
 			$pattern = "#^{$prefix}(.+)#";
 			if ( isset( $_GET['page'] ) && preg_match( $pattern, $_GET['page'], $matches ) ) {
-
 				$page          = $matches[1];
 				$exploded      = explode( '-', $page );
 				$page          = array_pop( $exploded );
@@ -75,6 +74,8 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 				$instance = $this->get_class_instance( $this->get_class_setting( $page, $add_namespace ), '\Technote\Controllers\Admin\Base' );
 				if ( false !== $instance ) {
 					/** @var \Technote\Controllers\Admin\Base $instance */
+					$this->do_action( 'pre_load_admin_page', $instance );
+
 					return $instance;
 				}
 				$page = isset( $_GET['page'] ) ? $_GET['page'] : 'Page';
@@ -99,6 +100,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		$this->page = $this->load_page();
 		if ( isset( $this->page ) && $this->app->user_can( $this->apply_filters( 'admin_menu_capability', $this->page->get_capability(), $this->page ) ) ) {
 			$this->page->action();
+			$this->do_action( 'post_load_admin_page', $this->page );
 		}
 
 		$pages = array();

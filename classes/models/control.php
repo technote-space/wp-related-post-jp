@@ -857,7 +857,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * pre load admin page
 	 */
-	private function pre_load_admin_page() {
+	private function post_load_admin_page() {
 		if ( $this->apply_filters( 'use_bigram_tokenizer' ) ) {
 			$this->app->setting->remove_setting( 'yahoo_client_id' );
 			$this->app->setting->remove_setting( 'yahoo_secret' );
