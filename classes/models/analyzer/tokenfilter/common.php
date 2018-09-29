@@ -15,10 +15,10 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 }
 
 /**
- * Class Max
+ * Class Common
  * @package Related_Post\Models\Analyzer\Tokenfilter
  */
-class Max extends \Related_Post\Models\Analyzer\Tokenfilter {
+class Common extends \Related_Post\Models\Analyzer\Tokenfilter {
 
 	/**
 	 * @param array $terms ( word => count )
@@ -28,7 +28,10 @@ class Max extends \Related_Post\Models\Analyzer\Tokenfilter {
 	public function filter( $terms ) {
 		$ret = array();
 		foreach ( $terms as $word => $count ) {
-			strlen( $word ) > 24 and $word = substr( $word, 0, 24 );
+			$word = trim( $word );
+			if ( "" === $word ) {
+				continue;
+			}
 			$ret[ $word ] = ( isset( $ret[ $word ] ) ? $ret[ $word ] : 0 ) + $count;
 		}
 

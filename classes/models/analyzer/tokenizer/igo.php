@@ -36,7 +36,7 @@ class Igo extends \Related_Post\Models\Analyzer\Tokenizer {
 	 * @return array
 	 */
 	public function parse( $text ) {
-		return $this->igo->count( $text, array( '名詞', '??' ) );
+		return $this->igo->count( $text );
 	}
 
 }

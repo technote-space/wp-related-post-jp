@@ -39,6 +39,7 @@ return array(
 
 	// token filter
 	'token_filters' => array(
+		'common',
 		'wakati' => array( 'yahoo', 'goo', 'igo' ),
 		'bigram' => array( 'bigram' ),
 		'max',
