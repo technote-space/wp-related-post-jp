@@ -31,7 +31,7 @@ return array(
 				'use_bigram_tokenizer' => array(
 					'label'   => 'Whether to use bigram tokenizer.',
 					'type'    => 'bool',
-					'default' => true,
+					'default' => false,
 				),
 			),
 		),
