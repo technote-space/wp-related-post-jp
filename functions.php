@@ -12,3 +12,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
 
+add_action( 'get_template_part_tmp/related-list', function () {
+	do_action( 'related_post-on_related_post' );
+} );

@@ -205,6 +205,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 
 		if ( $this->is_related_post ) {
+			$this->is_related_post = false;
 			$this->related_post( $query );
 		}
 	}

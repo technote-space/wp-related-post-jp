@@ -35,7 +35,7 @@ return array(
 		'pre_get_posts'                      => array(
 			'pre_get_posts' => array(),
 		),
-		'get_template_part_tmp/related-list' => array(
+		'${prefix}on_related_post' => array(
 			'on_related_post' => array(),
 		),
 
