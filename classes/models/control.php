@@ -269,7 +269,6 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				$query->set( 'category__in', null );
 				$query->set( 'tag__in', null );
 				$query->set( 'orderby', null );
-				$query->set( '', $related_posts );
 
 				$query->set( 'p', - 1 );
 				$posts_results = function () use ( &$posts_results, $related_posts ) {
