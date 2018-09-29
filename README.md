@@ -13,17 +13,26 @@
 ![処理中画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot2.png)
 
 - 有効化前
-  - 通常の検索の場合「WordPress」と「あああああ」を含まないとヒットしない
+  - 通常の検索の場合「WordPress」と「あああああ」を含まないとヒットしません。
 
 ![有効化前](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot3.png)
 
 - 有効化後
-  - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能
+  - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能です。
 
 ![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot4.png)
 
 # 要件
 - PHP 5.4 以上
+
+# 導入手順
+1. ZIPダウンロード  
+2. wp-content/plugins に展開  
+3. 管理画面から有効化  
+4. 左メニュー「Related Post」 > 「進捗」から「インデックス処理を有効化」を押下
+
+投稿データのインデックス化が終わるまではキーワード検索に使用されません。  
+インデックスの進捗は管理画面から確認できます。
 
 # 特徴
 #### ElasticsearchのようなAnalyzer
@@ -54,15 +63,6 @@
 #### Okapi BM25 アルゴリズムによる文章類似度計算
 https://en.wikipedia.org/wiki/Okapi_BM25  
 https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
-
-# 導入手順
-1. ZIPダウンロード  
-2. wp-content/plugins に展開  
-3. 管理画面から有効化  
-4. 進捗タブから「インデックス処理を有効化」を押下
-
-投稿データのインデックス化が終わるまではキーワード検索に使用されません。  
-インデックスの進捗は管理画面から確認できます。
 
 # 主な設定
 - キーワード検索でも使用するかどうか
