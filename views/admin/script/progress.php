@@ -55,11 +55,11 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             });
             return false;
         });
-        $('#<?php $instance->id(); ?>-finished-wrap .ranking_clear').click(function () {
+        $('#<?php $instance->id(); ?>-finished-wrap .index_clear').click(function () {
             $(this).addClass('disabled');
             if (!is_valid_button) return;
             is_valid_button = false;
-            window.<?php $instance->h( $api_class );?>.ajax('ranking_clear').then(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('index_clear').then(function (json) {
 
             }, function (status) {
                 console.log(status);
@@ -81,7 +81,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                     $('#<?php $instance->id(); ?>-info-wrap').hide();
                     $('#<?php $instance->id(); ?>-finished-wrap').show();
                     if (is_valid_button) {
-                        $('#<?php $instance->id(); ?>-finished-wrap .ranking_clear').removeClass('disabled').show();
+                        $('#<?php $instance->id(); ?>-finished-wrap .index_clear').removeClass('disabled').show();
                     }
                 } else if (json.is_valid_posts_index) {
                     // 更新が有効

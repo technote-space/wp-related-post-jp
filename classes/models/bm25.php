@@ -412,7 +412,10 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 *
 	 * @return float|int
 	 */
-	private function calc_tf( $count, $dl, $max ) {
+	private function calc_tf(
+		/** @noinspection PhpUnusedParameterInspection */
+		$count, $dl, $max
+	) {
 		// term frequency
 		return $count / $dl;
 
@@ -445,35 +448,6 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			),
 		), array(
 			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-		), array(
-			'DISTINCT d.document_id' => array(
-				'COUNT',
-				'N'
-			),
-		), 1, null, null ), 'N' );
-	}
-
-	/**
-	 * @param array $post_types
-	 * @param int $word_id
-	 *
-	 * @return int
-	 */
-	private function calc_ni( $post_types, $word_id ) {
-		return \Technote\Models\Utility::array_get( $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
-				'INNER JOIN',
-				array(
-					'd.document_id',
-					'=',
-					'w.document_id'
-				),
-			),
-		), array(
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			'w.word_id'   => $word_id,
 		), array(
 			'DISTINCT d.document_id' => array(
 				'COUNT',
@@ -561,85 +535,6 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		), array(
 			'DISTINCT d.post_id' => array( 'AS', 'post_id' )
 		) ), 'post_id' );
-	}
-
-	/**
-	 * number of documents
-	 *
-	 * @param array $post_types
-	 *
-	 * @return string
-	 */
-	private function get_n_sql( $post_types ) {
-		return '(' . $this->app->db->get_select_sql( array(
-				array( 'rel_document_word', 'n1' ),
-				array(
-					array( 'document', 'n2' ),
-					'INNER JOIN',
-					array(
-						'n2.document_id',
-						'=',
-						'n1.document_id'
-					),
-				),
-			), array(
-				'n2.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			), array(
-				'DISTINCT n2.document_id' => array(
-					'COUNT',
-					'N'
-				),
-			), null, null, null ) . ')';
-	}
-
-	/**
-	 * number of documents where word_id included
-	 *
-	 * @param array $post_types
-	 *
-	 * @return string
-	 */
-	private function get_ni_sql( $post_types ) {
-		return '(' . $this->app->db->get_select_sql( array(
-				array( 'rel_document_word', 'ni1' ),
-				array(
-					array( 'document', 'ni2' ),
-					'INNER JOIN',
-					array(
-						'ni2.document_id',
-						'=',
-						'ni1.document_id'
-					)
-				),
-			), array(
-				'ni2.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-				'ni1.word_id'   => array( '=', 'w.word_id', true ),
-			), array(
-				'DISTINCT ni2.document_id' => array(
-					'COUNT',
-					'ni'
-				),
-			), null, null, null ) . ')';
-	}
-
-	/**
-	 * @link https://en.wikipedia.org/wiki/Tf%E2%80%93idf
-	 * @link https://qiita.com/EastResident/items/d7f3ff5b19e6321a53c1
-	 *
-	 * @param string $N
-	 * @param string $n
-	 *
-	 * @return string
-	 */
-	private function get_idf_sql( $N, $n ) {
-		// inverse document frequency
-		return "LOG( 1.5, $N / $n )";
-
-		// inverse document frequency smooth
-		// return "LOG( 1.5, 1 + $N / $n )";
-
-		// probabilistic inverse document frequency
-		// return "LOG( 1.5, $N / $n - 1 )";
 	}
 
 	/**

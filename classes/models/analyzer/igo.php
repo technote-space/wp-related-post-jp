@@ -31,6 +31,7 @@ class Igo implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
 	protected function initialize() {
 		$this->set_memory_limit();
 		$library_dir = $this->app->define->plugin_dir . DS . 'library';
+		/** @noinspection PhpIncludeInspection */
 		require_once $library_dir . DS . 'igo-php-master' . DS . 'lib' . DS . 'Igo.php';
 		$this->igo = new \Igo( $library_dir . DS . 'ipadic' );
 	}
@@ -48,7 +49,10 @@ class Igo implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
 	 * @return array 解析結果の形態素リスト
 	 */
 	public function parse( $text ) {
-		return $this->igo->parse( $text );
+		/** @var array $data */
+		$data = $this->igo->parse( $text );
+
+		return $data;
 	}
 
 	/**
@@ -57,7 +61,10 @@ class Igo implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
 	 * @return array 分かち書きされた文字列のリスト
 	 */
 	public function wakati( $text ) {
-		return $this->igo->wakati( $text );
+		/** @var array $data */
+		$data = $this->igo->wakati( $text );
+
+		return $data;
 	}
 
 	/**

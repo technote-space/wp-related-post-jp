@@ -8,7 +8,7 @@
  * @link https://technote.space
  */
 
-namespace Related_Post\Controllers\Api\Admin\Ranking;
+namespace Related_Post\Controllers\Api\Admin\Index;
 
 if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
@@ -16,7 +16,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 
 /**
  * Class Clear
- * @package Related_Post\Controllers\Api\Admin\Ranking
+ * @package Related_Post\Controllers\Api\Admin\Index
  */
 class Clear extends \Technote\Controllers\Api\Base {
 
@@ -24,14 +24,14 @@ class Clear extends \Technote\Controllers\Api\Base {
 	 * @return string
 	 */
 	public function get_endpoint() {
-		return 'ranking_clear';
+		return 'index_clear';
 	}
 
 	/**
 	 * @return string
 	 */
 	public function get_call_function_name() {
-		return 'ranking_clear';
+		return 'index_clear';
 	}
 
 	/**
@@ -61,8 +61,11 @@ class Clear extends \Technote\Controllers\Api\Base {
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
 	public function callback( \WP_REST_Request $params ) {
+		/** @var \Related_Post\Models\Control $control */
+		$control = \Related_Post\Models\Control::get_instance( $this->app );
+
 		return new \WP_REST_Response( array(
-			'result' => \Related_Post\Models\Control::get_instance( $this->app )->clear_ranking(),
+			'result' => $control->init_posts_index(),
 		) );
 	}
 }

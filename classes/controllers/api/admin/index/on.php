@@ -61,8 +61,11 @@ class On extends \Technote\Controllers\Api\Base {
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
 	public function callback( \WP_REST_Request $params ) {
+		/** @var \Related_Post\Models\Control $control */
+		$control = \Related_Post\Models\Control::get_instance( $this->app );
+
 		return new \WP_REST_Response( array(
-			'result' => \Related_Post\Models\Control::get_instance( $this->app )->on_posts_index(),
+			'result' => $control->on_posts_index(),
 		) );
 	}
 }

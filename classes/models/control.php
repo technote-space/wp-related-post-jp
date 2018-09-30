@@ -105,6 +105,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @param int $id
 	 * @param \WP_Post $post
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function save_post( $id, $post ) {
 		if ( $this->is_valid_update_post() ) {
 			if ( ! ( defined( 'DOUNG_AUTOSAVE' ) && DOING_AUTOSAVE ) && $post->post_status == 'publish' ) {
@@ -127,6 +128,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @param string $old_status
 	 * @param \WP_Post $post
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function transition_post_status( $new_status, $old_status, $post ) {
 		if ( $this->is_valid_update_post() ) {
 			if ( $old_status == 'publish' && $new_status != 'publish' ) {
@@ -141,6 +143,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * @param int $id
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function delete_post( $id ) {
 		if ( $this->is_valid_update_post() ) {
 			$this->get_bm25()->delete( $id );
@@ -185,6 +188,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * related post
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function on_related_post() {
 		$this->is_related_post = true;
 	}
@@ -192,6 +196,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * @param \WP_Query $query
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function pre_get_posts( $query ) {
 		if ( $this->is_related_post ) {
 			$this->is_related_post = false;
@@ -294,6 +299,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * setup index posts
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function setup_index_posts() {
 		add_action( $this->get_hook_name(), function () {
 			$this->index_posts();
@@ -664,32 +670,6 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
-	 * @param array $post_types
-	 * @param array $post_ids
-	 *
-	 * @return array
-	 */
-	private function get_update_words( $post_types, $post_ids ) {
-		return \Technote\Models\Utility::array_pluck( $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
-				'LEFT JOIN',
-				array(
-					'd.document_id',
-					'=',
-					'w.document_id'
-				),
-			),
-		), array(
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			'd.post_id'   => array( 'in', $post_ids ),
-		), array(
-			'DISTINCT w.word_id' => array( 'AS', 'word_id' )
-		) ), 'word_id' );
-	}
-
-	/**
 	 * @return string
 	 */
 	private function get_total_posts_count_transient_key() {
@@ -822,22 +802,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
-	 * clear ranking
-	 */
-	public function clear_ranking() {
-		$this->app->option->delete( 'posts_indexed' );
-		$this->app->option->delete( 'word_updated' );
-		$this->app->post->delete_all( 'setup_ranking' );
-		$this->app->post->delete_all( 'word_updated' );
-		$this->app->db->truncate( 'ranking' );
-		delete_site_transient( $this->get_total_posts_count_transient_key() );
-		delete_site_transient( $this->get_update_posts_count_transient_key() );
-		$this->unlock_process();
-	}
-
-	/**
 	 * @param string $key
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function changed_option( $key ) {
 		if ( $key === $this->get_filter_prefix() . 'target_post_types' ) {
 			$this->init_posts_index();
@@ -865,6 +832,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * pre load admin page
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function post_load_admin_page() {
 		if ( $this->apply_filters( 'use_bigram_tokenizer' ) ) {
 			$this->app->setting->remove_setting( 'yahoo_client_id' );

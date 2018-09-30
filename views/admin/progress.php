@@ -37,8 +37,8 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 <div id="<?php $instance->id(); ?>-finished-wrap">
     <div class="message"><?php $instance->h( 'Posts index has successfully completed.', true ); ?></div>
 	<?php $instance->form( 'input/button', $args, array(
-		'class' => 'ranking_clear button-primary left',
-		'name'  => 'ranking_clear',
-		'value' => 'Clear ranking data',
+		'class' => 'index_clear button-primary left',
+		'name'  => 'index_clear',
+		'value' => 'Clear index data',
 	) ); ?>
 </div>
