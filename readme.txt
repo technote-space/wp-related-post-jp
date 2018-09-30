@@ -31,15 +31,7 @@ This plugin needs PHP5.6 or higher.
 
 == Changelog ==
 
-= 1.0.1.1 =
-
-* FIX: modified check update url.
-
-= 1.0.1.0 =
-
-* FIX: modified check update url.
-
-= 1.0.0.0 =
+= 1.0.1.2 =
 
 * First release
 
