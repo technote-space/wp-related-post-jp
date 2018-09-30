@@ -1,7 +1,2 @@
 Order Deny,Allow
 Deny from all
-
-#allow access to update.json
-<FilesMatch "^update\.json$">
-	Allow from all
-</FilesMatch>

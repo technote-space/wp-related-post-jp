@@ -6,21 +6,21 @@
 # スクリーンショット
 - 設定画面
 
-![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot1.png)
+![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-1.png)
 
 - 処理中
 
-![処理中画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot2.png)
+![処理中画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-2.png)
 
 - 有効化前
   - 通常の検索の場合「WordPress」と「あああああ」を含まないとヒットしません。
 
-![有効化前](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot3.png)
+![有効化前](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-3.png)
 
 - 有効化後
   - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能です。
 
-![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot4.png)
+![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-4.png)
 
 # 要件
 - PHP 5.6 以上
