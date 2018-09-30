@@ -3,7 +3,7 @@ Contributors: technote-space
 Tags: related posts, recommend, recommendation
 Requires at least: 3.9
 Tested up to: 4.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,10 @@ This plugin needs PHP5.6 or higher.
 4. After.
 
 == Changelog ==
+
+= 1.0.1 =
+
+* FIX: modified check update url.
 
 = 1.0.0 =
 

@@ -18,7 +18,7 @@ return array(
 	'plugin_title'         => 'Related Post',
 
 	// plugin version
-	'plugin_version'       => '1.0.0.0.0',
+	'plugin_version'       => '1.0.1.0.0',
 
 	// db version
 	'db_version'           => '0.0.0.0.4',
@@ -36,7 +36,7 @@ return array(
 	'menu_image'           => '',
 
 	// update
-	'update_info_file_url' => 'https://raw.githubusercontent.com/technote-space/wordpress-plugin-base/master/update.json',
+	'update_info_file_url' => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/update.json',
 
 	// text domain
 	'text_domain'          => 'wrpj',
