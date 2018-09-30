@@ -39,6 +39,7 @@ class Test implements \Technote\Interfaces\Loader {
 			if ( ! file_exists( $autoload ) ) {
 				return;
 			}
+			/** @noinspection PhpIncludeInspection */
 			require_once $this->app->define->lib_vendor_dir . DS . 'autoload.php';
 
 			if ( ! class_exists( '\PHPUnit_TextUI_Command' ) ) {
@@ -99,7 +100,10 @@ class Test implements \Technote\Interfaces\Loader {
 	 *
 	 * @return array
 	 */
-	protected function get_namespaces( $page, $add_namespace ) {
+	protected function get_namespaces(
+		/** @noinspection PhpUnusedParameterInspection */
+		$page, $add_namespace
+	) {
 		return array(
 			$this->app->define->plugin_namespace . '\\Tests',
 			$this->app->define->lib_namespace . '\\Tests',

@@ -18,9 +18,8 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 
 <style>
     .<?php $instance->id();?>-loading {
-        background: url(<?php echo $instance->get_img_url('loading.gif');?>);
         background-size: contain;
-        background-repeat: no-repeat;
+        background: url(<?php echo $instance->get_img_url('loading.gif');?>) no-repeat;
         text-align: center;
         margin: 0 auto;
         height: 30px;

@@ -22,12 +22,12 @@ require_once __DIR__ . DS . 'db.php';
  */
 class DbTest extends \Technote\Tests\TestCase {
 
-	/** @var \Technote\Tests\Models\Db */
+	/** @var Db */
 	private static $db;
 
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
-		static::$db = \Technote\Tests\Models\Db::get_instance( static::$app );
+		static::$db = Db::get_instance( static::$app );
 		static::$db->drop( 'technote_test_table1' );
 		static::$db->drop( 'technote_test_table2' );
 		static::$db->setup( 'technote_test_table1', array(

@@ -55,6 +55,10 @@ class Test extends Base {
 		);
 	}
 
+	/**
+	 * do test
+	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function do_test() {
 		foreach ( $this->app->loader->test->do_tests() as list( $success, $result ) ) {
 			$this->app->add_message( $result, 'test', ! $success, false );

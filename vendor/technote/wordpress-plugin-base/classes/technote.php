@@ -298,6 +298,7 @@ class Technote {
 			$class = strtolower( $class );
 			$path  = $dir . DS . str_replace( '\\', DS, $class ) . '.php';
 			if ( is_readable( $path ) ) {
+				/** @noinspection PhpIncludeInspection */
 				require_once $path;
 
 				return true;

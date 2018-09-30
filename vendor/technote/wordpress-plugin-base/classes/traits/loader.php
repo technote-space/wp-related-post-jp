@@ -125,7 +125,7 @@ trait Loader {
 	protected function get_class_instance( $class_setting, $instanceof ) {
 		if ( false !== $class_setting && class_exists( $class_setting[0] ) && is_subclass_of( $class_setting[0], '\Technote\Interfaces\Singleton' ) ) {
 			try {
-				/** @var Singleton $class_setting */
+				/** @var Singleton[] $class_setting */
 				$instance = $class_setting[0]::get_instance( $this->app );
 				if ( $instance instanceof $instanceof ) {
 					if ( $instance instanceof \Technote\Interfaces\Controller\Admin ) {

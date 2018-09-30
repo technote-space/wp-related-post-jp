@@ -15,6 +15,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 }
 /** @var \Technote\Controllers\Admin\Base $instance */
 /** @var array $settings */
+/** @var array $args */
 ?>
 
 <?php $instance->form( 'open', $args ); ?>

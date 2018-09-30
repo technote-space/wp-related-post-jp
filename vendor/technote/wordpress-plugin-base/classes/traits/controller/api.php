@@ -94,7 +94,10 @@ trait Api {
 	 *
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
-	public function callback( \WP_REST_Request $params ) {
+	public function callback(
+		/** @noinspection PhpUnusedParameterInspection */
+		\WP_REST_Request $params
+	) {
 		return new \WP_REST_Response( null, 404 );
 	}
 

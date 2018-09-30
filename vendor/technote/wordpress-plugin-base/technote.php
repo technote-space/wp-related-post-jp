@@ -29,7 +29,7 @@ define( 'TECHNOTE_BOOTSTRAP', __FILE__ );
 
 define( 'TECHNOTE_VERSION', '0.0.0.0.0' );
 
-define( 'TECHNOTE_REQUIRED_PHP_VERSION', '5.4' );
+define( 'TECHNOTE_REQUIRED_PHP_VERSION', '5.6' );
 
 if ( ! defined( 'DS' ) ) {
 	define( 'DS', DIRECTORY_SEPARATOR );

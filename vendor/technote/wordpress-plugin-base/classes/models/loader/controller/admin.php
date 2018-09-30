@@ -91,6 +91,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	/**
 	 * add menu
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function add_menu() {
 		$capability = $this->app->get_config( 'capability', 'admin_menu', 'manage_options' );
 		if ( ! $this->app->user_can( $capability ) ) {
@@ -216,7 +217,10 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 *
 	 * @return array
 	 */
-	protected function get_namespaces( $page, $add_namespace ) {
+	protected function get_namespaces(
+		/** @noinspection PhpUnusedParameterInspection */
+		$page, $add_namespace
+	) {
 		return array(
 			$this->app->define->plugin_namespace . '\\Controllers\\Admin\\',
 			$this->app->define->lib_namespace . '\\Controllers\\Admin\\',
@@ -245,6 +249,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	/**
 	 * admin notice
 	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function admin_notice() {
 		if ( $this->app->user_can() ) {
 			$this->get_view( 'admin/include/notice', array(

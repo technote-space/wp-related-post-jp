@@ -72,7 +72,10 @@ class Cron implements \Technote\Interfaces\Loader {
 	 *
 	 * @return array
 	 */
-	protected function get_namespaces( $page, $add_namespace ) {
+	protected function get_namespaces(
+		/** @noinspection PhpUnusedParameterInspection */
+		$page, $add_namespace
+	) {
 		return array(
 			$this->app->define->plugin_namespace . '\\Crons',
 			$this->app->define->lib_namespace . '\\Crons',

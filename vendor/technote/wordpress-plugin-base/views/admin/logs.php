@@ -21,6 +21,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var array $data */
 /** @var array $segments */
 /** @var array $segments_scandir */
+/** @var array $args */
 /** @var bool $deleted */
 ?>
 

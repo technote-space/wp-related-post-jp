@@ -64,7 +64,10 @@ class UserTest extends \Technote\Tests\TestCase {
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function test_delete( $key, $value ) {
+	public function test_delete(
+		/** @noinspection PhpUnusedParameterInspection */
+		$key, $value
+	) {
 		$this->assertEquals( true, static::$user->delete( $key, 1 ) );
 		$this->assertEquals( '', static::$user->get( $key, 1 ) );
 	}

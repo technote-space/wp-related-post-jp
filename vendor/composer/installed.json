@@ -168,30 +168,30 @@
     },
     {
         "name": "technote/wordpress-plugin-base",
-        "version": "1.0.19",
-        "version_normalized": "1.0.19.0",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/technote-space/wordpress-plugin-base.git",
-            "reference": "e688fca0b05bf03ccedcfecb91b604dbcb3fe726"
+            "reference": "0fc6b8ffad98e647a9b33096fd2d6429f0c02ba1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/technote-space/wordpress-plugin-base/zipball/e688fca0b05bf03ccedcfecb91b604dbcb3fe726",
-            "reference": "e688fca0b05bf03ccedcfecb91b604dbcb3fe726",
+            "url": "https://api.github.com/repos/technote-space/wordpress-plugin-base/zipball/0fc6b8ffad98e647a9b33096fd2d6429f0c02ba1",
+            "reference": "0fc6b8ffad98e647a9b33096fd2d6429f0c02ba1",
             "shasum": ""
         },
         "require": {
             "matthiasmullie/minify": "^1.3",
             "mobiledetect/mobiledetectlib": "^2.8",
-            "php": ">=5.4.0",
+            "php": ">=5.6.0",
             "yahnis-elsts/plugin-update-checker": "^4.4"
         },
         "require-dev": {
             "phake/phake": "2.*",
             "phpunit/phpunit": "4.*"
         },
-        "time": "2018-09-29T13:37:31+00:00",
+        "time": "2018-09-30T09:30:27+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

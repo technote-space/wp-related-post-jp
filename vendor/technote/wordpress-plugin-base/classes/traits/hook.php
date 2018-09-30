@@ -68,7 +68,10 @@ trait Hook {
 	 *
 	 * @return bool
 	 */
-	protected function get_bool_value( $value, $default, $setting ) {
+	protected function get_bool_value(
+		/** @noinspection PhpUnusedParameterInspection */
+		$value, $default, $setting
+	) {
 		if ( is_bool( $value ) ) {
 			return $value;
 		}

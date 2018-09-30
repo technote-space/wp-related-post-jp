@@ -49,6 +49,7 @@ trait Presenter {
 			extract( $args, EXTR_SKIP );
 
 			ob_start();
+			/** @noinspection PhpIncludeInspection */
 			@include $path;
 			$view = ob_get_contents();
 			ob_end_clean();

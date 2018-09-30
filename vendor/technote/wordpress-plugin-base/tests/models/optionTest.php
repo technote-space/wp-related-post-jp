@@ -62,7 +62,10 @@ class OptionTest extends \Technote\Tests\TestCase {
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function test_delete( $key, $value ) {
+	public function test_delete(
+		/** @noinspection PhpUnusedParameterInspection */
+		$key, $value
+	) {
 		$this->assertEquals( true, static::$option->delete( $key ) );
 		$this->assertEquals( '', static::$option->get( $key ) );
 	}

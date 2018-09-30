@@ -41,13 +41,14 @@ $instance->add_style_view( 'admin/style/table' );
             </ul>
         </td>
     </tr>
-	<?php if ( method_exists( $result, 'warningCount' ) ): ?>
+	<?php if ( method_exists( $result, 'warningCount' ) && method_exists( $result, 'warnings' ) ): ?>
         <tr>
             <td><?php $instance->h( 'Warning', true ); ?></td>
             <td>
 				<?php if ( $result->warningCount() > 0 ): ?>
                     <ul>
 						<?php foreach ( $result->warnings() as $item ): ?>
+							<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
                             <li><?php $instance->h( $item->toString() ); ?></li>
 						<?php endforeach; ?>
                     </ul>
@@ -55,13 +56,14 @@ $instance->add_style_view( 'admin/style/table' );
             </td>
         </tr>
 	<?php endif; ?>
-	<?php if ( method_exists( $result, 'errorCount' ) ): ?>
+	<?php if ( method_exists( $result, 'errorCount' ) && method_exists( $result, 'errors' ) ): ?>
         <tr>
             <td><?php $instance->h( 'Errors', true ); ?></td>
             <td>
 				<?php if ( $result->errorCount() > 0 ): ?>
                     <ul>
 						<?php foreach ( $result->errors() as $item ): ?>
+							<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
                             <li>
 								<?php $instance->h( $item->toString() ); ?>
 								<?php $instance->dump( $item->thrownException()->getTraceAsString() ); ?>
@@ -72,13 +74,14 @@ $instance->add_style_view( 'admin/style/table' );
             </td>
         </tr>
 	<?php endif; ?>
-	<?php if ( method_exists( $result, 'failureCount' ) ): ?>
+	<?php if ( method_exists( $result, 'failureCount' ) && method_exists( $result, 'failures' ) ): ?>
         <tr>
             <td><?php $instance->h( 'Failure', true ); ?></td>
             <td>
 				<?php if ( $result->failureCount() > 0 ): ?>
                     <ul>
 						<?php foreach ( $result->failures() as $item ): ?>
+							<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
                             <li><?php $instance->h( $item->toString() ); ?></li>
 						<?php endforeach; ?>
                     </ul>
@@ -86,13 +89,14 @@ $instance->add_style_view( 'admin/style/table' );
             </td>
         </tr>
 	<?php endif; ?>
-	<?php if ( method_exists( $result, 'riskyCount' ) ): ?>
+	<?php if ( method_exists( $result, 'riskyCount' ) && method_exists( $result, 'risky' ) ): ?>
         <tr>
             <td><?php $instance->h( 'Risky', true ); ?></td>
             <td>
 				<?php if ( $result->riskyCount() > 0 ): ?>
                     <ul>
 						<?php foreach ( $result->risky() as $item ): ?>
+							<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
                             <li><?php $instance->h( $item->toString() ); ?></li>
 						<?php endforeach; ?>
                     </ul>
@@ -100,13 +104,14 @@ $instance->add_style_view( 'admin/style/table' );
             </td>
         </tr>
 	<?php endif; ?>
-	<?php if ( method_exists( $result, 'notImplementedCount' ) ): ?>
+	<?php if ( method_exists( $result, 'notImplementedCount' ) && method_exists( $result, 'notImplemented' ) ): ?>
         <tr>
             <td><?php $instance->h( 'Not Implemented', true ); ?></td>
             <td>
 				<?php if ( $result->notImplementedCount() > 0 ): ?>
                     <ul>
 						<?php foreach ( $result->notImplemented() as $item ): ?>
+							<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
                             <li><?php $instance->h( $item->toString() ); ?></li>
 						<?php endforeach; ?>
                     </ul>

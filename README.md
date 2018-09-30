@@ -23,7 +23,7 @@
 ![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot4.png)
 
 # 要件
-- PHP 5.4 以上
+- PHP 5.6 以上
 
 # 導入手順
 1. ZIPダウンロード  
