@@ -16,8 +16,10 @@ return array(
 
 	// extractor
 	'extractor'     => array(
+//		'title_content_tags',
 		'title_content',
 //		'content',
+//		'title',
 	),
 
 	// char filter

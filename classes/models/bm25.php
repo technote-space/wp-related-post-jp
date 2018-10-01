@@ -312,8 +312,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		return $this->app->db->transaction( function () use ( $post_id, $post_types, $update_ranking_now ) {
 			if ( $update_ranking_now ) {
 				$important_words = $this->get_important_words( $post_id );
-				$this->app->log( $important_words );
-				$ranking = $this->get_ranking( $post_id, $important_words, $post_types );
+				$ranking         = $this->get_ranking( $post_id, $important_words, $post_types );
 
 				$this->app->db->delete( 'ranking', array(
 					'post_id' => $post_id,
@@ -646,7 +645,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			);
 			$order_by = array();
 			$group_by = array();
-			$count    = null;
+			$count    = 1;
 		} else {
 			$k1       = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
 			$b        = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
@@ -701,14 +700,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		), $field, $count, $offset, $order_by, $group_by );
 
 		if ( $is_count ) {
-			if ( empty( $results ) ) {
-				return 0;
-			}
-			if ( $count == 1 ) {
-				return isset( $results['num'] ) ? $results['num'] - 0 : 0;
-			}
-
-			return isset( $results[0]['num'] ) ? $results[0]['num'] - 0 : 0;
+			return \Technote\Models\Utility::array_get( $results, 'num', 0 );
 		}
 
 		return $results;

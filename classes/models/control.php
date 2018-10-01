@@ -482,16 +482,14 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return;
 		}
 
-		$is_end = empty( $this->get_update_posts( 1 ) );
-		if ( $is_end ) {
+		if ( $this->get_update_posts( true ) <= 0 ) {
 			$uuid = $this->ranking_process( $uuid );
 
 			if ( $uuid != $this->get_executing_uuid() ) {
 				return;
 			}
 
-			$is_end = empty( $this->get_setup_ranking_posts( 1 ) );
-			if ( $is_end ) {
+			if ( $this->get_setup_ranking_posts( true ) <= 0 ) {
 				$this->app->option->set( 'posts_indexed', true );
 				$this->app->option->set( 'is_valid_posts_search', true );
 			}
@@ -509,7 +507,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	private function index_process( $uuid ) {
 		$at_once  = $this->apply_filters( 'index_num_at_once' );
 		$interval = $this->apply_filters( 'index_each_interval' ) * 1000;
-		$posts    = $this->get_update_posts( $at_once );
+		$posts    = $this->get_update_posts( false, $at_once );
 		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post ) {
 				if ( $uuid != $this->get_executing_uuid() ) {
@@ -569,7 +567,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 		$at_once  = $this->apply_filters( 'update_ranking_num_at_once' );
 		$interval = $this->apply_filters( 'update_ranking_each_interval' ) * 1000;
-		$posts    = $this->get_setup_ranking_posts( $at_once );
+		$posts    = $this->get_setup_ranking_posts( false, $at_once );
 		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post ) {
 				if ( $uuid != $this->get_executing_uuid() ) {
@@ -577,8 +575,8 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				}
 				$uuid = $this->lock_process( true, 'ranking process' );
 
-				$post_id    = $post['post_id'];
-				$post_type  = $post['post_type'];
+				$post_id    = $post->ID;
+				$post_type  = $post->post_type;
 				$post_types = $this->get_post_types( $post_type );
 				$this->get_bm25()->update_ranking( $post_id, $post_types, true );
 
@@ -597,13 +595,28 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
+	 * @param bool $is_count
 	 * @param int $limit
+	 * @param string $key
 	 *
-	 * @return array
+	 * @return array|int
 	 */
-	private function get_update_posts( $limit ) {
+	private function get_update_posts( $is_count, $limit = 1, $key = 'indexed' ) {
 		if ( $limit <= 0 ) {
-			return array();
+			return $is_count ? 0 : array();
+		}
+
+		if ( $is_count ) {
+			$limit    = 1;
+			$fields   = array( 'DISTINCT p.ID' => array( 'COUNT', 'num' ) );
+			$order_by = null;
+			$group_by = null;
+			$output   = ARRAY_A;
+		} else {
+			$fields   = array( '*', 'p.ID' => array( 'AS', 'ID' ) );
+			$order_by = array( 'p.ID' => 'ASC' );
+			$group_by = array( 'p.ID' );
+			$output   = OBJECT;
 		}
 
 		/** @var \wpdb $wpdb */
@@ -611,10 +624,10 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
 		$subquery   = $this->app->db->get_select_sql( array( array( $wpdb->postmeta, 'pm2' ) ), array(
 			'pm2.post_id'  => array( '=', 'pm.post_id', true ),
-			'pm2.meta_key' => array( '=', $this->app->post->get_meta_key( 'indexed' ) ),
+			'pm2.meta_key' => array( '=', $this->app->post->get_meta_key( $key ) ),
 		), '"X"' );
 
-		return $this->app->db->select( array(
+		$results = $this->app->db->select( array(
 			array( $wpdb->posts, 'p' ),
 			array(
 				array( $wpdb->postmeta, 'pm' ),
@@ -627,46 +640,27 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
 			'p.post_status' => 'publish',
 			'NOT EXISTS'    => $subquery
-		), array( '*', 'p.ID' => array( 'AS', 'ID' ) ), $limit, null, array( 'p.ID' => 'ASC' ), array(
-			'p.ID'
-		), OBJECT );
+		), $fields, $limit, null, $order_by, $group_by, $output );
+
+		if ( $is_count ) {
+			return \Technote\Models\Utility::array_get( $results, 'num', 0 );
+		}
+
+		return $results;
 	}
 
 	/**
+	 * @param bool $is_count
 	 * @param int $limit
 	 *
-	 * @return array
+	 * @return array|int
 	 */
-	private function get_setup_ranking_posts( $limit ) {
+	private function get_setup_ranking_posts( $is_count = false, $limit = 1 ) {
 		if ( $limit <= 0 || ! $this->app->get_option( 'is_valid_update_ranking' ) ) {
-			return array();
+			return $is_count ? 0 : array();
 		}
 
-		/** @var \wpdb $wpdb */
-		global $wpdb;
-		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
-		$subquery   = $this->app->db->get_select_sql( array( array( $wpdb->postmeta, 'pm2' ) ), array(
-			'pm2.post_id'  => array( '=', 'pm.post_id', true ),
-			'pm2.meta_key' => array( '=', $this->app->post->get_meta_key( 'setup_ranking' ) ),
-		), '"X"' );
-
-		return $this->app->db->select( array(
-			array( $wpdb->posts, 'p' ),
-			array(
-				array( $wpdb->postmeta, 'pm' ),
-				'LEFT JOIN',
-				array(
-					array( 'p.ID', '=', 'pm.post_id' ),
-				)
-			),
-		), array(
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			'p.post_status' => 'publish',
-			'NOT EXISTS'    => $subquery
-		), array(
-			'p.ID' => array( 'AS', 'post_id' ),
-			'p.post_type'
-		), $limit, null, null, array( 'p.ID' ) );
+		return $this->get_update_posts( $is_count, $limit, 'setup_ranking' );
 	}
 
 	/**
@@ -721,56 +715,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		if ( false !== $count ) {
 			return $count;
 		}
-
-		/** @var \wpdb $wpdb */
-		global $wpdb;
-		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
-		$subquery   = $this->app->db->get_select_sql( array( array( $wpdb->postmeta, 'pm2' ) ), array(
-			'pm2.post_id'  => array( '=', 'pm.post_id', true ),
-			'pm2.meta_key' => array( '=', $this->app->post->get_meta_key( 'indexed' ) ),
-		), '"X"' );
-
-		$count1 = \Technote\Models\Utility::array_get( $this->app->db->select( array(
-			array( $wpdb->posts, 'p' ),
-			array(
-				array( $wpdb->postmeta, 'pm' ),
-				'LEFT JOIN',
-				array(
-					array( 'p.ID', '=', 'pm.post_id' ),
-				)
-			),
-		), array(
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			'p.post_status' => 'publish',
-			'NOT EXISTS'    => $subquery
-		), array( 'DISTINCT p.ID' => array( 'COUNT', 'num' ) ), 1 ), 'num' );
-
-		if ( $this->app->get_option( 'is_valid_update_ranking' ) ) {
-			$subquery = $this->app->db->get_select_sql( array( array( $wpdb->postmeta, 'pm2' ) ), array(
-				'pm2.post_id'  => array( '=', 'pm.post_id', true ),
-				'pm2.meta_key' => array( '=', $this->app->post->get_meta_key( 'setup_ranking' ) ),
-			), '"X"' );
-
-			$count2 = \Technote\Models\Utility::array_get( $this->app->db->select( array(
-				array( $wpdb->posts, 'p' ),
-				array(
-					array( $wpdb->postmeta, 'pm' ),
-					'LEFT JOIN',
-					array(
-						array( 'p.ID', '=', 'pm.post_id' ),
-					)
-				),
-			), array(
-				'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-				'p.post_status' => 'publish',
-				'NOT EXISTS'    => $subquery
-			), array( 'DISTINCT p.ID' => array( 'COUNT', 'num' ) ), 1 ), 'num' );
-		} else {
-			$count2 = 0;
-		}
-
-		$count = $count1 + $count2;
-
+		$count = $this->get_update_posts( true ) + $this->get_setup_ranking_posts( true );
 		set_site_transient( $this->get_update_posts_count_transient_key(), $count, HOUR_IN_SECONDS );
 
 		return $count;
