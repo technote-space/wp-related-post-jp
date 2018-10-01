@@ -50,6 +50,9 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 */
 	private function extractor( $post ) {
 		$filters = $this->apply_filters( 'extractor', $this->app->get_config( 'analyzer', 'extractor', '' ) );
+		if ( empty( $filters ) ) {
+			return '';
+		}
 		if ( ! is_array( $filters ) ) {
 			$filters = array( $filters );
 		}
@@ -78,6 +81,9 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 */
 	private function char_filter( $text ) {
 		$filters = $this->apply_filters( 'char_filters', $this->app->get_config( 'analyzer', 'char_filters', array() ) );
+		if ( empty( $filters ) ) {
+			return '';
+		}
 		if ( ! is_array( $filters ) ) {
 			return $text;
 		}
@@ -102,6 +108,9 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 */
 	private function tokenizer( $text ) {
 		$filters = $this->apply_filters( 'tokenizer', $this->app->get_config( 'analyzer', 'tokenizer', '' ) );
+		if ( empty( $filters ) ) {
+			return array( array(), '' );
+		}
 		if ( ! is_array( $filters ) ) {
 			$filters = array( $filters );
 		}
@@ -149,6 +158,9 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 */
 	private function token_filter( $terms, $tokenizer ) {
 		$filters = $this->apply_filters( 'token_filters', $this->app->get_config( 'analyzer', 'token_filters', array() ) );
+		if ( empty( $filters ) ) {
+			return $terms;
+		}
 		if ( ! is_array( $filters ) ) {
 			return $terms;
 		}
