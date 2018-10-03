@@ -396,7 +396,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * @return bool
 	 */
 	private function is_logical( $define ) {
-		return $this->apply_filters( 'is_logical', 'physical' !== Utility::array_get( $define, 'delete', 'logical' ), $define );
+		return $this->apply_filters( 'is_logical', 'physical' !== Utility::array_get( $define, 'delete', $this->app->get_config( 'config', 'default_delete_rule' ) ), $define );
 	}
 
 	/**

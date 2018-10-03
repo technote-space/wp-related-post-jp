@@ -36,7 +36,6 @@ return array(
 				'word' => array( 'word' ),
 			),
 		),
-		'delete'  => 'physical',
 	),
 
 	'document' => array(
@@ -65,7 +64,6 @@ return array(
 				'uk_post_id' => array( 'post_id' ),
 			),
 		),
-		'delete'  => 'physical',
 	),
 
 	'rel_document_word' => array(
@@ -100,7 +98,6 @@ return array(
 				'uk_document_id_word_id' => array( 'document_id', 'word_id' ),
 			),
 		),
-		'delete'  => 'physical',
 	),
 
 	'ranking' => array(
@@ -129,7 +126,6 @@ return array(
 				'uk_post_id_rank_post_id' => array( 'post_id', 'rank_post_id' ),
 			),
 		),
-		'delete'  => 'physical',
 	),
 
 );

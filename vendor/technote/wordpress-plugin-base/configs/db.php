@@ -51,7 +51,7 @@ return array(
 //				'value' => array( 'value1', 'value2' ),
 //			),
 //		),
-//		'delete'  => 'logical', // physical or logical [default = logical]
+//		'delete'  => 'logical', // physical or logical [default = physical]
 //	),
 
 );

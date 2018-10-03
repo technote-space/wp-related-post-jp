@@ -55,4 +55,7 @@ return array(
 	// api version
 	'api_version'          => 'v1',
 
+	// default delete rule
+	'default_delete_rule'  => 'physical',
+
 );
