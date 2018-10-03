@@ -72,11 +72,6 @@ return array(
 					'default' => 250,
 					'min'     => 0,
 				),
-				'is_valid_update_ranking'           => array(
-					'label'   => 'Whether to update ranking in the background.',
-					'type'    => 'bool',
-					'default' => false,
-				),
 				'update_ranking_num_at_once'        => array(
 					'label'   => 'Number of update ranking posts at once',
 					'type'    => 'int',

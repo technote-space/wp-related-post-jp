@@ -38,11 +38,10 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 
 	/**
 	 * @param int $post_id
-	 * @param bool $update_ranking_now
 	 * @param array $update_word_ids
 	 * @param bool $init_ranking_flag
 	 */
-	public function delete( $post_id, $update_ranking_now = false, $update_word_ids = array(), $init_ranking_flag = true ) {
+	public function delete( $post_id, $update_word_ids = array(), $init_ranking_flag = true ) {
 		$word_ids   = array();
 		$post_types = array();
 		if ( $this->app->db->transaction( function () use ( $post_id, &$word_ids, &$post_types, $update_word_ids ) {
@@ -85,19 +84,18 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 
 		} ) ) {
 			if ( $init_ranking_flag && ! empty( $word_ids ) && ! empty( $post_types ) ) {
-				$this->setup_ranking( $post_types, $word_ids, $update_ranking_now );
+				$this->setup_ranking( $post_types, $word_ids );
 			}
 		}
 	}
 
 	/**
 	 * @param \WP_Post $post
-	 * @param bool $update_ranking_now
-	 * @param bool $init_ranking_flag
+	 * @param bool $update_word_now
 	 *
 	 * @return array
 	 */
-	public function update( $post, $update_ranking_now = false, $init_ranking_flag = true ) {
+	public function update( $post, $update_word_now = true ) {
 		$post_id    = $post->ID;
 		$post_type  = $post->post_type;
 		$post_types = $this->control->get_post_types( $post_type );
@@ -110,8 +108,8 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		! empty( $word_ids ) and $word_ids = array_combine( $word_ids, $word_ids );
 		$dl = array_sum( $data );
 
-		if ( $this->app->db->transaction( function () use ( $post_id, $post_type, $post_types, $data, $dl, &$word_ids, $init_ranking_flag ) {
-			$this->delete( $post_id, false, $word_ids, $init_ranking_flag );
+		if ( $this->app->db->transaction( function () use ( $post_id, $post_type, $post_types, $data, $dl, &$word_ids, $update_word_now ) {
+			$this->delete( $post_id, $word_ids, false );
 			$this->app->db->insert( 'document', array(
 				'post_id'   => $post_id,
 				'post_type' => $post_type,
@@ -136,7 +134,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				);
 			}, array_keys( $data ), array_values( $data ) ) );
 
-			if ( $init_ranking_flag ) {
+			if ( $update_word_now ) {
 				$word_ids = $this->update_word( $post_types, $word_ids );
 			} else {
 				if ( ! empty( $word_ids ) ) {
@@ -146,10 +144,8 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			$this->app->post->set( $post_id, 'indexed', 1 );
 			$this->app->post->delete( $post_id, 'setup_ranking' );
 		} ) ) {
-			if ( $init_ranking_flag ) {
-				// idf の変化がなくても tf は変化があるかもしれないため、この投稿は必ず更新
-				$this->setup_ranking( $post_types, $word_ids, $update_ranking_now, $post_id );
-			}
+			// idf の変化がなくても tf は変化があるかもしれないため、この投稿は必ず更新
+			$this->setup_ranking( $post_types, $word_ids, $post_id );
 		}
 
 		return array( $post_types, $word_ids );
@@ -269,34 +265,30 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	/**
 	 * @param array $post_types
 	 * @param array $word_ids
-	 * @param bool $update_ranking_now
 	 * @param int $post_id
 	 *
 	 * @return bool
 	 */
-	public function setup_ranking( $post_types, $word_ids, $update_ranking_now, $post_id = null ) {
+	private function setup_ranking( $post_types, $word_ids, $post_id = null ) {
 		$post_ids = $this->get_update_post_ids( $post_types, $word_ids );
 		if ( ! empty( $post_id ) && ! in_array( $post_id, $post_ids ) ) {
 			$post_ids[] = $post_id;
 		}
 
-		return $this->update_rankings( $post_ids, $post_types, $update_ranking_now );
+		return $this->update_rankings( $post_ids, $post_types );
 	}
 
 	/**
 	 * @param array $post_ids
 	 * @param array $post_types
-	 * @param bool $update_ranking_now
 	 *
 	 * @return bool
 	 */
-	public function update_rankings( $post_ids, $post_types, $update_ranking_now ) {
+	private function update_rankings( $post_ids, $post_types ) {
 		foreach ( $post_ids as $post_id ) {
-			$this->update_ranking( $post_id, $post_types, $update_ranking_now );
+			$this->update_ranking( $post_id, $post_types, false );
 		}
-		if ( ! $update_ranking_now ) {
-			$this->app->option->delete( 'posts_indexed' );
-		}
+		$this->app->option->delete( 'posts_indexed' );
 
 		return true;
 	}

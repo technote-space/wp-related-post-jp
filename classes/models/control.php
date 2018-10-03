@@ -515,7 +515,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				}
 				$uuid = $this->lock_process( true, 'index process' );
 
-				$this->get_bm25()->update( $post, false, false );
+				$this->get_bm25()->update( $post, false );
 
 				$count = get_site_transient( $this->get_update_posts_count_transient_key() );
 				if ( false !== $count ) {
@@ -656,10 +656,6 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return array|int
 	 */
 	private function get_setup_ranking_posts( $is_count = false, $limit = 1 ) {
-		if ( $limit <= 0 || ! $this->app->get_option( 'is_valid_update_ranking' ) ) {
-			return $is_count ? 0 : array();
-		}
-
 		return $this->get_update_posts( $is_count, $limit, 'setup_ranking' );
 	}
 
@@ -697,10 +693,8 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			'p.post_status' => 'publish',
 		), array( 'DISTINCT p.ID' => array( 'COUNT', 'num' ) ), 1 ), 'num' );
 
-		if ( $this->app->get_option( 'is_valid_update_ranking' ) ) {
-			// index, ranking
-			$count *= 2;
-		}
+		// index, ranking
+		$count *= 2;
 
 		set_site_transient( $this->get_total_posts_count_transient_key(), $count, HOUR_IN_SECONDS );
 
