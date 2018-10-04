@@ -747,6 +747,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	private function changed_option( $key ) {
 		if ( $key === $this->get_filter_prefix() . 'target_post_types' ) {
 			$this->init_posts_index();
+		} elseif ( $key === $this->get_filter_prefix() . 'ranking_number' ) {
+			$this->app->option->delete( 'posts_indexed' );
+			$this->app->post->delete_all( 'setup_ranking' );
 		}
 	}
 
