@@ -13,6 +13,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 }
 /** @var \Technote\Controllers\Admin\Base $instance */
 /** @var string $api_class */
+$instance->js('progressbar.min.js');
 ?>
 
 <script>

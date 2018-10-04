@@ -26,15 +26,4 @@ class Progress extends \Technote\Controllers\Admin\Base {
 	public function get_page_title() {
 		return 'Progress';
 	}
-
-	/**
-	 * admin enqueue scripts
-	 */
-	protected function admin_enqueue_scripts() {
-		global $wp_scripts;
-		$ui = $wp_scripts->query( 'jquery-ui-core' );
-		wp_enqueue_script( 'jquery-ui-progressbar' );
-		wp_enqueue_style( 'jquery-ui-progressbar', "//ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css" );
-	}
-
 }

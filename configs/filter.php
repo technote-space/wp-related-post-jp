@@ -43,11 +43,4 @@ return array(
 			'post_load_admin_page' => array(),
 		),
 	),
-
-	'\Related_Post\Controllers\Admin\Progress' => array(
-		'admin_enqueue_scripts' => array(
-			'admin_enqueue_scripts' => array(),
-		),
-	),
-
 );

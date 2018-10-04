@@ -12,6 +12,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
 /** @var \Technote\Controllers\Admin\Base $instance */
+$instance->css('jquery-ui.min.css');
 ?>
 
 <style>
