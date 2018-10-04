@@ -80,7 +80,7 @@ class Progress extends \Technote\Controllers\Api\Base {
 				if ( ! empty( $process ) ) {
 					$next = sprintf( $this->app->translate( 'Running %s...' ), $this->app->translate( $process ) );
 				} else {
-					$next = $this->app->translate( 'Running...' );
+					$next = $this->app->translate( 'Waiting...' );
 				}
 			} else {
 				$next = sprintf( $this->app->translate( 'Next execute: %s sec later' ), $next );
