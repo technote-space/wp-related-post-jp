@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 0.0.0.0.0
+ * @version 1.0.1.9
  * @author technote-space
  * @since 0.0.0.0.0
  * @copyright technote All Rights Reserved
@@ -31,8 +31,8 @@ class Wakati extends \Related_Post\Models\Analyzer\Tokenfilter {
 			if ( preg_match( '#^\d+$#', $word ) ) {
 				continue;
 			}
-			if ( mb_strlen( $word ) === 1 && preg_match( '#[ぁ-んァ-ヶー]#', $word ) ) {
-				// １文字のひらがな、カタカナのみ
+			if ( mb_strlen( $word ) === 1 && preg_match( '#[ぁ-んァ-ヶー\w]#', $word ) ) {
+				// １文字のひらがな、カタカナ、英数字のみ
 				continue;
 			}
 			if ( preg_match( '#^[0-9 -/:;-@\[-\`\{-\~.,！　”“＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」【】『』［］、〟。・★☆■□◆◇…―※]+$#u', $word ) ) {
