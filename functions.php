@@ -12,11 +12,38 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
 
+// cocoon用
 add_action( 'get_template_part_tmp/related-list', function () {
 	do_action( 'related_post-on_related_post' );
 } );
 
-// cocoon用
 add_action( 'after_setup_theme', function () {
 	remove_action( 'after_setup_theme', 'code_minify_buffer_start', 99999999 );
 } );
+
+
+// 設定変更
+add_filter( 'related_post-setting_page_title', function () {
+	return 'Detail Settings';
+} );
+
+add_filter( 'related_post-setting_page_priority', function () {
+	return 100;
+} );
+
+add_filter( 'related_post-get_menu_slug', function () {
+	return 'dashboard';
+} );
+
+// ヘルプ
+add_filter( 'related_post-get_help_contents', function ( $contents, $slug ) {
+	if ( 'setting' === $slug ) {
+		return array(
+			'title' => 'カスタマイズ',
+			'view'  => 'setting',
+		);
+	}
+
+	return $contents;
+}, 10, 2 );
+
