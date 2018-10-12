@@ -1,8 +1,8 @@
 <?php
 /**
- * @version 0.0.0.0.0
+ * @version 1.0.1.9
  * @author technote-space
- * @since 0.0.0.0.0
+ * @since 1.0.0.0
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -18,7 +18,7 @@ return array(
 	'plugin_title'         => 'Related Post',
 
 	// plugin version
-	'plugin_version'       => '1.0.1.9.0',
+	'plugin_version'       => '1.0.1.9',
 
 	// db version
 	'db_version'           => '0.0.0.0.4',
