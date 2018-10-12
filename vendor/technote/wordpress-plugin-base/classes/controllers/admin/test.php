@@ -26,7 +26,7 @@ class Test extends Base {
 	 * @return int
 	 */
 	public function get_priority() {
-		return defined( 'WP_DEBUG' ) && WP_DEBUG && $this->app->loader->test->is_valid() ? 10 : - 1;
+		return $this->app->loader->test->is_valid() ? $this->apply_filters( 'test_page_priority', defined( 'WP_DEBUG' ) && WP_DEBUG ? 900 : - 1 ) : - 1;
 	}
 
 	/**

@@ -134,7 +134,7 @@ example - example.php
     ),
     
     // 論理削除 or 物理削除
-    'delete'  => 'logical', // physical or logical [default = logical]
+    'delete'  => 'logical', // physical or logical [default = physical]
 ),
 ```
 
@@ -229,16 +229,18 @@ if ( $this->apply_filters( 'minify_js' ) ) {
 }
 ```
 
-- configs/filter.php
+- configs/filter.php  
+今後ドキュメント追加予定
 
-- configs/slug.php
+- configs/slug.php  
+今後ドキュメント追加予定
 
-- configs/capability.php
-
+- configs/capability.php  
+今後ドキュメント追加予定
 
 ## 画面の追加
 
-- classes/controllers/admin に PHP ファイルを追加
+- classes/controllers/admin に PHP ファイル (例：test.php) を追加
 ```
 <?php
 
@@ -277,7 +279,7 @@ class Test extends \Technote\Controllers\Admin\Base {
 
 POST の時に行う動作は事前にnonce checkが行われます。
 
-- views/admin に PHP ファイルを追加
+- views/admin に PHP ファイル (例：test.php) を追加
 ```
 <?php
 
@@ -309,7 +311,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	- img
 
 - ヘルプの追加
-	- classes/controllers/admin に追加した PHP に以下を追記
+	- classes/controllers/admin に追加した上記 PHP ファイル に以下を追記
 ```
 protected function get_help_contents() {
     return array(
@@ -322,7 +324,7 @@ protected function get_help_contents() {
 ```
 
 -
-	- views/admin/help に PHP ファイルを追加
+	- views/admin/help に PHP ファイル (例：test.php) を追加
 ```
 <?php
 

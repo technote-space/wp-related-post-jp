@@ -26,7 +26,7 @@ class Setting extends Base {
 	 * @return int
 	 */
 	public function get_priority() {
-		return 0;
+		return $this->apply_filters( 'setting_page_priority', 0 );
 	}
 
 	/**
@@ -62,6 +62,41 @@ class Setting extends Base {
 		return array(
 			'settings' => $settings,
 		);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_help_contents() {
+		return array(
+			array(
+				'title' => 'ダッシュボードのヘルプの変更手順',
+				'view'  => 'setting1',
+			),
+			array(
+				'title' => 'このヘルプが不要な場合の手順',
+				'view'  => 'setting2',
+			),
+			array(
+				'title' => 'サイドバーの変更手順',
+				'view'  => 'setting3',
+			),
+		);
+	}
+
+	/**
+	 * @return false|string
+	 */
+	protected function get_help_sidebar() {
+		if (
+			! empty( $this->app->get_config( 'config', 'contact_url' ) ) ||
+			! empty( $this->app->get_config( 'config', 'twitter' ) ) ||
+			! empty( $this->app->get_config( 'config', 'github' ) )
+		) {
+			return 'setting';
+		}
+
+		return false;
 	}
 
 }

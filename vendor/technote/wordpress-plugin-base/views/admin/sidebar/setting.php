@@ -17,13 +17,17 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 $contact = $instance->app->get_config( 'config', 'contact_url' );
 $twitter = $instance->app->get_config( 'config', 'twitter' );
 $github  = $instance->app->get_config( 'config', 'github' );
-
+if ( empty( $contact ) && empty( $twitter ) && empty( $github ) ) {
+	return;
+}
 ?>
 
 <ul>
-    <li>
-		<?php $instance->url( $contact, 'Contact', true, true ); ?>
-    </li>
+	<?php if ( ! empty( $contact ) ): ?>
+        <li>
+			<?php $instance->url( $contact, 'Contact', true, true ); ?>
+        </li>
+	<?php endif; ?>
 	<?php if ( ! empty( $twitter ) ): ?>
         <li>
 			<?php $instance->url( 'https://twitter.com/' . $twitter, 'Twitter', true, true ); ?>

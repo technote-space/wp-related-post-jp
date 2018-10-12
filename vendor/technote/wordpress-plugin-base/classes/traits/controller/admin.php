@@ -158,11 +158,14 @@ trait Admin {
 	public function setup_help() {
 		$slug     = $this->get_page_slug();
 		$contents = $this->apply_filters( 'get_help_contents', $this->get_help_contents(), $slug );
-		if ( ! empty( $contents ) ) {
+		if ( ! empty( $contents ) && is_array( $contents ) ) {
 			/** @var \WP_Screen|null $current_screen */
 			$current_screen = get_current_screen();
 			if ( isset( $current_screen ) ) {
 				$index = 0;
+				if ( isset( $contents['content'] ) || isset( $contents['view'] ) ) {
+					$contents = array( $contents );
+				}
 				foreach ( $contents as $content ) {
 					if ( ! is_array( $content ) ) {
 						continue;

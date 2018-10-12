@@ -27,7 +27,7 @@ define( 'TECHNOTE_PLUGIN', 'technote' );
 
 define( 'TECHNOTE_BOOTSTRAP', __FILE__ );
 
-define( 'TECHNOTE_VERSION', '1.1.2.0.0' );
+define( 'TECHNOTE_VERSION', '1.1.3' );
 
 define( 'TECHNOTE_REQUIRED_PHP_VERSION', '5.6' );
 
