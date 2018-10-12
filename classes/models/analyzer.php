@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.0.0
+ * @version 1.0.2.0
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -28,7 +28,22 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 * @return array ( word => count )
 	 */
 	public function parse( $post ) {
-		return $this->parse_text( $this->apply_filters( 'extractor_result', $this->extractor( $post ), $post ) );
+		return $this->parse_text( $this->get_length_filtered_extracted_result( $post ) );
+	}
+
+	/**
+	 * @param \WP_Post $post
+	 *
+	 * @return mixed
+	 */
+	private function get_length_filtered_extracted_result( $post ) {
+		$result     = $this->apply_filters( 'extractor_result', $this->extractor( $post ), $post );
+		$max_length = $this->apply_filters( 'max_index_target_length' );
+		if ( $max_length > 0 ) {
+			$result = mb_substr( $result, 0, $max_length );
+		}
+
+		return $result;
 	}
 
 	/**

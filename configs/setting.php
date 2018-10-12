@@ -1,8 +1,8 @@
 <?php
 /**
- * @version 0.0.0.0.0
+ * @version 1.0.2.0
  * @author technote-space
- * @since 0.0.0.0.0
+ * @since 1.0.0.0
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -44,6 +44,11 @@ return array(
 					'default' => 10,
 					'min'     => 1,
 					'max'     => 25,
+				),
+				'max_index_target_length'           => array(
+					'label'   => 'Max length of target extracted content.',
+					'default' => 0,
+					'min'     => 0,
 				),
 				'target_post_types'                 => array(
 					'label'   => "Target post types (comma separated)\nIf change this, it's necessary to run posts index process again.",
