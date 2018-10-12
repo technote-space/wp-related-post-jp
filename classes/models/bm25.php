@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 0.0.0.0.0
+ * @version 1.0.1.9
  * @author technote-space
  * @since 0.0.0.0.0
  * @copyright technote All Rights Reserved
@@ -558,8 +558,11 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			'd.post_id' => $post_id,
 		), array(
 			'w.word_id',
-			"w.tf * word.idf" => array( 'AS', 'tfidf' ),
-			"w.count",
+			'w.tf * word.idf' => array( 'AS', 'tfidf' ),
+			'w.count',
+			'w.tf',
+			'word.word',
+			'word.idf',
 		), $this->control->get_important_words_count(), null, array(
 			'tfidf' => 'desc',
 		) );

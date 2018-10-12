@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 0.0.0.0.0
+ * @version 1.0.1.9
  * @author technote-space
  * @since 0.0.0.0.0
  * @copyright technote All Rights Reserved
@@ -20,7 +20,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  */
 class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Uninstall;
+	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -154,7 +154,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
-	 * @param $post_id
+	 * @param int $post_id
 	 *
 	 * @return array|bool
 	 */
@@ -171,11 +171,19 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			}
 		}
 		if ( $this->app->post->get( 'setup_ranking', $post_id ) ) {
-			return array_map( function ( $post_id ) {
-				return get_post( $post_id );
-			}, \Technote\Models\Utility::array_pluck( $this->app->db->select( 'ranking', array(
+			return array_map( function ( $d ) {
+				$post_id = $d['rank_post_id'];
+				$score   = $d['score'];
+				$post    = get_post( $post_id );
+				if ( ! $post || $post->post_status !== 'publish' ) {
+					return false;
+				}
+				$post->score = $score;
+
+				return $post;
+			}, $this->app->db->select( 'ranking', array(
 				'post_id' => $post_id,
-			), 'rank_post_id', null, null, array( 'score' => 'DESC' ) ), 'rank_post_id' ) );
+			), array( 'rank_post_id', 'score' ), null, null, array( 'score' => 'DESC' ) ) );
 		}
 
 		return false;
@@ -796,5 +804,69 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$this->unlock_interval_process();
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
+	}
+
+	/**
+	 * 投稿一覧
+	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function edit_post_page() {
+		$post_type  = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'post';
+		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
+		if ( ! in_array( $post_type, $post_types ) ) {
+			return;
+		}
+
+		$this->add_script_view( 'include/script/modal' );
+		$this->add_style_view( 'include/style/modal' );
+
+		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
+			$columns['wrpj_show_related_post'] = $this->app->translate( 'Recommendation' );
+
+			return $columns;
+		} );
+
+		add_action( "manage_{$post_type}_posts_custom_column", function ( $column_name, $post_id ) {
+			if ( 'wrpj_show_related_post' === $column_name ) {
+				if ( ( $post = get_post( $post_id ) ) && 'publish' === $post->post_status ) {
+					$this->get_view( 'admin/edit_post', array( 'post_id' => $post_id ), true );
+				}
+			}
+		}, 10, 2 );
+	}
+
+	/**
+	 * @param int $post_id
+	 *
+	 * @return array
+	 */
+	public function get_index_result_response( $post_id ) {
+		$post = get_post( $post_id );
+		if ( empty( $post ) ) {
+			return array(
+				'message' => $this->app->translate( 'Post not found.' ),
+				'posts'   => array(),
+				'words'   => array(),
+			);
+		}
+
+		$indexed       = $this->app->post->get( 'indexed', $post_id );
+		$setup_ranking = $this->app->post->get( 'setup_ranking', $post_id );
+		$posts         = $this->get_related_posts( $post_id );
+		$words         = $this->get_bm25()->get_important_words( $post_id );
+
+		return array(
+			'message'       => $this->get_view( 'admin/index_result', array(
+				'post'          => $post,
+				'posts'         => $posts,
+				'words'         => $words,
+				'indexed'       => $indexed,
+				'setup_ranking' => $setup_ranking,
+			) ),
+			'posts'         => $posts,
+			'words'         => $words,
+			'indexed'       => $indexed,
+			'setup_ranking' => $setup_ranking,
+		);
 	}
 }

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wrpj\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2018-10-04 17:19+0900\n"
+"PO-Revision-Date: 2018-10-12 16:32+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -103,3 +103,15 @@ msgstr "インデックス処理を無効化"
 
 msgid "Clear index data"
 msgstr "全てのデータを初期化"
+
+msgid "Related Posts"
+msgstr "関連記事"
+
+msgid "Important Words"
+msgstr "重要語"
+
+msgid "Not finished index process."
+msgstr "インデックス処理が完了していません。"
+
+msgid "Not finished ranking process."
+msgstr "ランキング処理が完了していません。"

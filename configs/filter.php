@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 0.0.0.0.0
+ * @version 1.0.1.9
  * @author technote-space
  * @since 0.0.0.0.0
  * @copyright technote All Rights Reserved
@@ -32,15 +32,19 @@ return array(
 			'changed_option' => array(),
 		),
 
-		'pre_get_posts'                      => array(
+		'pre_get_posts'            => array(
 			'pre_get_posts' => array(),
 		),
 		'${prefix}on_related_post' => array(
 			'on_related_post' => array(),
 		),
 
-		'${prefix}post_load_admin_page'  => array(
+		'${prefix}post_load_admin_page' => array(
 			'post_load_admin_page' => array(),
+		),
+
+		'admin_head-edit.php' => array(
+			'edit_post_page' => array(),
 		),
 	),
 );
