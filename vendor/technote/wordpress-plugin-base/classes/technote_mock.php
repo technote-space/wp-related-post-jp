@@ -87,6 +87,7 @@ class Technote {
 		if ( ! file_exists( $path ) ) {
 			return array();
 		}
+		/** @noinspection PhpIncludeInspection */
 		$config = include $path;
 		if ( ! is_array( $config ) ) {
 			$config = array();

@@ -26,7 +26,7 @@ class Html extends \Related_Post\Models\Analyzer\Charfilter {
 	 * @return string
 	 */
 	public function filter( $text ) {
-		return wp_kses( $text, array() );
+		return wp_kses( $text, [] );
 	}
 
 }

@@ -14,7 +14,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
 	// plugin title
 	'plugin_title'         => '',
@@ -58,4 +58,4 @@ return array(
 	// default delete rule
 	'default_delete_rule'  => 'physical',
 
-);
+];

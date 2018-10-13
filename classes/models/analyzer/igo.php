@@ -73,7 +73,7 @@ class Igo implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
 	 *
 	 * @return array
 	 */
-	public function words( $text, $classes = array() ) {
+	public function words( $text, $classes = [] ) {
 		return array_values( array_map( function ( $m ) {
 			return $m->surface;
 		}, empty( $classes ) ? $this->parse( $text ) : array_filter( $this->parse( $text ), function ( $m ) use ( $classes ) {
@@ -90,9 +90,9 @@ class Igo implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
 	 *
 	 * @return array
 	 */
-	public function count( $text, $classes = array() ) {
+	public function count( $text, $classes = [] ) {
 		$words = $this->words( $text, $classes );
-		$ret   = array();
+		$ret   = [];
 		foreach ( $words as $word ) {
 			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
 			$ret[ $word ] ++;

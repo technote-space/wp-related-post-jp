@@ -91,7 +91,7 @@ trait Admin {
 	 * @return array
 	 */
 	protected function get_view_args() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -136,7 +136,7 @@ trait Admin {
 			return '';
 		}
 
-		return $this->get_view( 'admin/help/' . $slug, array(), false, false );
+		return $this->get_view( 'admin/help/' . $slug, [], false, false );
 	}
 
 	/**
@@ -149,7 +149,7 @@ trait Admin {
 			return '';
 		}
 
-		return $this->get_view( 'admin/sidebar/' . $slug, array(), false, false );
+		return $this->get_view( 'admin/sidebar/' . $slug, [], false, false );
 	}
 
 	/**
@@ -164,7 +164,7 @@ trait Admin {
 			if ( isset( $current_screen ) ) {
 				$index = 0;
 				if ( isset( $contents['content'] ) || isset( $contents['view'] ) ) {
-					$contents = array( $contents );
+					$contents = [ $contents ];
 				}
 				foreach ( $contents as $content ) {
 					if ( ! is_array( $content ) ) {
@@ -176,11 +176,11 @@ trait Admin {
 					$content = $this->apply_filters( 'help_tag_content', \Technote\Models\Utility::array_get( $content, 'content', $this->get_help_content( \Technote\Models\Utility::array_get( $content, 'view' ) ) ), $content, $slug, $index );
 
 					if ( ! empty( $content ) ) {
-						$current_screen->add_help_tab( array(
+						$current_screen->add_help_tab( [
 							'id'      => $id,
 							'title'   => $this->app->translate( $title ),
 							'content' => $content,
-						) );
+						] );
 					}
 					$index ++;
 				}
@@ -200,7 +200,7 @@ trait Admin {
 	 * @return array
 	 */
 	protected function get_help_contents() {
-		return array();
+		return [];
 	}
 
 	/**

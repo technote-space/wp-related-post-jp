@@ -69,7 +69,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 			return '';
 		}
 		if ( ! is_array( $filters ) ) {
-			$filters = array( $filters );
+			$filters = [ $filters ];
 		}
 
 		foreach ( $filters as $filter ) {
@@ -95,7 +95,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 * @return string
 	 */
 	private function char_filter( $text ) {
-		$filters = $this->apply_filters( 'char_filters', $this->app->get_config( 'analyzer', 'char_filters', array() ) );
+		$filters = $this->apply_filters( 'char_filters', $this->app->get_config( 'analyzer', 'char_filters', [] ) );
 		if ( empty( $filters ) ) {
 			return '';
 		}
@@ -124,10 +124,10 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	private function tokenizer( $text ) {
 		$filters = $this->apply_filters( 'tokenizer', $this->app->get_config( 'analyzer', 'tokenizer', '' ) );
 		if ( empty( $filters ) ) {
-			return array( array(), '' );
+			return [ [], '' ];
 		}
 		if ( ! is_array( $filters ) ) {
-			$filters = array( $filters );
+			$filters = [ $filters ];
 		}
 
 		foreach ( $filters as $filter ) {
@@ -139,14 +139,14 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 				try {
 					$instance = $filter::get_instance( $this->app );
 					if ( $instance->is_valid() ) {
-						return array( $instance->parse( $text ), $tokenizer );
+						return [ $instance->parse( $text ), $tokenizer ];
 					}
 				} catch ( \Exception $e ) {
 				}
 			}
 		}
 
-		return array( $this->default_tokenizer( $text ), '' );
+		return [ $this->default_tokenizer( $text ), '' ];
 	}
 
 	/**
@@ -156,7 +156,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 */
 	private function default_tokenizer( $text ) {
 		$data = explode( ' ', $text );
-		$ret  = array();
+		$ret  = [];
 		foreach ( $data as $item ) {
 			! isset( $ret[ $item ] ) and $ret[ $item ] = 0;
 			$ret[ $item ] ++;
@@ -172,7 +172,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 * @return array  ( word => count )
 	 */
 	private function token_filter( $terms, $tokenizer ) {
-		$filters = $this->apply_filters( 'token_filters', $this->app->get_config( 'analyzer', 'token_filters', array() ) );
+		$filters = $this->apply_filters( 'token_filters', $this->app->get_config( 'analyzer', 'token_filters', [] ) );
 		if ( empty( $filters ) ) {
 			return $terms;
 		}
@@ -185,7 +185,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 				$filter = $target;
 				$target = false;
 			} elseif ( ! is_array( $target ) ) {
-				$target = array( $target );
+				$target = [ $target ];
 			}
 			if ( false !== $target && ! in_array( $tokenizer, $target ) ) {
 				continue;

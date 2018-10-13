@@ -12,39 +12,39 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
-	'\Related_Post\Models\Control' => array(
-		'save_post'              => array(
-			'save_post' => array(),
-		),
-		'transition_post_status' => array(
-			'transition_post_status' => array(),
-		),
-		'delete_post'            => array(
-			'delete_post' => array(),
-		),
+	'\Related_Post\Models\Control' => [
+		'save_post'              => [
+			'save_post' => [],
+		],
+		'transition_post_status' => [
+			'transition_post_status' => [],
+		],
+		'delete_post'            => [
+			'delete_post' => [],
+		],
 
-		'${prefix}app_initialized' => array(
-			'setup_index_posts' => array(),
-		),
-		'${prefix}changed_option'  => array(
-			'changed_option' => array(),
-		),
+		'${prefix}app_initialized' => [
+			'setup_index_posts' => [],
+		],
+		'${prefix}changed_option'  => [
+			'changed_option' => [],
+		],
 
-		'pre_get_posts'            => array(
-			'pre_get_posts' => array(),
-		),
-		'${prefix}on_related_post' => array(
-			'on_related_post' => array(),
-		),
+		'pre_get_posts'            => [
+			'pre_get_posts' => [],
+		],
+		'${prefix}on_related_post' => [
+			'on_related_post' => [],
+		],
 
-		'${prefix}post_load_admin_page' => array(
-			'post_load_admin_page' => array(),
-		),
+		'${prefix}post_load_admin_page' => [
+			'post_load_admin_page' => [],
+		],
 
-		'admin_head-edit.php' => array(
-			'edit_post_page' => array(),
-		),
-	),
-);
+		'admin_head-edit.php' => [
+			'edit_post_page' => [],
+		],
+	],
+];

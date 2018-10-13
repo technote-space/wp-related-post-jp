@@ -87,12 +87,12 @@ include 'style/index_result.php';
         </table>
     </div>
 <?php endif; ?>
-<?php $instance->form( 'input/button', $args, array(
+<?php $instance->form( 'input/button', $args, [
 	'class'      => 'button-primary',
 	'name'       => 'close',
 	'value'      => 'Close',
-	'attributes' => array(
+	'attributes' => [
 		'onclick' => 'window.' . $instance->modal_class( false ) . '.hide(); return false;',
 		'style'   => 'float: right; margin-top: 10px;',
-	),
-) ); ?>
+	],
+] ); ?>

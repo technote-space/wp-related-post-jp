@@ -26,7 +26,7 @@ class Max extends \Related_Post\Models\Analyzer\Tokenfilter {
 	 * @return array ( word => count )
 	 */
 	public function filter( $terms ) {
-		$ret = array();
+		$ret = [];
 		foreach ( $terms as $word => $count ) {
 			strlen( $word ) > 24 and $word = substr( $word, 0, 24 );
 			$ret[ $word ] = ( isset( $ret[ $word ] ) ? $ret[ $word ] : 0 ) + $count;

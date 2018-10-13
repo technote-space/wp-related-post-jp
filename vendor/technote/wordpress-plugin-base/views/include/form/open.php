@@ -21,12 +21,12 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var string $action */
 /** @var string $method */
 /** @var array $attributes */
-empty( $attributes ) and $attributes = array();
+empty( $attributes ) and $attributes = [];
 isset( $id ) and $attributes['id'] = $id;
 isset( $class ) and $attributes['class'] = $class;
 isset( $name ) and $attributes['name'] = $name;
 $attributes['action'] = $action;
 $attributes['method'] = isset( $method ) ? $method : 'post';
 ?>
-<form <?php $instance->get_view( 'include/attributes', array_merge( $args, array( 'attributes' => $attributes ) ), true ); ?> >
+<form <?php $instance->get_view( 'include/attributes', array_merge( $args, [ 'attributes' => $attributes ] ), true ); ?> >
 <?php $instance->form( 'nonce', $args ); ?>

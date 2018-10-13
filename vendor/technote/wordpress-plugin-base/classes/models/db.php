@@ -72,7 +72,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	private function load_table_defines() {
 		$this->table_defines = $this->app->config->load( 'db' );
-		empty( $this->table_defines ) and $this->table_defines = array();
+		empty( $this->table_defines ) and $this->table_defines = [];
 
 		foreach ( $this->table_defines as $table => $define ) {
 
@@ -92,17 +92,17 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	private function setup_wp_table_defines() {
 		/** @var \wpdb $wpdb */
 		global $wpdb;
-		$tables = array(
+		$tables = [
 			$wpdb->posts,
 			$wpdb->postmeta,
 			$wpdb->users,
 			$wpdb->usermeta,
 			$wpdb->options,
-		);
+		];
 		foreach ( $tables as $table ) {
 			$sql          = "DESCRIBE $table";
 			$columns      = $wpdb->get_results( $sql, ARRAY_A );
-			$table_define = array();
+			$table_define = [];
 			foreach ( $columns as $column ) {
 				$name = $column['Field'];
 				$key  = $name;
@@ -115,13 +115,13 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 				$type     = reset( $type );
 				$null     = $column['Null'] != 'NO';
 
-				$table_define['columns'][ $key ] = array(
+				$table_define['columns'][ $key ] = [
 					'name'     => $name,
 					'type'     => $type,
 					'format'   => $this->type2format( $type ),
 					'unsigned' => $unsigned,
 					'null'     => $null,
-				);
+				];
 			}
 			$table_define['delete']        = 'physical';
 			$table_define['wordpress']     = true;
@@ -137,7 +137,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	protected function setup_table_columns( $table, $define ) {
 		if ( empty( $define['columns'] ) ) {
-			return array( false, false );
+			return [ false, false ];
 		}
 
 		$id = $table . '_id';
@@ -145,14 +145,14 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$id = $define['id'];
 		}
 
-		$columns       = array();
-		$columns['id'] = array(
+		$columns       = [];
+		$columns['id'] = [
 			'name'     => $id,
 			'type'     => 'bigint(20)',
 			'unsigned' => true,
 			'null'     => false,
 			'format'   => '%d',
-		);
+		];
 
 		$check = true;
 		foreach ( $define['columns'] as $key => $column ) {
@@ -171,48 +171,48 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$columns[ $key ]  = $column;
 		}
 		if ( ! $check ) {
-			return array( false, false );
+			return [ false, false ];
 		}
 
-		$columns['created_at'] = array(
+		$columns['created_at'] = [
 			'name'   => 'created_at',
 			'type'   => 'datetime',
 			'null'   => false,
-			'format' => '%s'
-		);
-		$columns['created_by'] = array(
+			'format' => '%s',
+		];
+		$columns['created_by'] = [
 			'name'   => 'created_by',
 			'type'   => 'varchar(32)',
 			'null'   => false,
-			'format' => '%s'
-		);
-		$columns['updated_at'] = array(
+			'format' => '%s',
+		];
+		$columns['updated_at'] = [
 			'name'   => 'updated_at',
 			'type'   => 'datetime',
 			'null'   => false,
-			'format' => '%s'
-		);
-		$columns['updated_by'] = array(
+			'format' => '%s',
+		];
+		$columns['updated_by'] = [
 			'name'   => 'updated_by',
 			'type'   => 'varchar(32)',
 			'null'   => false,
-			'format' => '%s'
-		);
+			'format' => '%s',
+		];
 
 		if ( $this->is_logical( $define ) ) {
-			$columns['deleted_at'] = array(
+			$columns['deleted_at'] = [
 				'name'   => 'deleted_at',
 				'type'   => 'datetime',
-				'format' => '%s'
-			);
-			$columns['deleted_by'] = array(
+				'format' => '%s',
+			];
+			$columns['deleted_by'] = [
 				'name'   => 'deleted_by',
 				'type'   => 'varchar(32)',
-				'format' => '%s'
-			);
+				'format' => '%s',
+			];
 		}
 
-		return $this->apply_filters( 'setup_table_columns', array( $id, $columns ), $table, $define, $id, $columns );
+		return $this->apply_filters( 'setup_table_columns', [ $id, $columns ], $table, $define, $id, $columns );
 	}
 
 	/**
@@ -244,7 +244,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * @return string
 	 */
 	public function get_field( $table, $key ) {
-		return Utility::array_get( Utility::array_get( $this->get_columns( $table ), $key, array() ), 'name', $key );
+		return Utility::array_get( Utility::array_get( $this->get_columns( $table ), $key, [] ), 'name', $key );
 	}
 
 	/**
@@ -254,7 +254,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	public function get_columns( $table ) {
 		if ( ! isset( $this->table_defines[ $table ]['columns'] ) ) {
-			return array();
+			return [];
 		}
 
 		return $this->table_defines[ $table ]['columns'];
@@ -335,12 +335,12 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$sql .= ",\n";
 		}
 
-		$index   = array();
+		$index   = [];
 		$index[] = "PRIMARY KEY  ({$define['columns']['id']['name']})";
 		if ( ! empty( $define['index']['key'] ) ) {
 			foreach ( $define['index']['key'] as $name => $columns ) {
-				if ( ! array( $columns ) ) {
-					$columns = array( $columns );
+				if ( ! [ $columns ] ) {
+					$columns = [ $columns ];
 				}
 				$columns = implode( ', ', $columns );
 				$index[] = "INDEX {$name} ({$columns})";
@@ -348,8 +348,8 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		}
 		if ( ! empty( $define['index']['unique'] ) ) {
 			foreach ( $define['index']['unique'] as $name => $columns ) {
-				if ( ! array( $columns ) ) {
-					$columns = array( $columns );
+				if ( ! [ $columns ] ) {
+					$columns = [ $columns ];
 				}
 				$columns = implode( ', ', $columns );
 				$index[] = "UNIQUE KEY {$name} ({$columns})";
@@ -406,8 +406,8 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * @return array
 	 */
 	private function filter( $data, $columns ) {
-		$_format  = array();
-		$_data    = array();
+		$_format  = [];
+		$_data    = [];
 		$_columns = $columns;
 		foreach ( $data as $k => $v ) {
 			$columns = $_columns;
@@ -420,7 +420,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$_data[ $name ] = $v;
 		}
 
-		return array( $_data, $_format );
+		return [ $_data, $_format ];
 	}
 
 	/**
@@ -444,7 +444,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			}
 		} else {
 			if ( empty( $columns ) ) {
-				return array( $k, $columns );
+				return [ $k, $columns ];
 			}
 			$k = trim( $k, '`' );
 			if ( isset( $columns[ $k ] ) ) {
@@ -457,7 +457,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$name = $table . '.' . $name;
 		}
 
-		return array( $name, $columns );
+		return [ $name, $columns ];
 	}
 
 	/**
@@ -502,7 +502,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	private function build_fields( $fields, $columns ) {
 		if ( is_string( $fields ) ) {
-			$fields = array( $fields );
+			$fields = [ $fields ];
 		}
 		if ( ! empty( $fields ) ) {
 			foreach ( $fields as $k => $option ) {
@@ -545,13 +545,13 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			}
 		}
 		if ( empty( $fields ) || ! is_array( $fields ) ) {
-			$fields = array();
+			$fields = [];
 			foreach ( $columns as $key => $column ) {
 				$name     = Utility::array_get( $column, 'name' );
 				$fields[] = $name === $key ? $name : $name . ' AS ' . $key;
 			}
 		}
-		empty( $fields ) and $fields = array( '*' );
+		empty( $fields ) and $fields = [ '*' ];
 		$fields = implode( ', ', $fields );
 
 		return $fields;
@@ -565,7 +565,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	private function build_conditions( $where, $columns ) {
 		list ( $_where, $_where_format ) = $this->filter( $where, $columns );
-		$conditions = $values = array();
+		$conditions = $values = [];
 		$index      = 0;
 		foreach ( $_where as $field => $value ) {
 			$format = $_where_format[ $index ++ ];
@@ -574,11 +574,11 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 				continue;
 			}
 
-			if ( in_array( strtoupper( $field ), array(
+			if ( in_array( strtoupper( $field ), [
 				'EXISTS',
 				'NOT EXISTS',
-			) ) ) {
-				! is_array( $value ) and $value = array( $value );
+			] ) ) {
+				! is_array( $value ) and $value = [ $value ];
 				foreach ( $value as $sub_query ) {
 					$conditions[] = "$field ($sub_query)";
 				}
@@ -620,7 +620,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		}
 		$conditions = implode( ' AND ', $conditions );
 
-		return array( $conditions, $values );
+		return [ $conditions, $values ];
 	}
 
 	/**
@@ -632,7 +632,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	private function build_group_by( $group_by, $columns ) {
 		$sql = '';
 		if ( ! empty( $group_by ) ) {
-			$items = array();
+			$items = [];
 			foreach ( $group_by as $k ) {
 				$items[] = $this->get_field_name( $k, $columns );
 			}
@@ -653,7 +653,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	private function build_order_by( $order_by, $columns ) {
 		$sql = '';
 		if ( ! empty( $order_by ) ) {
-			$items = array();
+			$items = [];
 			foreach ( $order_by as $k => $order ) {
 				if ( is_int( $k ) ) {
 					$k     = $order;
@@ -683,7 +683,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	private function build_join( $join ) {
 		$sql = '';
 		if ( ! empty( $join ) ) {
-			$items = array();
+			$items = [];
 			foreach ( $join as $data ) {
 				if ( ! is_array( $data ) || count( $data ) < 3 ) {
 					continue;
@@ -691,12 +691,12 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 				$table = $data[0];
 				$rule  = $data[1];
 				$rule  = strtoupper( $rule );
-				if ( ! in_array( $rule, array(
+				if ( ! in_array( $rule, [
 					'JOIN',
 					'INNER JOIN',
 					'LEFT JOIN',
 					'RIGHT JOIN',
-				) ) ) {
+				] ) ) {
 					continue;
 				}
 
@@ -706,9 +706,9 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 				}
 				$check = reset( $conditions );
 				if ( ! is_array( $check ) ) {
-					$conditions = array( $conditions );
+					$conditions = [ $conditions ];
 				}
-				$values = array();
+				$values = [];
 				foreach ( $conditions as $condition ) {
 					if ( ! is_array( $condition ) || count( $condition ) < 3 ) {
 						continue;
@@ -788,7 +788,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 
 		$columns = $this->table_defines[ $table ]['columns'];
 
-		! is_array( $where ) and $where = array();
+		! is_array( $where ) and $where = [];
 		if ( $this->is_logical( $this->table_defines[ $table ] ) ) {
 			$where['deleted_at'] = null;
 		}
@@ -827,7 +827,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 *
 	 * @return array|bool|null
 	 */
-	public function select( $tables, $where = array(), $fields = array( '*' ), $limit = null, $offset = null, $order_by = null, $group_by = null, $output = ARRAY_A, $for_update = false ) {
+	public function select( $tables, $where = [], $fields = [ '*' ], $limit = null, $offset = null, $order_by = null, $group_by = null, $output = ARRAY_A, $for_update = false ) {
 		$sql = $this->get_select_sql( $tables, $where, $fields, $limit, $offset, $order_by, $group_by, $for_update );
 		if ( false === $sql ) {
 			return false;
@@ -855,14 +855,14 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 *
 	 * @return int
 	 */
-	public function select_count( $table, $field = '*', $where = array(), $limit = null, $offset = 0, $order_by = array(), $group_by = array(), $for_update = false ) {
+	public function select_count( $table, $field = '*', $where = [], $limit = null, $offset = 0, $order_by = [], $group_by = [], $for_update = false ) {
 		empty( $field ) and $field = '*';
-		$result = $this->select( $table, $where, array(
-			$field => array(
+		$result = $this->select( $table, $where, [
+			$field => [
 				'COUNT',
-				'num'
-			)
-		), $limit, $offset, $order_by, $group_by, ARRAY_A, $for_update );
+				'num',
+			],
+		], $limit, $offset, $order_by, $group_by, ARRAY_A, $for_update );
 		if ( empty( $result ) ) {
 			return 0;
 		}
@@ -935,9 +935,9 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		$columns     = $this->table_defines[ $table ]['columns'];
 		$table       = $this->get_table( $table );
 		$sql         = "INSERT INTO {$table} ";
-		$names       = array();
-		$placeholder = array();
-		$time        = array();
+		$names       = [];
+		$placeholder = [];
+		$time        = [];
 		$this->set_update_params( $time, true, true, false );
 		foreach ( $fields as $field ) {
 			if ( ! isset( $columns[ $field ] ) ) {
@@ -953,7 +953,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		$placeholder = '(' . implode( ', ', $placeholder ) . ')';
 		$sql         .= '(' . implode( ', ', $names ) . ') VALUES ';
 
-		$values = array();
+		$values = [];
 		foreach ( $data_list as $data ) {
 			$data += $time;
 			if ( count( $names ) != count( $data ) ) {
@@ -1026,7 +1026,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 
 			return $this->get_insert_id();
 		}
-		$where = array( 'id' => $row['id'] );
+		$where = [ 'id' => $row['id'] ];
 		$this->update( $table, $data, $where );
 
 		return $row['id'];
@@ -1044,7 +1044,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		}
 
 		if ( $this->is_logical( $this->table_defines[ $table ] ) ) {
-			$data = array();
+			$data = [];
 			$this->set_update_params( $data, false, false, true );
 
 			return $this->update( $table, $data, $where );
@@ -1070,7 +1070,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		}
 
 		if ( $this->is_logical( $this->table_defines[ $table ] ) ) {
-			return $this->delete( $table, array() );
+			return $this->delete( $table, [] );
 		}
 
 		$sql = 'TRUNCATE TABLE `' . $this->get_table( $table ) . '`';

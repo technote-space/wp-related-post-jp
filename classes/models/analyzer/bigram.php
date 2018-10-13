@@ -31,9 +31,9 @@ class Bigram implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 		// charfilter では行わない前処理
 
 		// 改行等を除去
-		$text = str_replace( array( ' ', '　', "\r", "\n", "\t" ), ' ', $text );
+		$text = str_replace( [ ' ', '　', "\r", "\n", "\t" ], ' ', $text );
 
-		$ret          = array();
+		$ret          = [];
 		$prev         = null;
 		$alpha        = false;
 		$alpha_buffer = '';
@@ -71,7 +71,7 @@ class Bigram implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	 */
 	public function count( $text ) {
 		$words = $this->words( $text );
-		$ret   = array();
+		$ret   = [];
 		foreach ( $words as $word ) {
 			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
 			$ret[ $word ] ++;

@@ -14,7 +14,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
 	// user can
 	'default_user'     => 'manage_options',
@@ -25,4 +25,4 @@ return array(
 	// admin
 	'admin_capability' => 'manage_options',
 
-);
+];

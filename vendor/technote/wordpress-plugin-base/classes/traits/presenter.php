@@ -31,7 +31,7 @@ trait Presenter {
 	 *
 	 * @return string
 	 */
-	public function get_view( $name, $args = array(), $echo = false, $error = true ) {
+	public function get_view( $name, $args = [], $echo = false, $error = true ) {
 		$name = trim( $name, '/' . DS );
 		$name = str_replace( '/', DS, $name );
 		$name .= '.php';
@@ -77,7 +77,7 @@ trait Presenter {
 	 * @return array
 	 */
 	private function get_presenter_args( $args ) {
-		$args['field'] = array_merge( \Technote\Models\Utility::array_get( $args, 'field', array() ), $this->app->input->all() );
+		$args['field'] = array_merge( \Technote\Models\Utility::array_get( $args, 'field', [] ), $this->app->input->all() );
 		if ( $this instanceof \Technote\Interfaces\Nonce ) {
 			$args['nonce_key']   = $this->get_nonce_key();
 			$args['nonce_value'] = $this->create_nonce();
@@ -109,7 +109,7 @@ trait Presenter {
 	 *
 	 * @return string
 	 */
-	public function form( $name, $args = array(), $overwrite = array(), $echo = true, $error = true ) {
+	public function form( $name, $args = [], $overwrite = [], $echo = true, $error = true ) {
 		return $this->get_view( 'include/form/' . trim( $name, '/' . DS ), array_merge( $args, $overwrite ), $echo, $error );
 	}
 
@@ -120,7 +120,7 @@ trait Presenter {
 	 * @return string
 	 */
 	public function dump( $data, $echo = true ) {
-		return $this->get_view( 'include/dump', array( 'data' => $data ), $echo );
+		return $this->get_view( 'include/dump', [ 'data' => $data ], $echo );
 	}
 
 	/**
@@ -144,7 +144,7 @@ trait Presenter {
 	 * @param array $args
 	 * @param int $priority
 	 */
-	public function add_script_view( $name, $args = array(), $priority = 10 ) {
+	public function add_script_view( $name, $args = [], $priority = 10 ) {
 		$this->add_script( $this->get_view( $name, $args, false, false ), $priority );
 	}
 
@@ -153,7 +153,7 @@ trait Presenter {
 	 * @param array $args
 	 * @param int $priority
 	 */
-	public function add_style_view( $name, $args = array(), $priority = 10 ) {
+	public function add_style_view( $name, $args = [], $priority = 10 ) {
 		$this->add_style( $this->get_view( $name, $args, false, false ), $priority );
 	}
 
@@ -214,11 +214,11 @@ trait Presenter {
 	 *
 	 * @return string
 	 */
-	public function url( $url, $contents, $translate = false, $new_tab = false, $args = array(), $echo = true ) {
-		$overwrite = array(
+	public function url( $url, $contents, $translate = false, $new_tab = false, $args = [], $echo = true ) {
+		$overwrite = [
 			'href'     => $url,
 			'contents' => $this->h( $contents, $translate, false ),
-		);
+		];
 		if ( $new_tab ) {
 			$overwrite['target'] = '_blank';
 		}
@@ -348,9 +348,9 @@ trait Presenter {
 	 * @return string
 	 */
 	public function assets( $url, $view, $args, $field, $echo = true ) {
-		return $this->get_view( $view, array_merge( $args, array(
-			$field => $url
-		) ), $echo );
+		return $this->get_view( $view, array_merge( $args, [
+			$field => $url,
+		] ), $echo );
 	}
 
 	/**
@@ -360,7 +360,7 @@ trait Presenter {
 	 *
 	 * @return string
 	 */
-	public function img( $path, $args = array(), $echo = true ) {
+	public function img( $path, $args = [], $echo = true ) {
 		return $this->assets( $this->get_img_url( $path ), 'include/img', $args, 'src', $echo );
 	}
 
@@ -370,7 +370,7 @@ trait Presenter {
 	 *
 	 * @return string
 	 */
-	public function loading( $args = array(), $echo = true ) {
+	public function loading( $args = [], $echo = true ) {
 		return $this->img( 'loading.gif', $args, $echo );
 	}
 
@@ -380,7 +380,7 @@ trait Presenter {
 	 *
 	 * @return string
 	 */
-	public function no_img( $args = array(), $echo = true ) {
+	public function no_img( $args = [], $echo = true ) {
 		return $this->img( 'no_img.png', $args, $echo );
 	}
 

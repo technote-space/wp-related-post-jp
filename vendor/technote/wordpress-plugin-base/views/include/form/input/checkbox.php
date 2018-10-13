@@ -20,13 +20,13 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 ?>
 <?php if ( isset( $label ) ): ?>
     <label>
-	    <?php $instance->form( 'input', array_merge( $args, array(
-		    'type' => 'checkbox',
-	    ) ) ); ?>
-        <?php $instance->h( $label, true ); ?>
+		<?php $instance->form( 'input', array_merge( $args, [
+			'type' => 'checkbox',
+		] ) ); ?>
+		<?php $instance->h( $label, true ); ?>
     </label>
 <?php else: ?>
-	<?php $instance->form( 'input', array_merge( $args, array(
+	<?php $instance->form( 'input', array_merge( $args, [
 		'type' => 'checkbox',
-	) ) ); ?>
+	] ) ); ?>
 <?php endif; ?>

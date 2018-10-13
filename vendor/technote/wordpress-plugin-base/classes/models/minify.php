@@ -25,13 +25,13 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
 
 	/** @var array */
-	private $script = array();
+	private $script = [];
 
 	/** @var bool */
 	private $has_output_script = false;
 
 	/** @var array */
-	private $css = array();
+	private $css = [];
 
 	/** @var bool */
 	private $end_footer = false;
@@ -91,7 +91,7 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 		} else {
 			echo '<script>' . $script . '</script>';
 		}
-		$this->script            = array();
+		$this->script            = [];
 		$this->has_output_script = true;
 	}
 
@@ -145,6 +145,6 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 		} else {
 			echo '<style>' . $css . '</style>';
 		}
-		$this->css = array();
+		$this->css = [];
 	}
 }

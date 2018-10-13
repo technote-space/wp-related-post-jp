@@ -25,16 +25,16 @@ class Setting implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
 
 	/** @var array */
-	private $groups = array();
+	private $groups = [];
 
 	/** @var array */
-	private $group_priority = array();
+	private $group_priority = [];
 
 	/** @var array */
-	private $settings = array();
+	private $settings = [];
 
 	/** @var array */
-	private $setting_priority = array();
+	private $setting_priority = [];
 
 	/**
 	 * initialize
@@ -46,7 +46,7 @@ class Setting implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			foreach ( $groups as $group => $setting_set ) {
 				ksort( $setting_set );
 
-				$this->groups[ $group_priority ][ $group ] = array();
+				$this->groups[ $group_priority ][ $group ] = [];
 				$this->group_priority[ $group ]            = $group_priority;
 				foreach ( $setting_set as $setting_priority => $settings ) {
 
@@ -74,7 +74,7 @@ class Setting implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	public function get_settings( $group ) {
 		if ( ! isset( $this->group_priority[ $group ], $this->groups[ $this->group_priority[ $group ] ] ) ) {
-			return $this->apply_filters( 'get_settings', array(), $group );
+			return $this->apply_filters( 'get_settings', [], $group );
 		}
 
 		return $this->apply_filters( 'get_settings', $this->groups[ $this->group_priority[ $group ] ][ $group ], $group );
@@ -145,7 +145,7 @@ class Setting implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$data['key']  = $setting;
 		$type         = Utility::array_get( $data, 'type', '' );
 		$default      = $this->get_expression( Utility::array_get( $data, 'default', '' ), $type );
-		$data['info'] = array();
+		$data['info'] = [];
 		if ( '' !== $default ) {
 			$data['info'][] = $this->app->translate( 'default' ) . ' = ' . $default;
 		}

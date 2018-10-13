@@ -87,7 +87,7 @@ class Progress extends \Technote\Controllers\Api\Base {
 			}
 		}
 
-		return new \WP_REST_Response( array(
+		return new \WP_REST_Response( [
 			'posts_indexed'        => $posts_indexed,
 			'is_valid_posts_index' => $is_valid_posts_index,
 			'total'                => $total,
@@ -95,6 +95,6 @@ class Progress extends \Technote\Controllers\Api\Base {
 			'processed'            => $processed,
 			'processed_rate'       => $processed_rate,
 			'next'                 => $next,
-		) );
+		] );
 	}
 }

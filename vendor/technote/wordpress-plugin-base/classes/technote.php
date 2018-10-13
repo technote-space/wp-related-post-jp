@@ -38,7 +38,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 class Technote {
 
 	/** @var array of \Technote */
-	private static $instances = array();
+	private static $instances = [];
 
 	/** @var bool $lib_language_loaded */
 	private static $lib_language_loaded = false;
@@ -56,7 +56,7 @@ class Technote {
 	public $plugin_data;
 
 	/** @var array $properties */
-	private $properties = array(
+	private $properties = [
 		'define'    => '\Technote\Models\Define',
 		'config'    => '\Technote\Models\Config',
 		'setting'   => '\Technote\Models\Setting',
@@ -71,10 +71,10 @@ class Technote {
 		'input'     => '\Technote\Models\Input',
 		'db'        => '\Technote\Models\Db',
 		'uninstall' => '\Technote\Models\Uninstall',
-	);
+	];
 
 	/** @var array $property_instances */
-	private $property_instances = array();
+	private $property_instances = [];
 
 	/**
 	 * @param string $name
@@ -160,7 +160,7 @@ class Technote {
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		}
 		$this->plugin_data = get_plugin_data( $this->plugin_file );
-		spl_autoload_register( array( $this, 'load_class' ) );
+		spl_autoload_register( [ $this, 'load_class' ] );
 
 		if ( $uninstall ) {
 			foreach ( $this->properties as $name => $class ) {

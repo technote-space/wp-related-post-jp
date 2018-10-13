@@ -21,11 +21,11 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var string $name */
 /** @var string $value */
 /** @var array $attributes */
-empty( $attributes ) and $attributes = array();
+empty( $attributes ) and $attributes = [];
 isset( $id ) and $attributes['id'] = $id;
 isset( $class ) and $attributes['class'] = $class;
 $attributes['type']  = $type;
 $attributes['name']  = $name;
 $attributes['value'] = isset( $value ) ? $value : '';
 ?>
-<input <?php $instance->get_view( 'include/attributes', array_merge( $args, array( 'attributes' => $attributes ) ), true ); ?> />
+<input <?php $instance->get_view( 'include/attributes', array_merge( $args, [ 'attributes' => $attributes ] ), true ); ?> />

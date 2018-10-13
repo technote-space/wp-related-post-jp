@@ -16,6 +16,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var \Technote\Traits\Presenter $instance */
 /** @var array $args */
 ?>
-<?php $instance->form( 'input', array_merge( $args, array(
+<?php $instance->form( 'input', array_merge( $args, [
 	'type' => 'email',
-) ) ); ?>
+] ) ); ?>

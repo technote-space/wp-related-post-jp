@@ -45,7 +45,7 @@ class Option implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 			return;
 		}
 		$this->options = wp_parse_args(
-			$this->get_option(), array()
+			$this->get_option(), []
 		);
 		$this->unescape_options();
 	}
@@ -58,7 +58,7 @@ class Option implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 			wp_cache_flush();
 		}
 
-		return get_option( $this->get_option_name(), array() );
+		return get_option( $this->get_option_name(), [] );
 	}
 
 	/**

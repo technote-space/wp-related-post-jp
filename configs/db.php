@@ -12,121 +12,121 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
-	'word' => array(
-		'columns' => array(
-			'word'  => array(
+	'word' => [
+		'columns' => [
+			'word'  => [
 				'type' => 'VARCHAR(24)',
 				'null' => false,
-			),
-			'count' => array(
+			],
+			'count' => [
 				'type'     => 'INT(11)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'idf'   => array(
+			],
+			'idf'   => [
 				'type'     => 'DOUBLE',
 				'unsigned' => true,
 				'null'     => false,
-			),
-		),
-		'index'   => array(
-			'key' => array(
-				'word' => array( 'word' ),
-			),
-		),
-	),
+			],
+		],
+		'index'   => [
+			'key' => [
+				'word' => [ 'word' ],
+			],
+		],
+	],
 
-	'document' => array(
-		'columns' => array(
-			'post_id'   => array(
+	'document' => [
+		'columns' => [
+			'post_id'   => [
 				'type'     => 'BIGINT(20)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'post_type' => array(
+			],
+			'post_type' => [
 				'type'    => 'VARCHAR(20)',
 				'null'    => false,
 				'default' => 'post',
-			),
-			'count'     => array(
+			],
+			'count'     => [
 				'type'     => 'INT(11)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-		),
-		'index'   => array(
-			'key'    => array(
-				'post_type' => array( 'post_type' ),
-			),
-			'unique' => array(
-				'uk_post_id' => array( 'post_id' ),
-			),
-		),
-	),
+			],
+		],
+		'index'   => [
+			'key'    => [
+				'post_type' => [ 'post_type' ],
+			],
+			'unique' => [
+				'uk_post_id' => [ 'post_id' ],
+			],
+		],
+	],
 
-	'rel_document_word' => array(
-		'columns' => array(
-			'document_id' => array(
+	'rel_document_word' => [
+		'columns' => [
+			'document_id' => [
 				'type'     => 'BIGINT(20)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'word_id'     => array(
+			],
+			'word_id'     => [
 				'type'     => 'BIGINT(20)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'count'       => array(
+			],
+			'count'       => [
 				'type'     => 'INT(11)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'tf'          => array(
+			],
+			'tf'          => [
 				'type'     => 'DOUBLE',
 				'unsigned' => true,
 				'null'     => false,
-			),
-		),
-		'index'   => array(
-			'key'    => array(
-				'document_id' => array( 'document_id' ),
-				'word_id'     => array( 'word_id' ),
-			),
-			'unique' => array(
-				'uk_document_id_word_id' => array( 'document_id', 'word_id' ),
-			),
-		),
-	),
+			],
+		],
+		'index'   => [
+			'key'    => [
+				'document_id' => [ 'document_id' ],
+				'word_id'     => [ 'word_id' ],
+			],
+			'unique' => [
+				'uk_document_id_word_id' => [ 'document_id', 'word_id' ],
+			],
+		],
+	],
 
-	'ranking' => array(
-		'columns' => array(
-			'post_id'      => array(
+	'ranking' => [
+		'columns' => [
+			'post_id'      => [
 				'type'     => 'BIGINT(20)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'rank_post_id' => array(
+			],
+			'rank_post_id' => [
 				'type'     => 'BIGINT(20)',
 				'unsigned' => true,
 				'null'     => false,
-			),
-			'score'        => array(
+			],
+			'score'        => [
 				'type' => 'DOUBLE',
 				'null' => false,
-			)
-		),
-		'index'   => array(
-			'key'    => array(
-				'post_id'      => array( 'post_id' ),
-				'rank_post_id' => array( 'rank_post_id' ),
-			),
-			'unique' => array(
-				'uk_post_id_rank_post_id' => array( 'post_id', 'rank_post_id' ),
-			),
-		),
-	),
+			],
+		],
+		'index'   => [
+			'key'    => [
+				'post_id'      => [ 'post_id' ],
+				'rank_post_id' => [ 'rank_post_id' ],
+			],
+			'unique' => [
+				'uk_post_id_rank_post_id' => [ 'post_id', 'rank_post_id' ],
+			],
+		],
+	],
 
-);
+];
 

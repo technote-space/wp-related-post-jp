@@ -49,7 +49,7 @@ class Device implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 			return $this->is_robot;
 		}
 
-		$bot_list = explode( ',', $this->apply_filters( 'bot_list', implode( ',', array(
+		$bot_list = explode( ',', $this->apply_filters( 'bot_list', implode( ',', [
 			'facebookexternalhit',
 			'Googlebot',
 			'Baiduspider',
@@ -75,7 +75,7 @@ class Device implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 			'Gigabot/',
 			'MJ12bot/',
 			'Ask Jeeves/Teoma; ',
-		) ) ) );
+		] ) ) );
 
 		$this->is_robot = false;
 		$ua             = $this->app->input->user_agent();

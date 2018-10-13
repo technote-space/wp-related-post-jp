@@ -25,16 +25,16 @@ class Uninstall implements \Technote\Interfaces\Singleton {
 	use \Technote\Traits\Singleton;
 
 	/** @var array $uninstall */
-	private $uninstall = array();
+	private $uninstall = [];
 
 	/**
 	 * initialize
 	 */
 	protected function initialize() {
-		register_uninstall_hook( $this->app->define->plugin_base_name, array(
+		register_uninstall_hook( $this->app->define->plugin_base_name, [
 			"\Technote",
 			"register_uninstall_" . $this->app->define->plugin_base_name,
-		) );
+		] );
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Uninstall implements \Technote\Interfaces\Singleton {
 			switch_to_blog( $current_blog_id );
 		}
 
-		$this->uninstall = array();
+		$this->uninstall = [];
 	}
 
 	/**

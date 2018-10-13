@@ -25,7 +25,7 @@ class Config implements \Technote\Interfaces\Singleton {
 	use \Technote\Traits\Singleton;
 
 	/** @var array */
-	private static $configs = array();
+	private static $configs = [];
 
 	/**
 	 * @param string $name
@@ -72,12 +72,12 @@ class Config implements \Technote\Interfaces\Singleton {
 	private function load_config_file( $dir, $name ) {
 		$path = rtrim( $dir, DS ) . DS . $name . '.php';
 		if ( ! file_exists( $path ) ) {
-			return array();
+			return [];
 		}
 		/** @noinspection PhpIncludeInspection */
 		$config = include $path;
 		if ( ! is_array( $config ) ) {
-			$config = array();
+			$config = [];
 		}
 
 		return $config;

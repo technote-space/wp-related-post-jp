@@ -32,27 +32,27 @@ class Api implements \Technote\Interfaces\Loader {
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function register_script() {
-		$functions = array();
-		$scripts   = array();
+		$functions = [];
+		$scripts   = [];
 		/** @var \Technote\Traits\Controller\Api $api */
 		foreach ( $this->get_api_controllers( true ) as $api ) {
 			$name               = $api->get_call_function_name();
-			$functions[ $name ] = array(
+			$functions[ $name ] = [
 				'method'   => $api->get_method(),
 				'endpoint' => $api->get_endpoint(),
-			);
+			];
 			$script             = is_admin() ? $api->admin_script() : $api->front_script();
 			if ( ! empty( $script ) ) {
 				$scripts[] = $script;
 			}
 		}
 		if ( ! empty( $functions ) ) {
-			$this->add_script_view( 'include/script/api', array(
+			$this->add_script_view( 'include/script/api', [
 				'endpoint'  => rest_url(),
 				'namespace' => $this->get_api_namespace(),
 				'nonce'     => wp_create_nonce( 'wp_rest' ),
 				'functions' => $functions,
-			), 9 );
+			], 9 );
 			foreach ( $scripts as $script ) {
 				$this->add_script( $script );
 			}
@@ -73,14 +73,14 @@ class Api implements \Technote\Interfaces\Loader {
 	private function register_api() {
 		foreach ( $this->get_api_controllers( false ) as $api ) {
 			/** @var \Technote\Controllers\Api\Base $api */
-			register_rest_route( $this->get_api_namespace(), $api->get_endpoint(), array(
+			register_rest_route( $this->get_api_namespace(), $api->get_endpoint(), [
 				'methods'             => strtoupper( $api->get_method() ),
 				'permission_callback' => function () use ( $api ) {
 					return $this->app->user_can( $api->get_capability() );
 				},
 				'args'                => $api->get_args_setting(),
-				'callback'            => array( $api, 'callback' ),
-			) );
+				'callback'            => [ $api, 'callback' ],
+			] );
 		}
 	}
 
@@ -94,10 +94,10 @@ class Api implements \Technote\Interfaces\Loader {
 		/** @noinspection PhpUnusedParameterInspection */
 		$page, $add_namespace
 	) {
-		return array(
+		return [
 			$this->app->define->plugin_namespace . '\\Controllers\\Api\\',
 			$this->app->define->lib_namespace . '\\Controllers\\Api\\',
-		);
+		];
 	}
 
 	/**
@@ -107,7 +107,7 @@ class Api implements \Technote\Interfaces\Loader {
 	 */
 	private function get_api_controllers( $filter ) {
 		if ( ! isset( $this->api_controllers ) ) {
-			$this->api_controllers = array();
+			$this->api_controllers = [];
 			/** @var \Technote\Traits\Controller\Api $class */
 			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'controllers' . DS . 'api', '\Technote\Controllers\Api\Base' ) as $class ) {
 				$name = $class->get_call_function_name();

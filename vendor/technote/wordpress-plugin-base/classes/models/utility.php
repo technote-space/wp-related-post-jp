@@ -32,7 +32,7 @@ class Utility {
 	 * @return array
 	 */
 	public static function flatten( array $array, $preserve_keys = false ) {
-		$return = array();
+		$return = [];
 		array_walk_recursive( $array, function ( $v, $k ) use ( &$return, $preserve_keys ) {
 			if ( $preserve_keys ) {
 				$return[ $k ] = $v;
@@ -113,7 +113,7 @@ class Utility {
 	 */
 	public static function array_set( array &$array, $key, $value ) {
 		if ( ! is_array( $array ) ) {
-			$array = array();
+			$array = [];
 		}
 		$array[ $key ] = $value;
 	}
@@ -128,7 +128,7 @@ class Utility {
 	 */
 	public static function array_pluck( array $array, $key, $default = null, $filter = false ) {
 		if ( empty( $array ) ) {
-			return array();
+			return [];
 		}
 
 		return array_map( function ( $d ) use ( $key, $default ) {
@@ -163,9 +163,9 @@ class Utility {
 	 */
 	public static function replace_time( $string ) {
 		if ( ! isset( self::$time ) ) {
-			self::$time = array();
+			self::$time = [];
 			foreach (
-				array(
+				[
 					'Y',
 					'y',
 					'M',
@@ -176,7 +176,7 @@ class Utility {
 					'h',
 					'i',
 					's',
-				) as $t
+				] as $t
 			) {
 				self::$time[ $t ] = date( $t );
 			}
@@ -195,7 +195,7 @@ class Utility {
 		$command = escapeshellcmd( $command );
 		exec( $command, $output, $return_var );
 
-		return array( $output, $return_var );
+		return [ $output, $return_var ];
 	}
 
 	/**

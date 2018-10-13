@@ -65,7 +65,7 @@ class Loader implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	 * @return array
 	 */
 	private function get_relative_namespaces( $dir, $relative = '' ) {
-		$list = array();
+		$list = [];
 		if ( is_dir( $dir ) ) {
 			foreach ( scandir( $dir ) as $file ) {
 				if ( $file === '.' || $file === '..' ) {

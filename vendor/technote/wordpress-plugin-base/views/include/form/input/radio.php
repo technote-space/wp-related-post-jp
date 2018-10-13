@@ -18,9 +18,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var string $label */
 /** @var array $args */
 ?>
-<?php $instance->form( 'input', array_merge( $args, array(
+<?php $instance->form( 'input', array_merge( $args, [
 	'type' => 'radio',
-) ) ); ?>
+] ) ); ?>
 <?php if ( isset( $id, $label ) ): ?>
     <label for="<?php $instance->h( $id ); ?>"><?php $instance->h( $label, true ); ?></label>
 <?php endif; ?>

@@ -29,19 +29,19 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	<?php if ( ! $deleted && isset( $field['name'] ) ): ?>
         <h3><?php $instance->h( $field['name'] ); ?></h3>
 		<?php $instance->form( 'open', $args ); ?>
-		<?php $instance->form( 'input/hidden', $args, array(
+		<?php $instance->form( 'input/hidden', $args, [
 			'name'  => 'path',
 			'value' => $field['path'],
-		) ); ?>
-		<?php $instance->form( 'input/hidden', $args, array(
+		] ); ?>
+		<?php $instance->form( 'input/hidden', $args, [
 			'name'  => 'name',
 			'value' => $field['name'],
-		) ); ?>
-		<?php $instance->form( 'input/submit', $args, array(
+		] ); ?>
+		<?php $instance->form( 'input/submit', $args, [
 			'id'    => $instance->id( false ) . '-delete_log',
 			'name'  => 'delete',
 			'value' => 'Delete',
-		) ); ?>
+		] ); ?>
 		<?php $instance->form( 'close', $args ); ?>
 	<?php endif; ?>
     <table class="widefat striped">
@@ -83,10 +83,10 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 <div class="directory">
     <ul>
         <li>
-			<?php $instance->url( add_query_arg( array(
+			<?php $instance->url( add_query_arg( [
 				'path' => null,
 				'name' => null,
-			), $action ), 'Logs', true ); ?>
+			], $action ), 'Logs', true ); ?>
             <ul>
 				<?php foreach ( $root[0] as $dir ): ?>
 					<?php if ( ! empty( $segments ) && $segments[0] === $dir ): ?>
@@ -97,26 +97,26 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 							$seg .= $segment;
 							?>
                             <li<?php if ( $seg === $field['path'] ): ?> class="selected"<?php endif; ?>>
-							<?php $instance->url( add_query_arg( array(
+							<?php $instance->url( add_query_arg( [
 								'path' => $seg,
 								'name' => null,
-							), $action ), '+ ' . $segment ); ?>
+							], $action ), '+ ' . $segment ); ?>
                             <ul>
 						<?php endforeach; ?>
 						<?php foreach ( $search[0] as $search_dir ): ?>
                             <li>
-								<?php $instance->url( add_query_arg( array(
+								<?php $instance->url( add_query_arg( [
 									'path' => $seg . '/' . $search_dir,
 									'name' => null,
-								), $action ), '+ ' . $search_dir ); ?>
+								], $action ), '+ ' . $search_dir ); ?>
                             </li>
 						<?php endforeach; ?>
 						<?php foreach ( $search[1] as $search_file ): ?>
                             <li<?php if ( ! $deleted && isset( $field['name'] ) && $search_file === $field['name'] ): ?> class="selected"<?php endif; ?>>
-								<?php $instance->url( add_query_arg( array(
+								<?php $instance->url( add_query_arg( [
 									'path' => $seg,
 									'name' => $search_file,
-								), $action ), $search_file ); ?>
+								], $action ), $search_file ); ?>
                             </li>
 						<?php endforeach; ?>
 						<?php foreach ( array_reverse( $segments ) as $segment ): ?>
@@ -130,38 +130,38 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 								<?php foreach ( $segments_scandir[ $seg ][0] as $segments_dir ): ?>
 									<?php if ( $segment === $segments_dir ): continue; endif; ?>
                                     <li>
-										<?php $instance->url( add_query_arg( array(
+										<?php $instance->url( add_query_arg( [
 											'path' => $seg . '/' . $segments_dir,
 											'name' => null,
-										), $action ), '+ ' . $segments_dir ); ?>
+										], $action ), '+ ' . $segments_dir ); ?>
                                     </li>
 								<?php endforeach; ?>
 							<?php endif; ?>
 						<?php endforeach; ?>
 					<?php else: ?>
                         <li>
-							<?php $instance->url( add_query_arg( array(
+							<?php $instance->url( add_query_arg( [
 								'path' => $dir,
 								'name' => null,
-							), $action ), '+ ' . $dir ); ?>
+							], $action ), '+ ' . $dir ); ?>
                         </li>
 					<?php endif; ?>
 				<?php endforeach; ?>
 				<?php foreach ( $root[1] as $file ): ?>
                     <li>
-						<?php $instance->url( add_query_arg( array(
+						<?php $instance->url( add_query_arg( [
 							'path' => null,
 							'name' => $file,
-						), $action ), $file ); ?>
+						], $action ), $file ); ?>
                     </li>
 				<?php endforeach; ?>
             </ul>
         </li>
     </ul>
-	<?php $instance->form( 'input/button', $args, array(
+	<?php $instance->form( 'input/button', $args, [
 		'class' => 'close_button',
 		'name'  => 'close',
 		'value' => 'Close',
-	) ); ?>
+	] ); ?>
 </div>
 

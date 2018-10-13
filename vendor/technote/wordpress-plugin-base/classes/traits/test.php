@@ -26,7 +26,7 @@ trait Test {
 	use Singleton, Hook;
 
 	/** @var array $objects */
-	private $objects = array();
+	private $objects = [];
 
 	/**
 	 * Test constructor.
@@ -37,7 +37,7 @@ trait Test {
 	 *
 	 * @throws \ReflectionException
 	 */
-	public function __construct( $arg1 = null, $arg2 = array(), $arg3 = '' ) {
+	public function __construct( $arg1 = null, $arg2 = [], $arg3 = '' ) {
 		$args = func_get_args();
 		if ( count( $args ) > 1 && $args[0] instanceof \Technote && $args[1] instanceof \ReflectionClass ) {
 			// Singleton

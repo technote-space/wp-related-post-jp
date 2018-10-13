@@ -29,7 +29,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	private $admin_controllers = null;
 
 	/** @var array $messages */
-	private $messages = array();
+	private $messages = [];
 
 	/** @var \Technote\Controllers\Admin\Base */
 	public $page;
@@ -45,7 +45,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 * @return string
 	 */
 	private function get_menu_slug() {
-		return $this->apply_filters( 'get_menu_slug', $this->get_page_prefix() . $this->get_setting_slug() );
+		return $this->get_page_prefix() . $this->apply_filters( 'get_menu_slug', $this->get_setting_slug() );
 	}
 
 	/**
@@ -104,13 +104,16 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 			$this->do_action( 'post_load_admin_page', $this->page );
 		}
 
-		$pages = array();
+		$pages = [];
 		foreach ( $this->get_admin_controllers() as $page ) {
 			/** @var \Technote\Controllers\Admin\Base $page */
 			if ( $this->app->user_can( $this->apply_filters( 'admin_menu_capability', $page->get_capability(), $page ) ) ) {
 				$priority = $this->apply_filters( 'admin_menu_priority', $page->get_priority(), $page );
 				if ( $priority < 0 ) {
 					continue;
+				}
+				if ( $this->get_menu_slug() === $this->get_page_prefix() . $page->get_page_slug() ) {
+					$priority = - 1;
 				}
 				$pages[ $priority ][] = $page;
 			}
@@ -164,9 +167,9 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 * @return array
 	 */
 	private function plugin_action_links( $links ) {
-		$link = $this->get_view( 'admin/include/action_links', array(
+		$link = $this->get_view( 'admin/include/action_links', [
 			'url' => menu_page_url( $this->get_menu_slug(), false ),
-		) );
+		] );
 		array_unshift( $links, $link );
 
 		return $links;
@@ -191,7 +194,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 */
 	private function get_admin_controllers() {
 		if ( ! isset( $this->admin_controllers ) ) {
-			$this->admin_controllers = array();
+			$this->admin_controllers = [];
 			/** @var \Technote\Controllers\Admin\Base $class */
 			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'controllers' . DS . 'admin', '\Technote\Controllers\Admin\Base' ) as $class ) {
 				$slug = $class->get_page_slug();
@@ -221,10 +224,10 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		/** @noinspection PhpUnusedParameterInspection */
 		$page, $add_namespace
 	) {
-		return array(
+		return [
 			$this->app->define->plugin_namespace . '\\Controllers\\Admin\\',
 			$this->app->define->lib_namespace . '\\Controllers\\Admin\\',
-		);
+		];
 	}
 
 	/**
@@ -233,15 +236,15 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	private function load() {
 		if ( isset( $this->page ) ) {
 			if ( $this->app->user_can( $this->page->get_capability() ) ) {
-				$this->get_view( 'admin/include/layout', array(
+				$this->get_view( 'admin/include/layout', [
 					'page' => $this->page,
-					'slug' => $this->page->get_page_slug()
-				), true );
+					'slug' => $this->page->get_page_slug(),
+				], true );
 			} else {
-				$this->get_view( 'admin/include/error', array( 'message' => 'Forbidden.' ), true );
+				$this->get_view( 'admin/include/error', [ 'message' => 'Forbidden.' ], true );
 			}
 		} else {
-			$this->get_view( 'admin/include/error', array( 'message' => 'Page not found.' ), true );
+			$this->get_view( 'admin/include/error', [ 'message' => 'Page not found.' ], true );
 		}
 	}
 
@@ -252,9 +255,9 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function admin_notice() {
 		if ( $this->app->user_can() ) {
-			$this->get_view( 'admin/include/notice', array(
-				'messages' => $this->messages
-			), true );
+			$this->get_view( 'admin/include/notice', [
+				'messages' => $this->messages,
+			], true );
 		}
 	}
 
@@ -265,7 +268,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 * @param bool $error
 	 */
 	public function add_message( $message, $group = '', $error = false, $escape = true ) {
-		$this->messages[ $group ][ $error ? 'error' : 'updated' ][] = array( $message, $escape );
+		$this->messages[ $group ][ $error ? 'error' : 'updated' ][] = [ $message, $escape ];
 	}
 
 }

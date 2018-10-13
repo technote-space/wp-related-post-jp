@@ -51,8 +51,8 @@ trait Hook {
 			}
 
 			$type = \Technote\Models\Utility::array_get( $setting, 'type', '' );
-			if ( is_callable( array( $this, 'get_' . $type . '_value' ) ) ) {
-				$value = call_user_func( array( $this, 'get_' . $type . '_value' ), $value, $default, $setting );
+			if ( is_callable( [ $this, 'get_' . $type . '_value' ] ) ) {
+				$value = call_user_func( [ $this, 'get_' . $type . '_value' ], $value, $default, $setting );
 			}
 
 			return $value;

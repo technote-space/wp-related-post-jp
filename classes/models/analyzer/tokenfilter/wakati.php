@@ -26,7 +26,7 @@ class Wakati extends \Related_Post\Models\Analyzer\Tokenfilter {
 	 * @return array ( word => count )
 	 */
 	public function filter( $terms ) {
-		$ret = array();
+		$ret = [];
 		foreach ( $terms as $word => $count ) {
 			if ( preg_match( '#^\d+$#', $word ) ) {
 				continue;

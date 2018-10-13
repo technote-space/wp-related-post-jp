@@ -12,39 +12,39 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
 	// extractor
-	'extractor'     => array(
+	'extractor'     => [
 //		'title_content_tags',
 		'title_content',
 //		'content',
 //		'title',
-	),
+	],
 
 	// char filter
-	'char_filters'  => array(
+	'char_filters'  => [
 		'shortcode',
 		'code',
 		'html',
 		'kana',
-	),
+	],
 
 	// tokenizer
-	'tokenizer'     => array(
+	'tokenizer'     => [
 		'bigram', // if setting [use_bigram_tokenizer] = true
 
 		'yahoo',
 //		// 'goo', // クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
 		'igo',
-	),
+	],
 
 	// token filter
-	'token_filters' => array(
+	'token_filters' => [
 		'common',
-		'wakati' => array( 'yahoo', 'goo', 'igo' ),
-		'bigram' => array( 'bigram' ),
+		'wakati' => [ 'yahoo', 'goo', 'igo' ],
+		'bigram' => [ 'bigram' ],
 		'max',
-	),
+	],
 
-);
+];

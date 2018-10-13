@@ -15,12 +15,12 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var int $post_id */
 ?>
 
-<?php $instance->form( 'input/button', $args, array(
+<?php $instance->form( 'input/button', $args, [
 	'class'      => 'wrpj_show_index_result_button button-primary',
 	'name'       => 'show',
 	'value'      => 'Show',
-	'attributes' => array(
+	'attributes' => [
 		'data-id' => $post_id,
-	),
-) ); ?>
+	],
+] ); ?>
 

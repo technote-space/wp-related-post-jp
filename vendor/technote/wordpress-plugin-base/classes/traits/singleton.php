@@ -26,10 +26,10 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 trait Singleton {
 
 	/** @var array */
-	private static $instances = array();
+	private static $instances = [];
 
 	/** @var array */
-	private static $slugs = array();
+	private static $slugs = [];
 
 	/** @var \Technote */
 	protected $app;
@@ -95,7 +95,7 @@ trait Singleton {
 			if ( ! isset( self::$instances[ $app->plugin_name ][ $class ] ) ) {
 				$instance = new static( $app, $reflection );
 				if ( $instance instanceof \Technote\Interfaces\Uninstall && $app->uninstall ) {
-					$app->uninstall->add_uninstall( array( $instance, 'uninstall' ) );
+					$app->uninstall->add_uninstall( [ $instance, 'uninstall' ] );
 				}
 				self::$instances[ $app->plugin_name ][ $class ] = $instance;
 				$instance->initialize();

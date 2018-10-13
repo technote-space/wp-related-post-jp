@@ -35,45 +35,45 @@ class UtilityTest extends \Technote\Tests\TestCase {
 	 * @return array
 	 */
 	public function _test_flatten_provider() {
-		return array(
-			array(
-				array(),
+		return [
+			[
+				[],
 				false,
-				array(),
-			),
-			array(
-				array(
-					array( 'test1', 'test2' ),
-					array( 'test3', 'test4' ),
-				),
+				[],
+			],
+			[
+				[
+					[ 'test1', 'test2' ],
+					[ 'test3', 'test4' ],
+				],
 				false,
-				array( 'test1', 'test2', 'test3', 'test4' ),
-			),
-			array(
-				array(
-					array( 'a' => 'test1', 'b' => 'test2' ),
-					array( 'c' => 'test3', 'd' => 'test4' ),
-				),
+				[ 'test1', 'test2', 'test3', 'test4' ],
+			],
+			[
+				[
+					[ 'a' => 'test1', 'b' => 'test2' ],
+					[ 'c' => 'test3', 'd' => 'test4' ],
+				],
 				false,
-				array( 'test1', 'test2', 'test3', 'test4' ),
-			),
-			array(
-				array(
-					array( 'a' => 'test1', 'b' => 'test2' ),
-					array( 'c' => 'test3', 'd' => 'test4' ),
-				),
+				[ 'test1', 'test2', 'test3', 'test4' ],
+			],
+			[
+				[
+					[ 'a' => 'test1', 'b' => 'test2' ],
+					[ 'c' => 'test3', 'd' => 'test4' ],
+				],
 				true,
-				array( 'a' => 'test1', 'b' => 'test2', 'c' => 'test3', 'd' => 'test4' ),
-			),
-			array(
-				array(
-					array( 'a' => 'test1', 'b' => 'test2' ),
-					array( 'a' => 'test3', 'b' => 'test4' ),
-				),
+				[ 'a' => 'test1', 'b' => 'test2', 'c' => 'test3', 'd' => 'test4' ],
+			],
+			[
+				[
+					[ 'a' => 'test1', 'b' => 'test2' ],
+					[ 'a' => 'test3', 'b' => 'test4' ],
+				],
 				true,
-				array( 'a' => 'test3', 'b' => 'test4' ),
-			),
-		);
+				[ 'a' => 'test3', 'b' => 'test4' ],
+			],
+		];
 	}
 
 	/**
@@ -92,32 +92,32 @@ class UtilityTest extends \Technote\Tests\TestCase {
 	 * @return array
 	 */
 	public function _test_array_get_provider() {
-		return array(
-			array(
-				array(),
+		return [
+			[
+				[],
 				'test',
 				null,
 				null,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'test1' => true,
 					'test2' => 100,
-				),
+				],
 				'test2',
 				false,
 				100,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'test1' => true,
 					'test2' => 100,
-				),
+				],
 				'test3',
 				false,
 				false,
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -137,36 +137,36 @@ class UtilityTest extends \Technote\Tests\TestCase {
 	 * @return array
 	 */
 	public function _test_array_set_provider() {
-		return array(
-			array(
-				array(),
+		return [
+			[
+				[],
 				'test',
 				null,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'test' => true,
-				),
+				],
 				'test',
 				100,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'test' => true,
-				),
+				],
 				'test2',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'test' => true,
-				),
+				],
 				'test',
-				array(
+				[
 					'test1' => true,
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**
@@ -184,22 +184,22 @@ class UtilityTest extends \Technote\Tests\TestCase {
 	 * @return array
 	 */
 	public function _test_replace_provider() {
-		return array(
-			array(
+		return [
+			[
 				'test',
-				array( 'a' => 'b' ),
+				[ 'a' => 'b' ],
 				'test',
-			),
-			array(
+			],
+			[
 				'test1${a}test2',
-				array( 'a' => 'b' ),
+				[ 'a' => 'b' ],
 				'test1btest2',
-			),
-			array(
+			],
+			[
 				'test1${test}test2',
-				array( 'test' => '' ),
+				[ 'test' => '' ],
 				'test1test2',
-			),
-		);
+			],
+		];
 	}
 }

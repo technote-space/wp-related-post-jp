@@ -26,7 +26,7 @@ trait Loader {
 	use Singleton, Hook, Presenter;
 
 	/** @var array */
-	private $cache = array();
+	private $cache = [];
 
 	/**
 	 * @return string
@@ -106,7 +106,7 @@ trait Loader {
 			foreach ( $namespaces as $namespace ) {
 				$class = rtrim( $namespace, '\\' ) . '\\' . $add_namespace . $this->get_class_name( $page );
 				if ( class_exists( $class ) ) {
-					$this->cache[ $add_namespace . $page ] = array( $class, $add_namespace );
+					$this->cache[ $add_namespace . $page ] = [ $class, $add_namespace ];
 
 					return $this->cache[ $add_namespace . $page ];
 				}

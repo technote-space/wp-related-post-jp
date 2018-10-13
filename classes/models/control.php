@@ -181,9 +181,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				$post->score = $score;
 
 				return $post;
-			}, $this->app->db->select( 'ranking', array(
+			}, $this->app->db->select( 'ranking', [
 				'post_id' => $post_id,
-			), array( 'rank_post_id', 'score' ), null, null, array( 'score' => 'DESC' ) ) );
+			], [ 'rank_post_id', 'score' ], null, null, [ 'score' => 'DESC' ] ) );
 		}
 
 		return false;
@@ -236,10 +236,10 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 
 		$words          = array_map( function ( $k, $v ) {
-			return array(
+			return [
 				'word_id' => $k,
 				'count'   => $v,
-			);
+			];
 		}, array_keys( $data ), array_values( $data ) );
 		$posts_per_page = $query->get( 'posts_per_page' );
 		if ( empty( $posts_per_page ) ) {
@@ -247,7 +247,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 		$paged       = $query->get( 'paged' );
 		$post_types  = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
-		$ranking     = array();
+		$ranking     = [];
 		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true );
 		$total_pages = ceil( $total / $posts_per_page );
 		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, false, $posts_per_page, $paged ) as $item ) {
@@ -441,7 +441,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$process   = get_site_transient( $this->get_executing_process_transient_key() );
 		$executing and $value2 = false;
 		if ( empty( $value1 ) && empty( $value2 ) ) {
-			return array( - 1, $process );
+			return [ - 1, $process ];
 		}
 		if ( empty( $value1 ) ) {
 			$value = $value2;
@@ -453,7 +453,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$ret = $value - time();
 		$ret < 0 and $ret = 0;
 
-		return array( $ret, $process );
+		return [ $ret, $process ];
 	}
 
 	/**
@@ -547,7 +547,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$this->app->option->set( 'word_updated', true );
 
 			$uuid  = $this->lock_process( true, 'word index process' );
-			$cache = array();
+			$cache = [];
 			foreach ( \Technote\Models\Utility::flatten( $this->get_valid_post_types() ) as $post_type ) {
 				if ( in_array( $post_type, $cache ) ) {
 					continue;
@@ -611,44 +611,44 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	private function get_update_posts( $is_count, $limit = 1, $key = 'indexed' ) {
 		if ( $limit <= 0 ) {
-			return $is_count ? 0 : array();
+			return $is_count ? 0 : [];
 		}
 
 		if ( $is_count ) {
 			$limit    = 1;
-			$fields   = array( 'DISTINCT p.ID' => array( 'COUNT', 'num' ) );
+			$fields   = [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ];
 			$order_by = null;
 			$group_by = null;
 			$output   = ARRAY_A;
 		} else {
-			$fields   = array( '*', 'p.ID' => array( 'AS', 'ID' ) );
-			$order_by = array( 'p.ID' => 'ASC' );
-			$group_by = array( 'p.ID' );
+			$fields   = [ '*', 'p.ID' => [ 'AS', 'ID' ] ];
+			$order_by = [ 'p.ID' => 'ASC' ];
+			$group_by = [ 'p.ID' ];
 			$output   = OBJECT;
 		}
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
-		$subquery   = $this->app->db->get_select_sql( array( array( $wpdb->postmeta, 'pm2' ) ), array(
-			'pm2.post_id'  => array( '=', 'pm.post_id', true ),
-			'pm2.meta_key' => array( '=', $this->app->post->get_meta_key( $key ) ),
-		), '"X"' );
+		$subquery   = $this->app->db->get_select_sql( [ [ $wpdb->postmeta, 'pm2' ] ], [
+			'pm2.post_id'  => [ '=', 'pm.post_id', true ],
+			'pm2.meta_key' => [ '=', $this->app->post->get_meta_key( $key ) ],
+		], '"X"' );
 
-		$results = $this->app->db->select( array(
-			array( $wpdb->posts, 'p' ),
-			array(
-				array( $wpdb->postmeta, 'pm' ),
+		$results = $this->app->db->select( [
+			[ $wpdb->posts, 'p' ],
+			[
+				[ $wpdb->postmeta, 'pm' ],
 				'LEFT JOIN',
-				array(
-					array( 'p.ID', '=', 'pm.post_id' ),
-				)
-			),
-		), array(
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
+				[
+					[ 'p.ID', '=', 'pm.post_id' ],
+				],
+			],
+		], [
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 			'p.post_status' => 'publish',
-			'NOT EXISTS'    => $subquery
-		), $fields, $limit, null, $order_by, $group_by, $output );
+			'NOT EXISTS'    => $subquery,
+		], $fields, $limit, null, $order_by, $group_by, $output );
 
 		if ( $is_count ) {
 			return \Technote\Models\Utility::array_get( $results, 'num', 0 );
@@ -694,12 +694,12 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		global $wpdb;
 		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
 
-		$count = \Technote\Models\Utility::array_get( $this->app->db->select( array(
-			array( $wpdb->posts, 'p' ),
-		), array(
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
+		$count = \Technote\Models\Utility::array_get( $this->app->db->select( [
+			[ $wpdb->posts, 'p' ],
+		], [
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 			'p.post_status' => 'publish',
-		), array( 'DISTINCT p.ID' => array( 'COUNT', 'num' ) ), 1 ), 'num' );
+		], [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ], 1 ), 'num' );
 
 		// index, ranking
 		$count *= 2;
@@ -754,10 +754,11 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function changed_option( $key ) {
 		if ( $key === $this->get_filter_prefix() . 'target_post_types' ) {
-			$this->init_posts_index();
+			$this->init_posts_rankings();
 		} elseif ( $key === $this->get_filter_prefix() . 'ranking_number' ) {
-			$this->app->option->delete( 'posts_indexed' );
-			$this->app->post->delete_all( 'setup_ranking' );
+			$this->init_posts_rankings();
+		} elseif ( $key === $this->get_filter_prefix() . 'max_index_target_length' ) {
+			$this->init_posts_index();
 		}
 	}
 
@@ -774,6 +775,17 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$this->app->db->truncate( 'ranking' );
 		$this->app->db->truncate( 'rel_document_word' );
 		$this->app->db->truncate( 'word' );
+		delete_site_transient( $this->get_total_posts_count_transient_key() );
+		delete_site_transient( $this->get_update_posts_count_transient_key() );
+		$this->unlock_process();
+	}
+
+	/**
+	 * init posts index
+	 */
+	public function init_posts_rankings() {
+		$this->app->option->delete( 'posts_indexed' );
+		$this->app->post->delete_all( 'setup_ranking' );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
 		$this->unlock_process();
@@ -829,7 +841,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		add_action( "manage_{$post_type}_posts_custom_column", function ( $column_name, $post_id ) {
 			if ( 'wrpj_show_related_post' === $column_name ) {
 				if ( ( $post = get_post( $post_id ) ) && 'publish' === $post->post_status ) {
-					$this->get_view( 'admin/edit_post', array( 'post_id' => $post_id ), true );
+					$this->get_view( 'admin/edit_post', [ 'post_id' => $post_id ], true );
 				}
 			}
 		}, 10, 2 );
@@ -843,11 +855,11 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	public function get_index_result_response( $post_id ) {
 		$post = get_post( $post_id );
 		if ( empty( $post ) ) {
-			return array(
+			return [
 				'message' => $this->app->translate( 'Post not found.' ),
-				'posts'   => array(),
-				'words'   => array(),
-			);
+				'posts'   => [],
+				'words'   => [],
+			];
 		}
 
 		$indexed       = $this->app->post->get( 'indexed', $post_id );
@@ -855,18 +867,18 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$posts         = $this->get_related_posts( $post_id );
 		$words         = $this->get_bm25()->get_important_words( $post_id );
 
-		return array(
-			'message'       => $this->get_view( 'admin/index_result', array(
+		return [
+			'message'       => $this->get_view( 'admin/index_result', [
 				'post'          => $post,
 				'posts'         => $posts,
 				'words'         => $words,
 				'indexed'       => $indexed,
 				'setup_ranking' => $setup_ranking,
-			) ),
+			] ),
 			'posts'         => $posts,
 			'words'         => $words,
 			'indexed'       => $indexed,
 			'setup_ranking' => $setup_ranking,
-		);
+		];
 	}
 }

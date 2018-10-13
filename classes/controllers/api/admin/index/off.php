@@ -64,8 +64,8 @@ class Off extends \Technote\Controllers\Api\Base {
 		/** @var \Related_Post\Models\Control $control */
 		$control = \Related_Post\Models\Control::get_instance( $this->app );
 
-		return new \WP_REST_Response( array(
+		return new \WP_REST_Response( [
 			'result' => $control->off_posts_index(),
-		) );
+		] );
 	}
 }

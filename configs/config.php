@@ -12,7 +12,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
 	// plugin title
 	'plugin_title'         => 'Related Post',
@@ -41,4 +41,4 @@ return array(
 	// text domain
 	'text_domain'          => 'wrpj',
 
-);
+];

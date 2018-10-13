@@ -44,7 +44,7 @@ trait Api {
 	 * @return array
 	 */
 	public function get_args_setting() {
-		return array();
+		return [];
 	}
 
 	/**

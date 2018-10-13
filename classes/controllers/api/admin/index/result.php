@@ -52,8 +52,8 @@ class Result extends \Technote\Controllers\Api\Base {
 	 * @return array
 	 */
 	public function get_args_setting() {
-		return array(
-			'p' => array(
+		return [
+			'p' => [
 				'required'            => true,
 				'description'         => 'post_id',
 				'validation_callback' => function ( $var ) {
@@ -62,8 +62,8 @@ class Result extends \Technote\Controllers\Api\Base {
 				'sanitize_callback'   => function ( $var ) {
 					return (int) $var;
 				},
-			),
-		);
+			],
+		];
 	}
 
 	/**

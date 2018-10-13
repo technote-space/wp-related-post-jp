@@ -25,7 +25,7 @@ class Filter implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
 
 	/** @var array */
-	private $filter = array();
+	private $filter = [];
 
 	/**
 	 * initialize
@@ -59,11 +59,11 @@ class Filter implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 					}
 				}
 			}
-			if ( false !== $app && is_callable( array( $app, 'add_filter' ) ) ) {
+			if ( false !== $app && is_callable( [ $app, 'add_filter' ] ) ) {
 				foreach ( $tags as $tag => $methods ) {
-					$tag = Utility::replace( $tag, array( 'prefix' => $this->get_filter_prefix() ) );
+					$tag = Utility::replace( $tag, [ 'prefix' => $this->get_filter_prefix() ] );
 					foreach ( $methods as $method => $params ) {
-						$this->call_add_filter( array( $app, 'add_filter' ), $tag, $method, $params );
+						$this->call_add_filter( [ $app, 'add_filter' ], $tag, $method, $params );
 					}
 				}
 			}

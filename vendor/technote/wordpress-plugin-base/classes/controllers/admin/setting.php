@@ -33,7 +33,7 @@ class Setting extends Base {
 	 * @return string
 	 */
 	public function get_page_title() {
-		return 'Dashboard';
+		return $this->apply_filters( 'setting_page_title', 'Dashboard' );
 	}
 
 	/**
@@ -52,36 +52,36 @@ class Setting extends Base {
 	 * @return array
 	 */
 	protected function get_view_args() {
-		$settings = array();
+		$settings = [];
 		foreach ( $this->app->setting->get_groups() as $group ) {
 			foreach ( $this->app->setting->get_settings( $group ) as $setting ) {
 				$settings[ $group ][ $setting ] = $this->app->setting->get_setting( $setting, true );
 			}
 		}
 
-		return array(
+		return [
 			'settings' => $settings,
-		);
+		];
 	}
 
 	/**
 	 * @return array
 	 */
 	protected function get_help_contents() {
-		return array(
-			array(
+		return [
+			[
 				'title' => 'ダッシュボードのヘルプの変更手順',
 				'view'  => 'setting1',
-			),
-			array(
+			],
+			[
 				'title' => 'このヘルプが不要な場合の手順',
 				'view'  => 'setting2',
-			),
-			array(
+			],
+			[
 				'title' => 'サイドバーの変更手順',
 				'view'  => 'setting3',
-			),
-		);
+			],
+		];
 	}
 
 	/**

@@ -30,56 +30,56 @@ class DbTest extends \Technote\Tests\TestCase {
 		static::$db = Db::get_instance( static::$app );
 		static::$db->drop( 'technote_test_table1' );
 		static::$db->drop( 'technote_test_table2' );
-		static::$db->setup( 'technote_test_table1', array(
+		static::$db->setup( 'technote_test_table1', [
 			'id'      => 'test_id',
-			'columns' => array(
-				'value1' => array(
+			'columns' => [
+				'value1' => [
 					'type'    => 'VARCHAR(32)',
 					'null'    => false,
 					'default' => 'value1',
-				),
-				'value2' => array(
+				],
+				'value2' => [
 					'type'    => 'INT(11)',
 					'null'    => false,
 					'default' => 2,
-				),
-				'value3' => array(
+				],
+				'value3' => [
 					'type' => 'VARCHAR(32)',
-				),
-			),
-			'index'   => array(
-				'key' => array(
-					'value1' => array( 'value1' ),
-				)
-			),
+				],
+			],
+			'index'   => [
+				'key' => [
+					'value1' => [ 'value1' ],
+				],
+			],
 			'delete'  => 'logical',
-		) );
-		static::$db->setup( 'technote_test_table2', array(
-			'columns' => array(
-				'value1' => array(
+		] );
+		static::$db->setup( 'technote_test_table2', [
+			'columns' => [
+				'value1' => [
 					'type'    => 'VARCHAR(32)',
 					'null'    => false,
 					'default' => 'value1',
-				),
-				'value2' => array(
+				],
+				'value2' => [
 					'type'    => 'INT(11)',
 					'null'    => false,
 					'default' => 2,
-				),
-				'value3' => array(
+				],
+				'value3' => [
 					'type' => 'VARCHAR(32)',
-				),
-			),
-			'index'   => array(
-				'key'    => array(
-					'value1' => array( 'value1' ),
-				),
-				'unique' => array(
-					'value' => array( 'value1', 'value2' ),
-				),
-			),
+				],
+			],
+			'index'   => [
+				'key'    => [
+					'value1' => [ 'value1' ],
+				],
+				'unique' => [
+					'value' => [ 'value1', 'value2' ],
+				],
+			],
 			'delete'  => 'physical',
-		) );
+		] );
 	}
 
 	public static function tearDownAfterClass() {
@@ -157,35 +157,35 @@ class DbTest extends \Technote\Tests\TestCase {
 	 * @depends test_table_update_same
 	 */
 	public function test_table_update_define() {
-		static::$db->setup( 'technote_test_table2', array(
-			'columns' => array(
-				'value1' => array(
+		static::$db->setup( 'technote_test_table2', [
+			'columns' => [
+				'value1' => [
 					'type'    => 'VARCHAR(32)',
 					'null'    => false,
 					'default' => 'value1',
-				),
-				'value2' => array(
+				],
+				'value2' => [
 					'type'    => 'INT(11)',
 					'null'    => false,
 					'default' => 2,
-				),
-				'value3' => array(
+				],
+				'value3' => [
 					'type' => 'VARCHAR(32)',
-				),
-				'value4' => array(
+				],
+				'value4' => [
 					'type' => 'INT(11)',
-				),
-			),
-			'index'   => array(
-				'key'    => array(
-					'value1' => array( 'value1' ),
-				),
-				'unique' => array(
-					'value' => array( 'value1', 'value2' ),
-				),
-			),
+				],
+			],
+			'index'   => [
+				'key'    => [
+					'value1' => [ 'value1' ],
+				],
+				'unique' => [
+					'value' => [ 'value1', 'value2' ],
+				],
+			],
 			'delete'  => 'physical',
-		) );
+		] );
 		$results = static::$db->_table_update( 'technote_test_table2' );
 		$this->assertNotEmpty( $results );
 	}
@@ -205,47 +205,47 @@ class DbTest extends \Technote\Tests\TestCase {
 	 * @depends test_table_update_define
 	 */
 	public function test_insert() {
-		$this->assertEquals( 1, static::$db->insert( 'technote_test_table1', array(
+		$this->assertEquals( 1, static::$db->insert( 'technote_test_table1', [
 			'value1' => 'text1',
 			'value2' => 1,
 			'value3' => 'text3',
-		) ) );
-		$this->assertEquals( 1, static::$db->insert( 'technote_test_table2', array(
+		] ) );
+		$this->assertEquals( 1, static::$db->insert( 'technote_test_table2', [
 			'value3' => 'text1',
 			'value4' => 1,
-		) ) );
-		$this->assertEquals( 1, static::$db->insert( 'technote_test_table2', array(
+		] ) );
+		$this->assertEquals( 1, static::$db->insert( 'technote_test_table2', [
 			'value2' => 10,
 			'value3' => 'text2',
 			'value4' => 2,
-		) ) );
+		] ) );
 	}
 
 	/**
 	 * @depends test_table_update_define
 	 */
 	public function test_update() {
-		$this->assertEquals( 1, static::$db->update( 'technote_test_table2', array(
+		$this->assertEquals( 1, static::$db->update( 'technote_test_table2', [
 			'value3' => 'text3',
 			'value4' => 3,
-		), array(
+		], [
 			'id' => 1,
-		) ) );
-		$this->assertEquals( 0, static::$db->update( 'technote_test_table2', array(
+		] ) );
+		$this->assertEquals( 0, static::$db->update( 'technote_test_table2', [
 			'value3' => 'text4',
 			'value4' => 4,
-		), array(
+		], [
 			'id' => 10,
-		) ) );
+		] ) );
 	}
 
 	/**
 	 * @depends test_table_update_define
 	 */
 	public function test_select() {
-		$results = static::$db->select( 'technote_test_table2', array(
+		$results = static::$db->select( 'technote_test_table2', [
 			'id' => 1,
-		) );
+		] );
 		$this->assertNotEmpty( $results );
 		$this->assertCount( 1, $results );
 		$result = reset( $results );
@@ -260,9 +260,9 @@ class DbTest extends \Technote\Tests\TestCase {
 	 * @depends test_table_update_define
 	 */
 	public function test_select2() {
-		$results = static::$db->select( 'technote_test_table2', array(
+		$results = static::$db->select( 'technote_test_table2', [
 			'id' => 10,
-		) );
+		] );
 		$this->assertEmpty( $results );
 	}
 
@@ -270,34 +270,34 @@ class DbTest extends \Technote\Tests\TestCase {
 	 * @depends test_table_update_define
 	 */
 	public function test_delete() {
-		$this->assertEquals( 1, static::$db->delete( 'technote_test_table1', array(
+		$this->assertEquals( 1, static::$db->delete( 'technote_test_table1', [
 			'id' => 1,
-		) ) );
-		$this->assertEquals( 0, static::$db->delete( 'technote_test_table1', array(
+		] ) );
+		$this->assertEquals( 0, static::$db->delete( 'technote_test_table1', [
 			'id' => 1,
-		) ) );
-		$this->assertEquals( 1, static::$db->delete( 'technote_test_table2', array(
+		] ) );
+		$this->assertEquals( 1, static::$db->delete( 'technote_test_table2', [
 			'id' => 1,
-		) ) );
-		$this->assertEquals( 1, static::$db->delete( 'technote_test_table2', array(
+		] ) );
+		$this->assertEquals( 1, static::$db->delete( 'technote_test_table2', [
 			'id' => 2,
-		) ) );
-		$this->assertEquals( 0, static::$db->delete( 'technote_test_table2', array(
+		] ) );
+		$this->assertEquals( 0, static::$db->delete( 'technote_test_table2', [
 			'id' => 3,
-		) ) );
+		] ) );
 	}
 
 	/**
 	 * @depends test_delete
 	 */
 	public function test_select3() {
-		$results = static::$db->select( 'technote_test_table1', array(
+		$results = static::$db->select( 'technote_test_table1', [
 			'id' => 1,
-		) );
+		] );
 		$this->assertEmpty( $results );
-		$results = static::$db->select( 'technote_test_table2', array(
+		$results = static::$db->select( 'technote_test_table2', [
 			'id' => 1,
-		) );
+		] );
 		$this->assertEmpty( $results );
 	}
 }

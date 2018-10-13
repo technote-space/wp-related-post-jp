@@ -39,7 +39,7 @@ class Cron implements \Technote\Interfaces\Loader {
 	 */
 	private function get_crons() {
 		if ( ! isset( $this->crons ) ) {
-			$this->crons = array();
+			$this->crons = [];
 			/** @var \Technote\Crons\Base $class */
 			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'crons', '\Technote\Crons\Base' ) as $class ) {
 				$slug = $class->class_name;
@@ -76,10 +76,10 @@ class Cron implements \Technote\Interfaces\Loader {
 		/** @noinspection PhpUnusedParameterInspection */
 		$page, $add_namespace
 	) {
-		return array(
+		return [
 			$this->app->define->plugin_namespace . '\\Crons',
 			$this->app->define->lib_namespace . '\\Crons',
-		);
+		];
 	}
 
 }

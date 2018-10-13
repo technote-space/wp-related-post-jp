@@ -41,14 +41,14 @@ class Bigram extends \Technote\Tests\Base {
 	 * @return array
 	 */
 	public function _test_words_provider() {
-		return array(
-			array( '', array() ),
-			array( ' 　 ', array( '  ', '  ' ) ),
-			array( 'ab c d  efg', array( 'ab', 'c', 'd', '  ', 'efg' ) ),
-			array( '　あ いう　　えお ', array( ' あ', 'あ ', ' い', 'いう', 'う ', '  ', ' え', 'えお', 'お ' ) ),
-			array(
+		return [
+			[ '', [] ],
+			[ ' 　 ', [ '  ', '  ' ] ],
+			[ 'ab c d  efg', [ 'ab', 'c', 'd', '  ', 'efg' ] ],
+			[ '　あ いう　　えお ', [ ' あ', 'あ ', ' い', 'いう', 'う ', '  ', ' え', 'えお', 'お ' ] ],
+			[
 				'今日の天気は晴れです。 とてもHotです。',
-				array(
+				[
 					'今日',
 					'日の',
 					'の天',
@@ -65,13 +65,13 @@ class Bigram extends \Technote\Tests\Base {
 					'ても',
 					'Hot',
 					'です',
-					'す。'
-				)
-			),
-			array(
+					'す。',
+				],
+			],
+			[
 				'こんにちは。Hello World!',
-				array( 'こん', 'んに', 'にち', 'ちは', 'は。', 'Hello', 'World' )
-			)
-		);
+				[ 'こん', 'んに', 'にち', 'ちは', 'は。', 'Hello', 'World' ],
+			],
+		];
 	}
 }

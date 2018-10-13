@@ -26,7 +26,7 @@ class Common extends \Related_Post\Models\Analyzer\Tokenfilter {
 	 * @return array ( word => count )
 	 */
 	public function filter( $terms ) {
-		$ret = array();
+		$ret = [];
 		foreach ( $terms as $word => $count ) {
 			$word = trim( $word );
 			if ( "" === $word ) {

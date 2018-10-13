@@ -29,7 +29,7 @@ interface Presenter {
 	 *
 	 * @return string
 	 */
-	public function get_view( $name, $args = array(), $echo = false );
+	public function get_view( $name, $args = [], $echo = false );
 
 	/**
 	 * @param string $name
@@ -39,7 +39,7 @@ interface Presenter {
 	 *
 	 * @return string
 	 */
-	public function form( $name, $args = array(), $overwrite = array(), $echo = true );
+	public function form( $name, $args = [], $overwrite = [], $echo = true );
 
 	/**
 	 * @param mixed $data
@@ -66,14 +66,14 @@ interface Presenter {
 	 * @param array $args
 	 * @param int $priority
 	 */
-	public function add_script_view( $name, $args = array(), $priority = 10 );
+	public function add_script_view( $name, $args = [], $priority = 10 );
 
 	/**
 	 * @param string $name
 	 * @param array $args
 	 * @param int $priority
 	 */
-	public function add_style_view( $name, $args = array(), $priority = 10 );
+	public function add_style_view( $name, $args = [], $priority = 10 );
 
 	/**
 	 * @param string $value
@@ -106,7 +106,7 @@ interface Presenter {
 	 *
 	 * @return string
 	 */
-	public function url( $url, $contents, $translate = false, $new_tab = false, $args = array(), $echo = true );
+	public function url( $url, $contents, $translate = false, $new_tab = false, $args = [], $echo = true );
 
 	/**
 	 * @param string $path
@@ -144,7 +144,7 @@ interface Presenter {
 	 *
 	 * @return string
 	 */
-	public function img( $path, $args = array(), $echo = true );
+	public function img( $path, $args = [], $echo = true );
 
 	/**
 	 * @param array $args
@@ -152,7 +152,7 @@ interface Presenter {
 	 *
 	 * @return string
 	 */
-	public function loading( $args = array(), $echo = true );
+	public function loading( $args = [], $echo = true );
 
 	/**
 	 * @param array $args
@@ -160,7 +160,7 @@ interface Presenter {
 	 *
 	 * @return string
 	 */
-	public function no_img( $args = array(), $echo = true );
+	public function no_img( $args = [], $echo = true );
 
 	/**
 	 * @param string $path

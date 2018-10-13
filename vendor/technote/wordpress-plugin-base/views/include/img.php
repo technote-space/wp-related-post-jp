@@ -22,7 +22,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var string $width */
 /** @var string $height */
 /** @var array $attributes */
-empty( $attributes ) and $attributes = array();
+empty( $attributes ) and $attributes = [];
 isset( $id ) and $attributes['id'] = $id;
 isset( $class ) and $attributes['class'] = $class;
 $attributes['src'] = $src;
@@ -30,4 +30,4 @@ isset( $alt ) and $attributes['alt'] = $alt;
 isset( $width ) and $attributes['width'] = $width;
 isset( $height ) and $attributes['height'] = $height;
 ?>
-<img <?php $instance->get_view( 'include/attributes', array_merge( $args, array( 'attributes' => $attributes ) ), true ); ?> />
+<img <?php $instance->get_view( 'include/attributes', array_merge( $args, [ 'attributes' => $attributes ] ), true ); ?> />

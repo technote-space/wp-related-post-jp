@@ -32,14 +32,14 @@ $instance->add_style_view( 'admin/style/table' );
 		<?php endforeach; ?>
     </table>
 	<?php $instance->form( 'open' ); ?>
-	<?php $instance->form( 'input/hidden', array(
+	<?php $instance->form( 'input/hidden', [
 		'name'  => 'action',
 		'value' => 'do_test',
-	) ); ?>
-	<?php $instance->form( 'input/submit', $args, array(
+	] ); ?>
+	<?php $instance->form( 'input/submit', $args, [
 		'name'  => 'execute',
 		'value' => 'Execute',
-	) ); ?>
+	] ); ?>
 	<?php $instance->form( 'close' ); ?>
 <?php else: ?>
     <h3><?php $instance->h( 'There is no tests.', true ); ?></h3>

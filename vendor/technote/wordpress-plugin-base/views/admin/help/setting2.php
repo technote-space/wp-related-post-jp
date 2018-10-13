@@ -31,7 +31,7 @@ Technote::get_instance( 'Sample_Plugin', __FILE__ );</pre>
         <pre>
 add_filter( 'sample_plugin-get_help_contents', function ( $contents, $slug ) {
 	if ( 'setting' === $slug ) {
-		return array();
+		return [];
 	}
 
 	return $contents;

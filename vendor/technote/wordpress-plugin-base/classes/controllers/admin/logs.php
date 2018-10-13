@@ -33,7 +33,7 @@ class Logs extends Base {
 	 * @return string
 	 */
 	public function get_page_title() {
-		return 'Logs';
+		return $this->apply_filters( 'logs_page_title', 'Logs' );
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Logs extends Base {
 		$search = trim( $search, '/' . DS );
 		$search = $root . $search;
 
-		$data    = array();
+		$data    = [];
 		$deleted = true;
 		if ( ! empty( $name ) && pathinfo( $name, PATHINFO_EXTENSION ) === $ext ) {
 			$file = $search . DS . $name;
@@ -84,7 +84,7 @@ class Logs extends Base {
 			}
 		}
 		$segments         = explode( '/', $path );
-		$segments_scandir = array();
+		$segments_scandir = [];
 		$seg              = '';
 		$count            = count( $segments );
 		$max              = $count - 1;
@@ -92,7 +92,7 @@ class Logs extends Base {
 			$segment = $segments[ $i ];
 			! empty( $seg ) and $seg .= '/';
 			$seg     .= $segment;
-			$exclude = array();
+			$exclude = [];
 			if ( $i < $count - 1 ) {
 				$exclude [] = $segments[ $i + 1 ];
 			}
@@ -100,17 +100,17 @@ class Logs extends Base {
 			$segments_scandir[ $seg ] = $scandir;
 		}
 
-		return array(
+		return [
 			'root'             => $this->scandir( $root, $ext ),
 			'search'           => $this->scandir( $search, $ext ),
-			'field'            => array(
-				'path' => ''
-			),
+			'field'            => [
+				'path' => '',
+			],
 			'segments'         => explode( '/', $path ),
 			'segments_scandir' => $segments_scandir,
 			'data'             => $data,
 			'deleted'          => $deleted,
-		);
+		];
 	}
 
 	/**
@@ -120,9 +120,9 @@ class Logs extends Base {
 	 *
 	 * @return array
 	 */
-	private function scandir( $dir, $ext, $exclude = array() ) {
-		$files = array();
-		$dirs  = array();
+	private function scandir( $dir, $ext, $exclude = [] ) {
+		$files = [];
+		$dirs  = [];
 		if ( is_dir( $dir ) ) {
 			foreach ( scandir( $dir ) as $file ) {
 				if ( $file === '.' || $file === '..' || in_array( $file, $exclude ) ) {
@@ -139,7 +139,7 @@ class Logs extends Base {
 			}
 		}
 
-		return array( $dirs, $files );
+		return [ $dirs, $files ];
 	}
 
 	/**
@@ -150,18 +150,18 @@ class Logs extends Base {
 	private function load_log_data( $path ) {
 		$data = @file_get_contents( $path );
 		if ( empty( $data ) ) {
-			return array();
+			return [];
 		}
 
 		try {
 			$exploded = explode( "\n", $data );
-			$ret      = array();
+			$ret      = [];
 			$time     = false;
 			$buffer   = '';
 			foreach ( $exploded as $item ) {
 				if ( preg_match( '#^\[(\d{4}\-\d{2}\-\d{2}\T\d{2}:\d{2}:\d{2}(\s*[+-]\d{2}:\d{2})?)\] (.+)#', $item, $matches ) ) {
 					if ( '' !== $buffer ) {
-						$ret[]  = array( $time, $buffer );
+						$ret[]  = [ $time, $buffer ];
 						$buffer = '';
 					}
 					$item = $matches[3];
@@ -174,7 +174,7 @@ class Logs extends Base {
 				$buffer .= $item;
 			}
 			if ( false !== $time && '' !== $buffer ) {
-				$ret[] = array( $time, $buffer );
+				$ret[] = [ $time, $buffer ];
 			}
 			if ( ! empty( $data ) && empty( $ret ) ) {
 				return false;

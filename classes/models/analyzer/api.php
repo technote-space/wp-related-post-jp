@@ -39,7 +39,7 @@ abstract class Api implements \Technote\Interfaces\Singleton, \Technote\Interfac
 	 * @return array
 	 */
 	protected function get_curl_options() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -84,11 +84,11 @@ abstract class Api implements \Technote\Interfaces\Singleton, \Technote\Interfac
 		try {
 			$ch      = curl_init( $this->get_url() );
 			$options = $this->get_curl_options();
-			$options += array(
+			$options += [
 				CURLOPT_POST           => true,
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_POSTFIELDS     => $this->get_post_fields( $this->get_params( $text, $classes ) ),
-			);
+			];
 			curl_setopt_array( $ch, $options );
 
 			$this->pre_send( $ch );
@@ -150,7 +150,7 @@ abstract class Api implements \Technote\Interfaces\Singleton, \Technote\Interfac
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function count( $text, $classes = array() ) {
+	public function count( $text, $classes = [] ) {
 		$limit = $this->get_text_limit();
 		if ( $limit > 0 ) {
 			$text = substr( $text, 0, $limit );

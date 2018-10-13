@@ -43,12 +43,12 @@ class Yahoo extends Api {
 	 * @return array
 	 */
 	protected function get_params( $text, $classes ) {
-		return array(
+		return [
 			'sentence' => $text,
 			'results'  => 'uniq',
 			'response' => 'surface',
 			'filter'   => $this->class_to_filter( $classes ),
-		);
+		];
 	}
 
 	/**
@@ -57,7 +57,7 @@ class Yahoo extends Api {
 	 * @return string
 	 */
 	private function class_to_filter( $classes ) {
-		$map = array(
+		$map = [
 			'形容詞'  => 1,
 			'形容動詞' => 2,
 			'感動詞'  => 3,
@@ -71,7 +71,7 @@ class Yahoo extends Api {
 			'助詞'   => 11,
 			'助動詞'  => 12,
 			'特殊'   => 13,
-		);
+		];
 
 		$ret = implode( ',', array_unique( array_filter( array_map( function ( $class ) use ( $map ) {
 			return isset( $map[ $class ] ) ? $map[ $class ] : false;
@@ -89,9 +89,9 @@ class Yahoo extends Api {
 	protected function get_curl_options() {
 		$app_id = $this->apply_filters( 'yahoo_client_id' );
 
-		return array(
+		return [
 			CURLOPT_USERAGENT => "Yahoo AppID: $app_id",
-		);
+		];
 	}
 
 	/**

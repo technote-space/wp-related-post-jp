@@ -41,28 +41,28 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @param array $update_word_ids
 	 * @param bool $init_ranking_flag
 	 */
-	public function delete( $post_id, $update_word_ids = array(), $init_ranking_flag = true ) {
-		$word_ids   = array();
-		$post_types = array();
+	public function delete( $post_id, $update_word_ids = [], $init_ranking_flag = true ) {
+		$word_ids   = [];
+		$post_types = [];
 		if ( $this->app->db->transaction( function () use ( $post_id, &$word_ids, &$post_types, $update_word_ids ) {
 
-			$row = $this->app->db->select( 'document', array(
+			$row = $this->app->db->select( 'document', [
 				'post_id' => $post_id,
-			), array( 'id', 'post_type' ), 1 );
+			], [ 'id', 'post_type' ], 1 );
 
 			if ( ! empty( $row ) ) {
 				$document_id = $row['id'];
 				$post_type   = $row['post_type'];
 				$post_types  = $this->control->get_post_types( $post_type );
-				$word_ids    = \Technote\Models\Utility::array_pluck( $this->app->db->select( 'rel_document_word', array(
+				$word_ids    = \Technote\Models\Utility::array_pluck( $this->app->db->select( 'rel_document_word', [
 					'document_id' => $document_id,
-				), 'DISTINCT word_id' ), 'word_id' );
-				$this->app->db->delete( 'rel_document_word', array(
+				], 'DISTINCT word_id' ), 'word_id' );
+				$this->app->db->delete( 'rel_document_word', [
 					'document_id' => $document_id,
-				) );
-				$this->app->db->delete( 'document', array(
+				] );
+				$this->app->db->delete( 'document', [
 					'post_id' => $post_id,
-				) );
+				] );
 
 				if ( ! empty( $post_types ) ) {
 					$N = $this->calc_n( $post_types ) - 1;
@@ -72,12 +72,12 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					$nis      = $this->calc_nis( $post_types, $word_ids );
 					foreach ( $word_ids as $word_id ) {
 						$ni = \Technote\Models\Utility::array_get( $nis, $word_id, 0 );
-						$this->app->db->update( 'word', array(
+						$this->app->db->update( 'word', [
 							'count' => $ni,
 							'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $N, $ni ),
-						), array(
+						], [
 							'id' => $word_id,
-						) );
+						] );
 					}
 				}
 			}
@@ -100,7 +100,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		$post_type  = $post->post_type;
 		$post_types = $this->control->get_post_types( $post_type );
 		if ( empty( $post_types ) ) {
-			return array();
+			return [];
 		}
 
 		$data     = $this->parse( $post );
@@ -110,28 +110,28 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 
 		if ( $this->app->db->transaction( function () use ( $post_id, $post_type, $post_types, $data, $dl, &$word_ids, $update_word_now ) {
 			$this->delete( $post_id, $word_ids, false );
-			$this->app->db->insert( 'document', array(
+			$this->app->db->insert( 'document', [
 				'post_id'   => $post_id,
 				'post_type' => $post_type,
 				'count'     => $dl,
-			) );
+			] );
 			$document_id = $this->app->db->get_insert_id();
 			$max         = 0;
 			if ( count( $data ) > 0 ) {
 				$max = max( $data );
 			}
-			$this->app->db->bulk_insert( 'rel_document_word', array(
+			$this->app->db->bulk_insert( 'rel_document_word', [
 				'document_id',
 				'word_id',
 				'count',
 				'tf',
-			), array_map( function ( $word_id, $count ) use ( $document_id, $dl, $max ) {
-				return array(
+			], array_map( function ( $word_id, $count ) use ( $document_id, $dl, $max ) {
+				return [
 					$document_id,
 					$word_id,
 					$count,
 					$this->calc_tf( $count, $dl, $max ),
-				);
+				];
 			}, array_keys( $data ), array_values( $data ) ) );
 
 			if ( $update_word_now ) {
@@ -148,7 +148,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			$this->setup_ranking( $post_types, $word_ids, $post_id );
 		}
 
-		return array( $post_types, $word_ids );
+		return [ $post_types, $word_ids ];
 	}
 
 	/**
@@ -165,9 +165,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			}
 
 			$nis   = $this->calc_nis( $post_types, $word_ids );
-			$words = $this->app->db->select( 'word', array(
-				'id' => array( 'in', $word_ids ),
-			), array( 'word_id', 'count', 'idf' ) );
+			$words = $this->app->db->select( 'word', [
+				'id' => [ 'in', $word_ids ],
+			], [ 'word_id', 'count', 'idf' ] );
 			$words = array_combine( \Technote\Models\Utility::array_pluck( $words, 'word_id' ), $words );
 
 			foreach ( $word_ids as $word_id ) {
@@ -183,12 +183,12 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				$new_c   = $ni;
 				$new_idf = $ni <= 0 ? 0 : round( $this->calc_idf( $N, $ni ), 6 );
 				if ( $c != $new_c || $idf != $new_idf ) {
-					$this->app->db->update( 'word', array(
+					$this->app->db->update( 'word', [
 						'count' => $ni,
 						'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $N, $ni ),
-					), array(
+					], [
 						'id' => $word_id,
-					) );
+					] );
 				}
 				if ( $idf == $new_idf ) {
 					// idf の変化なし
@@ -207,52 +207,52 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return array
 	 */
 	private function get_update_word_ids( $post_types, $N ) {
-		$word_ids = array();
+		$word_ids = [];
 		$this->app->db->transaction( function () use ( $post_types, $N, &$word_ids ) {
 			$prev_N = $this->app->get_option( 'document_count' );
 			if ( $prev_N != $N ) {
 				$this->app->option->set( 'document_count', $N );
-				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( array(
-					array( 'document', 'd' ),
-				), array(
-					'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-				), array(
-					'DISTINCT d.post_id' => array( 'AS', 'post_id' )
-				) ), 'post_id' );
+				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
+					[ 'document', 'd' ],
+				], [
+					'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+				], [
+					'DISTINCT d.post_id' => [ 'AS', 'post_id' ],
+				] ), 'post_id' );
 			} else {
 				/** @var \wpdb $wpdb */
 				global $wpdb;
-				$subquery = $this->app->db->get_select_sql( array( array( $wpdb->postmeta, 'pm' ) ), array(
-					'pm.post_id'  => array( '=', 'd.post_id', true ),
-					'pm.meta_key' => array( '=', $this->app->post->get_meta_key( 'word_updated' ) ),
-				), '"X"' );
+				$subquery = $this->app->db->get_select_sql( [ [ $wpdb->postmeta, 'pm' ] ], [
+					'pm.post_id'  => [ '=', 'd.post_id', true ],
+					'pm.meta_key' => [ '=', $this->app->post->get_meta_key( 'word_updated' ) ],
+				], '"X"' );
 
-				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( array(
-					array( 'document', 'd' ),
-				), array(
-					'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
+				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
+					[ 'document', 'd' ],
+				], [
+					'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 					'NOT EXISTS'  => $subquery,
-				), array(
-					'DISTINCT d.post_id' => array( 'AS', 'post_id' )
-				) ), 'post_id' );
+				], [
+					'DISTINCT d.post_id' => [ 'AS', 'post_id' ],
+				] ), 'post_id' );
 			}
 
-			$word_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( array(
-				array( 'rel_document_word', 'w' ),
-				array(
-					array( 'document', 'd' ),
+			$word_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
+				[ 'rel_document_word', 'w' ],
+				[
+					[ 'document', 'd' ],
 					'INNER JOIN',
-					array(
+					[
 						'd.document_id',
 						'=',
-						'w.document_id'
-					),
-				),
-			), array(
-				'd.post_id' => array( 'in', $post_ids ),
-			), array(
-				'DISTINCT w.word_id' => array( 'AS', 'word_id' )
-			) ), 'word_id' );
+						'w.document_id',
+					],
+				],
+			], [
+				'd.post_id' => [ 'in', $post_ids ],
+			], [
+				'DISTINCT w.word_id' => [ 'AS', 'word_id' ],
+			] ), 'word_id' );
 
 			foreach ( $post_ids as $post_id ) {
 				$this->app->post->set( $post_id, 'word_updated', 1 );
@@ -306,15 +306,15 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				$important_words = $this->get_important_words( $post_id );
 				$ranking         = $this->get_ranking( $post_id, $important_words, $post_types );
 
-				$this->app->db->delete( 'ranking', array(
+				$this->app->db->delete( 'ranking', [
 					'post_id' => $post_id,
-				) );
+				] );
 				foreach ( $ranking as $item ) {
-					$this->app->db->insert( 'ranking', array(
+					$this->app->db->insert( 'ranking', [
 						'post_id'      => $post_id,
 						'rank_post_id' => $item['post_id'],
 						'score'        => $item['score'],
-					) );
+					] );
 				}
 				$this->app->post->set( $post_id, 'setup_ranking', 1 );
 			} else {
@@ -351,14 +351,14 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 */
 	private function convert_word_data( $data, $register ) {
 		$words = array_keys( $data );
-		$words = $this->app->db->select( 'word', array(
-			'word' => array( 'in', $words ),
-		), array(
+		$words = $this->app->db->select( 'word', [
+			'word' => [ 'in', $words ],
+		], [
 			'id',
 			'word',
-		) );
+		] );
 		$words = array_combine( \Technote\Models\Utility::array_pluck( $words, 'word' ), $words );
-		$ret   = array();
+		$ret   = [];
 		$this->app->db->transaction( function () use ( $data, $register, $words, &$ret ) {
 			foreach ( $data as $word => $count ) {
 				$row     = \Technote\Models\Utility::array_get( $words, $word );
@@ -380,9 +380,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	private function word_to_id( $word, $row, $register ) {
 		if ( empty( $row ) ) {
 			if ( $register ) {
-				$this->app->db->insert( 'word', array(
+				$this->app->db->insert( 'word', [
 					'word' => $word,
-				) );
+				] );
 				$word_id = $this->app->db->get_insert_id();
 			} else {
 				$word_id = 0;
@@ -426,25 +426,25 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return int
 	 */
 	private function calc_n( $post_types ) {
-		return \Technote\Models\Utility::array_get( $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
+		return \Technote\Models\Utility::array_get( $this->app->db->select( [
+			[ 'rel_document_word', 'w' ],
+			[
+				[ 'document', 'd' ],
 				'INNER JOIN',
-				array(
+				[
 					'd.document_id',
 					'=',
-					'w.document_id'
-				),
-			),
-		), array(
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-		), array(
-			'DISTINCT d.document_id' => array(
+					'w.document_id',
+				],
+			],
+		], [
+			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+		], [
+			'DISTINCT d.document_id' => [
 				'COUNT',
-				'N'
-			),
-		), 1, null, null ), 'N' );
+				'N',
+			],
+		], 1, null, null ), 'N' );
 	}
 
 	/**
@@ -454,33 +454,33 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return array
 	 */
 	private function calc_nis( $post_types, $word_ids ) {
-		$where = array(
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array(
+		$where = [
+			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [
 				'in',
-				$post_types
-			)
-		);
+				$post_types,
+			],
+		];
 		if ( isset( $word_ids ) ) {
-			$where['w.word_id'] = array( 'in', $word_ids );
+			$where['w.word_id'] = [ 'in', $word_ids ];
 		}
-		$data = $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
+		$data = $this->app->db->select( [
+			[ 'rel_document_word', 'w' ],
+			[
+				[ 'document', 'd' ],
 				'INNER JOIN',
-				array(
+				[
 					'd.document_id',
 					'=',
-					'w.document_id'
-				),
-			),
-		), $where, array(
+					'w.document_id',
+				],
+			],
+		], $where, [
 			'w.word_id',
-			'DISTINCT d.document_id' => array(
+			'DISTINCT d.document_id' => [
 				'COUNT',
-				'N'
-			),
-		), null, null, null, array( 'w.word_id' ) );
+				'N',
+			],
+		], null, null, null, [ 'w.word_id' ] );
 
 		return array_combine( \Technote\Models\Utility::array_pluck( $data, 'word_id' ), \Technote\Models\Utility::array_pluck( $data, 'N' ) );
 	}
@@ -509,23 +509,23 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return array
 	 */
 	private function get_update_post_ids( $post_types, $word_ids ) {
-		return \Technote\Models\Utility::array_pluck( $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
+		return \Technote\Models\Utility::array_pluck( $this->app->db->select( [
+			[ 'rel_document_word', 'w' ],
+			[
+				[ 'document', 'd' ],
 				'INNER JOIN',
-				array(
+				[
 					'd.document_id',
 					'=',
-					'w.document_id'
-				),
-			),
-		), array(
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			'w.word_id'   => array( 'in', $word_ids ),
-		), array(
-			'DISTINCT d.post_id' => array( 'AS', 'post_id' )
-		) ), 'post_id' );
+					'w.document_id',
+				],
+			],
+		], [
+			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'w.word_id'   => [ 'in', $word_ids ],
+		], [
+			'DISTINCT d.post_id' => [ 'AS', 'post_id' ],
+		] ), 'post_id' );
 	}
 
 	/**
@@ -534,38 +534,38 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return array
 	 */
 	public function get_important_words( $post_id ) {
-		return $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
+		return $this->app->db->select( [
+			[ 'rel_document_word', 'w' ],
+			[
+				[ 'document', 'd' ],
 				'INNER JOIN',
-				array(
+				[
 					'w.document_id',
 					'=',
-					'd.document_id'
-				)
-			),
-			array(
-				array( 'word', 'word' ),
+					'd.document_id',
+				],
+			],
+			[
+				[ 'word', 'word' ],
 				'INNER JOIN',
-				array(
+				[
 					'w.word_id',
 					'=',
-					'word.word_id'
-				)
-			),
-		), array(
+					'word.word_id',
+				],
+			],
+		], [
 			'd.post_id' => $post_id,
-		), array(
+		], [
 			'w.word_id',
-			'w.tf * word.idf' => array( 'AS', 'tfidf' ),
+			'w.tf * word.idf' => [ 'AS', 'tfidf' ],
 			'w.count',
 			'w.tf',
 			'word.word',
 			'word.idf',
-		), $this->control->get_important_words_count(), null, array(
+		], $this->control->get_important_words_count(), null, [
 			'tfidf' => 'desc',
-		) );
+		] );
 	}
 
 	/**
@@ -591,11 +591,11 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return float
 	 */
 	private function calc_avg_dl( $post_types ) {
-		return \Technote\Models\Utility::array_get( $this->app->db->select( 'document', array(
-			'post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-		), array(
-			'count' => array( 'AVG', 'cnt' ),
-		), 1 ), 'cnt' );
+		return \Technote\Models\Utility::array_get( $this->app->db->select( 'document', [
+			'post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+		], [
+			'count' => [ 'AVG', 'cnt' ],
+		], 1 ), 'cnt' );
 	}
 
 	/**
@@ -612,10 +612,10 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 */
 	public function get_ranking( $post_id, $words, $post_types, $is_count = false, $count = null, $page = null ) {
 		if ( empty( $words ) ) {
-			return array();
+			return [];
 		}
 
-		$table = array();
+		$table = [];
 		foreach ( $words as $word ) {
 			$word_id = $word['word_id'];
 			$n       = $word['count'];
@@ -632,67 +632,67 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		}
 
 		if ( $is_count ) {
-			$field    = array(
-				'DISTINCT d.post_id' => array(
+			$field    = [
+				'DISTINCT d.post_id' => [
 					'COUNT',
-					'num'
-				)
-			);
-			$order_by = array();
-			$group_by = array();
+					'num',
+				],
+			];
+			$order_by = [];
+			$group_by = [];
 			$count    = 1;
 		} else {
 			$k1       = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
 			$b        = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
 			$avgdl    = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
-			$field    = array(
-				"word.idf * t.n * ( w.tf * ( $k1 + 1 ) ) / ( w.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => array(
+			$field    = [
+				"word.idf * t.n * ( w.tf * ( $k1 + 1 ) ) / ( w.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => [
 					'SUM',
-					'score'
-				),
+					'score',
+				],
 				'd.post_id',
-			);
-			$order_by = array(
+			];
+			$order_by = [
 				'score' => 'desc',
-			);
-			$group_by = array(
-				'd.post_id'
-			);
+			];
+			$group_by = [
+				'd.post_id',
+			];
 		}
 
-		$results = $this->app->db->select( array(
-			array( 'rel_document_word', 'w' ),
-			array(
-				array( 'document', 'd' ),
+		$results = $this->app->db->select( [
+			[ 'rel_document_word', 'w' ],
+			[
+				[ 'document', 'd' ],
 				'INNER JOIN',
-				array(
+				[
 					'w.document_id',
 					'=',
-					'd.document_id'
-				),
-			),
-			array(
-				array( 'word', 'word' ),
+					'd.document_id',
+				],
+			],
+			[
+				[ 'word', 'word' ],
 				'INNER JOIN',
-				array(
+				[
 					'w.word_id',
 					'=',
-					'word.word_id'
-				),
-			),
-			array(
-				array( $table, 't' ),
+					'word.word_id',
+				],
+			],
+			[
+				[ $table, 't' ],
 				'INNER JOIN',
-				array(
+				[
 					't.word_id',
 					'=',
 					'w.word_id',
-				),
-			),
-		), array(
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : array( 'in', $post_types ),
-			'd.post_id'   => array( '!=', $post_id ),
-		), $field, $count, $offset, $order_by, $group_by );
+				],
+			],
+		], [
+			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'd.post_id'   => [ '!=', $post_id ],
+		], $field, $count, $offset, $order_by, $group_by );
 
 		if ( $is_count ) {
 			return \Technote\Models\Utility::array_get( $results, 'num', 0 );

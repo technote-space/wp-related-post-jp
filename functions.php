@@ -38,10 +38,10 @@ add_filter( 'related_post-get_menu_slug', function () {
 // ヘルプ
 add_filter( 'related_post-get_help_contents', function ( $contents, $slug ) {
 	if ( 'setting' === $slug ) {
-		return array(
+		return [
 			'title' => 'カスタマイズ',
 			'view'  => 'setting',
-		);
+		];
 	}
 
 	return $contents;

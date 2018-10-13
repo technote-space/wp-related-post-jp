@@ -14,47 +14,47 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
-	'minify' => array(
-		'admin_print_footer_scripts' => array(
-			'output_js' => array( 999 ),
-		),
-		'admin_head'                 => array(
-			'output_css' => array( 999 ),
-		),
-		'admin_footer'               => array(
-			'output_css' => array( 999 ),
-		),
+	'minify' => [
+		'admin_print_footer_scripts' => [
+			'output_js' => [ 999 ],
+		],
+		'admin_head'                 => [
+			'output_css' => [ 999 ],
+		],
+		'admin_footer'               => [
+			'output_css' => [ 999 ],
+		],
 
-		'wp_print_footer_scripts' => array(
-			'output_js'  => array( 999 ),
-			'output_css' => array( 998 ),
-		),
-		'wp_print_styles'         => array(
-			'output_css' => array( 999 ),
-		),
-	),
+		'wp_print_footer_scripts' => [
+			'output_js'  => [ 999 ],
+			'output_css' => [ 998 ],
+		],
+		'wp_print_styles'         => [
+			'output_css' => [ 999 ],
+		],
+	],
 
-	'loader->admin' => array(
-		'admin_menu'    => array(
-			'add_menu' => array(),
-		),
-		'admin_notices' => array(
-			'admin_notice' => array(),
-		),
-	),
+	'loader->admin' => [
+		'admin_menu'    => [
+			'add_menu' => [],
+		],
+		'admin_notices' => [
+			'admin_notice' => [],
+		],
+	],
 
-	'loader->api' => array(
-		'rest_api_init' => array(
-			'register_api' => array(),
-		),
-		'wp_footer'     => array(
-			'register_script' => array(),
-		),
-		'admin_footer'  => array(
-			'register_script' => array(),
-		),
-	),
+	'loader->api' => [
+		'rest_api_init' => [
+			'register_api' => [],
+		],
+		'wp_footer'     => [
+			'register_script' => [],
+		],
+		'admin_footer'  => [
+			'register_script' => [],
+		],
+	],
 
-);
+];

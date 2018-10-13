@@ -63,11 +63,11 @@ class Test implements \Technote\Interfaces\Loader {
 	 */
 	private function get_tests() {
 		if ( ! $this->is_valid ) {
-			return array();
+			return [];
 		}
 
 		if ( ! isset( $this->tests ) ) {
-			$this->tests = array();
+			$this->tests = [];
 			/** @var \Technote\Tests\Base $class */
 			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'tests', '\Technote\Tests\Base' ) as $class ) {
 				$slug = $class->class_name;
@@ -104,10 +104,10 @@ class Test implements \Technote\Interfaces\Loader {
 		/** @noinspection PhpUnusedParameterInspection */
 		$page, $add_namespace
 	) {
-		return array(
+		return [
 			$this->app->define->plugin_namespace . '\\Tests',
 			$this->app->define->lib_namespace . '\\Tests',
-		);
+		];
 	}
 
 	/**
@@ -115,10 +115,10 @@ class Test implements \Technote\Interfaces\Loader {
 	 */
 	public function do_tests() {
 		if ( ! $this->is_valid ) {
-			return array();
+			return [];
 		}
 
-		$results = array();
+		$results = [];
 		foreach ( $this->get_tests() as $slug => $class ) {
 			$results[] = $this->do_test( $class );
 		}
@@ -136,7 +136,7 @@ class Test implements \Technote\Interfaces\Loader {
 		$suite->setBackupGlobals( false );
 		$result = $suite->run();
 
-		$dump = array();
+		$dump = [];
 		foreach ( $result->topTestSuite()->tests() as $item ) {
 			if ( $item instanceof \Technote\Interfaces\Test ) {
 				$dump = array_merge( $dump, $item->get_dump_objects() );
@@ -149,14 +149,14 @@ class Test implements \Technote\Interfaces\Loader {
 			}
 		}
 
-		return array(
+		return [
 			$result->wasSuccessful(),
-			$this->get_view( 'admin/include/test_result', array(
+			$this->get_view( 'admin/include/test_result', [
 				'result' => $result,
 				'class'  => $class,
-				'dump'   => $dump
-			) ),
-		);
+				'dump'   => $dump,
+			] ),
+		];
 	}
 
 }

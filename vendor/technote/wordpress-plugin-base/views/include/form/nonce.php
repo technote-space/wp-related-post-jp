@@ -18,7 +18,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var string $nonce_key */
 /** @var string $nonce_value */
 ?>
-<?php $instance->form( 'input/hidden', array_merge( $args, array(
+<?php $instance->form( 'input/hidden', array_merge( $args, [
 	'name'  => $nonce_key,
 	'value' => $nonce_value,
-) ) ); ?>
+] ) ); ?>

@@ -14,9 +14,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
-    // example
+	// example
 //	'test' => array(
 //		'id'      => 'test_id',     // optional [default = $table_name . '_id']
 //		'columns' => array(
@@ -54,4 +54,4 @@ return array(
 //		'delete'  => 'logical', // physical or logical [default = physical]
 //	),
 
-);
+];

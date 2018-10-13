@@ -74,21 +74,21 @@ class OptionTest extends \Technote\Tests\TestCase {
 	 * @return array
 	 */
 	private static function get_test_value() {
-		return array(
-			array( 'technote_test_option_bool', true ),
-			array( 'technote_test_option_int', 123 ),
-			array( 'technote_test_option_float', 0.987 ),
-			array( 'technote_test_option_string', 'test' ),
-			array(
+		return [
+			[ 'technote_test_option_bool', true ],
+			[ 'technote_test_option_int', 123 ],
+			[ 'technote_test_option_float', 0.987 ],
+			[ 'technote_test_option_string', 'test' ],
+			[
 				'technote_test_option_array',
-				array(
+				[
 					'test1' => 'test1',
 					'test2' => 2,
 					'test3' => false,
-				)
-			),
-			array( 'technote_test_option_null', null ),
-		);
+				],
+			],
+			[ 'technote_test_option_null', null ],
+		];
 	}
 
 	/**

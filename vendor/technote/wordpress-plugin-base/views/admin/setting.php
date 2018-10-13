@@ -51,17 +51,18 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                         <label for="<?php $instance->h( $detail['key'] ); ?>">
 							<?php $instance->h( $detail['label'], true ); ?>
 							<?php if ( ! empty( $detail['info'] ) ): ?>
-                                <span class="<?php $instance->id(); ?>-setting-detail">[<?php $instance->h( implode( ', ', $detail['info'] ) ); ?>]</span>
+                                <span class="<?php $instance->id(); ?>-setting-detail">[<?php $instance->h( implode( ', ', $detail['info'] ) ); ?>
+                                    ]</span>
 							<?php endif; ?>
                         </label>
                     </td>
                     <td>
-						<?php $instance->form( 'input/text', $args, array(
+						<?php $instance->form( 'input/text', $args, [
 							'id'         => $detail['key'],
 							'name'       => $detail['name'],
 							'value'      => $detail['saved'],
-							'attributes' => array( 'placeholder' => $detail['placeholder'] ),
-						) ); ?>
+							'attributes' => [ 'placeholder' => $detail['placeholder'] ],
+						] ); ?>
                     </td>
                     <td>
 						<?php $instance->h( $detail['used'] ); ?>
@@ -74,9 +75,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	<?php endif; ?>
 </table>
 
-<?php $instance->form( 'input/submit', $args, array(
+<?php $instance->form( 'input/submit', $args, [
 	'name'  => 'update',
 	'value' => 'Update',
-	'class' => 'button-primary'
-) ); ?>
+	'class' => 'button-primary',
+] ); ?>
 <?php $instance->form( 'close', $args ); ?>

@@ -14,7 +14,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	exit;
 }
 
-return array(
+return [
 
 	// table prefix
 	'table_prefix'  => '',
@@ -43,4 +43,4 @@ return array(
 	// modal class
 	'modal_class'   => '',
 
-);
+];

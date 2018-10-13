@@ -43,12 +43,12 @@ class Goo extends Api {
 	 * @return array
 	 */
 	protected function get_params( $text, $classes ) {
-		return array(
+		return [
 			'app_id'      => $this->apply_filters( 'goo_app_id' ),
 			'sentence'    => $text,
 			'info_filter' => 'form',
 			'pos_filter'  => $this->class_to_filter( $classes ),
-		);
+		];
 	}
 
 	/**
@@ -68,11 +68,11 @@ class Goo extends Api {
 	 * @return array
 	 */
 	protected function get_curl_options() {
-		return array(
-			CURLOPT_HTTPHEADER => array(
-				'Content-Type: application/json'
-			),
-		);
+		return [
+			CURLOPT_HTTPHEADER => [
+				'Content-Type: application/json',
+			],
+		];
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Goo extends Api {
 	 */
 	protected function parse_data( $data ) {
 		$data = \Technote\Models\Utility::flatten( $data );
-		$ret  = array();
+		$ret  = [];
 		foreach ( $data as $word ) {
 			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
 			$ret[ $word ] ++;
