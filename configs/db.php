@@ -40,26 +40,18 @@ return [
 
 	'document' => [
 		'columns' => [
-			'post_id'   => [
+			'post_id' => [
 				'type'     => 'BIGINT(20)',
 				'unsigned' => true,
 				'null'     => false,
 			],
-			'post_type' => [
-				'type'    => 'VARCHAR(20)',
-				'null'    => false,
-				'default' => 'post',
-			],
-			'count'     => [
+			'count'   => [
 				'type'     => 'INT(11)',
 				'unsigned' => true,
 				'null'     => false,
 			],
 		],
 		'index'   => [
-			'key'    => [
-				'post_type' => [ 'post_type' ],
-			],
 			'unique' => [
 				'uk_post_id' => [ 'post_id' ],
 			],

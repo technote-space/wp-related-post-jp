@@ -46,9 +46,22 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		$post_types = [];
 		if ( $this->app->db->transaction( function () use ( $post_id, &$word_ids, &$post_types, $update_word_ids ) {
 
-			$row = $this->app->db->select( 'document', [
-				'post_id' => $post_id,
-			], [ 'id', 'post_type' ], 1 );
+			/** @var \wpdb $wpdb */
+			global $wpdb;
+			$row = $this->app->db->select( [
+				[ 'document', 'd' ],
+				[
+					[ $wpdb->posts, 'p' ],
+					'INNER JOIN',
+					[
+						'd.post_id',
+						'=',
+						'p.ID',
+					],
+				],
+			], [
+				'd.post_id' => $post_id,
+			], [ 'd.document_id' => 'id', 'p.post_type' ], 1 );
 
 			if ( ! empty( $row ) ) {
 				$document_id = $row['id'];
@@ -99,7 +112,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		$post_id    = $post->ID;
 		$post_type  = $post->post_type;
 		$post_types = $this->control->get_post_types( $post_type );
-		if ( empty( $post_types ) ) {
+		if ( empty( $post_types ) || 'publish' !== $post->post_status ) {
 			return [];
 		}
 
@@ -111,9 +124,8 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		if ( $this->app->db->transaction( function () use ( $post_id, $post_type, $post_types, $data, $dl, &$word_ids, $update_word_now ) {
 			$this->delete( $post_id, $word_ids, false );
 			$this->app->db->insert( 'document', [
-				'post_id'   => $post_id,
-				'post_type' => $post_type,
-				'count'     => $dl,
+				'post_id' => $post_id,
+				'count'   => $dl,
 			] );
 			$document_id = $this->app->db->get_insert_id();
 			$max         = 0;
@@ -209,19 +221,29 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	private function get_update_word_ids( $post_types, $N ) {
 		$word_ids = [];
 		$this->app->db->transaction( function () use ( $post_types, $N, &$word_ids ) {
+			/** @var \wpdb $wpdb */
+			global $wpdb;
 			$prev_N = $this->app->get_option( 'document_count' );
 			if ( $prev_N != $N ) {
 				$this->app->option->set( 'document_count', $N );
 				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
 					[ 'document', 'd' ],
+					[
+						[ $wpdb->posts, 'p' ],
+						'INNER JOIN',
+						[
+							'd.post_id',
+							'=',
+							'p.ID',
+						],
+					],
 				], [
-					'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+					'p.post_status' => 'publish',
+					'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 				], [
-					'DISTINCT d.post_id' => [ 'AS', 'post_id' ],
+					'DISTINCT d.post_id' => 'post_id',
 				] ), 'post_id' );
 			} else {
-				/** @var \wpdb $wpdb */
-				global $wpdb;
 				$subquery = $this->app->db->get_select_sql( [ [ $wpdb->postmeta, 'pm' ] ], [
 					'pm.post_id'  => [ '=', 'd.post_id', true ],
 					'pm.meta_key' => [ '=', $this->app->post->get_meta_key( 'word_updated' ) ],
@@ -229,11 +251,21 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 
 				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
 					[ 'document', 'd' ],
+					[
+						[ $wpdb->posts, 'p' ],
+						'INNER JOIN',
+						[
+							'd.post_id',
+							'=',
+							'p.ID',
+						],
+					],
 				], [
-					'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-					'NOT EXISTS'  => $subquery,
+					'p.post_status' => 'publish',
+					'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+					'NOT EXISTS'    => $subquery,
 				], [
-					'DISTINCT d.post_id' => [ 'AS', 'post_id' ],
+					'DISTINCT d.post_id' => 'post_id',
 				] ), 'post_id' );
 			}
 
@@ -248,10 +280,20 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 						'w.document_id',
 					],
 				],
+				[
+					[ $wpdb->posts, 'p' ],
+					'INNER JOIN',
+					[
+						'd.post_id',
+						'=',
+						'p.ID',
+					],
+				],
 			], [
-				'd.post_id' => [ 'in', $post_ids ],
+				'd.post_id'     => [ 'in', $post_ids ],
+				'p.post_status' => 'publish',
 			], [
-				'DISTINCT w.word_id' => [ 'AS', 'word_id' ],
+				'DISTINCT w.word_id' => 'word_id',
 			] ), 'word_id' );
 
 			foreach ( $post_ids as $post_id ) {
@@ -426,6 +468,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return int
 	 */
 	private function calc_n( $post_types ) {
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
 		return \Technote\Models\Utility::array_get( $this->app->db->select( [
 			[ 'rel_document_word', 'w' ],
 			[
@@ -437,8 +482,18 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'w.document_id',
 				],
 			],
+			[
+				[ $wpdb->posts, 'p' ],
+				'INNER JOIN',
+				[
+					'd.post_id',
+					'=',
+					'p.ID',
+				],
+			],
 		], [
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 		], [
 			'DISTINCT d.document_id' => [
 				'COUNT',
@@ -454,11 +509,11 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return array
 	 */
 	private function calc_nis( $post_types, $word_ids ) {
+		/** @var \wpdb $wpdb */
+		global $wpdb;
 		$where = [
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [
-				'in',
-				$post_types,
-			],
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 		];
 		if ( isset( $word_ids ) ) {
 			$where['w.word_id'] = [ 'in', $word_ids ];
@@ -472,6 +527,15 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'd.document_id',
 					'=',
 					'w.document_id',
+				],
+			],
+			[
+				[ $wpdb->posts, 'p' ],
+				'INNER JOIN',
+				[
+					'd.post_id',
+					'=',
+					'p.ID',
 				],
 			],
 		], $where, [
@@ -509,6 +573,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return array
 	 */
 	private function get_update_post_ids( $post_types, $word_ids ) {
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
 		return \Technote\Models\Utility::array_pluck( $this->app->db->select( [
 			[ 'rel_document_word', 'w' ],
 			[
@@ -520,11 +587,21 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'w.document_id',
 				],
 			],
+			[
+				[ $wpdb->posts, 'p' ],
+				'INNER JOIN',
+				[
+					'd.post_id',
+					'=',
+					'p.ID',
+				],
+			],
 		], [
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'w.word_id'   => [ 'in', $word_ids ],
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'w.word_id'     => [ 'in', $word_ids ],
 		], [
-			'DISTINCT d.post_id' => [ 'AS', 'post_id' ],
+			'DISTINCT d.post_id' => 'post_id',
 		] ), 'post_id' );
 	}
 
@@ -558,7 +635,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			'd.post_id' => $post_id,
 		], [
 			'w.word_id',
-			'w.tf * word.idf' => [ 'AS', 'tfidf' ],
+			'w.tf * word.idf' => 'tfidf',
 			'w.count',
 			'w.tf',
 			'word.word',
@@ -591,10 +668,25 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 * @return float
 	 */
 	private function calc_avg_dl( $post_types ) {
-		return \Technote\Models\Utility::array_get( $this->app->db->select( 'document', [
-			'post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
+		return \Technote\Models\Utility::array_get( $this->app->db->select( [
+			[ 'document', 'd' ],
+			[
+				[ $wpdb->posts, 'p' ],
+				'INNER JOIN',
+				[
+					'd.post_id',
+					'=',
+					'p.ID',
+				],
+			],
 		], [
-			'count' => [ 'AVG', 'cnt' ],
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+		], [
+			'd.count' => [ 'AVG', 'cnt' ],
 		], 1 ), 'cnt' );
 	}
 
@@ -660,6 +752,8 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			];
 		}
 
+		/** @var \wpdb $wpdb */
+		global $wpdb;
 		$results = $this->app->db->select( [
 			[ 'rel_document_word', 'w' ],
 			[
@@ -669,6 +763,15 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'w.document_id',
 					'=',
 					'd.document_id',
+				],
+			],
+			[
+				[ $wpdb->posts, 'p' ],
+				'INNER JOIN',
+				[
+					'd.post_id',
+					'=',
+					'p.ID',
 				],
 			],
 			[
@@ -690,8 +793,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				],
 			],
 		], [
-			'd.post_type' => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'd.post_id'   => [ '!=', $post_id ],
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'd.post_id'     => [ '!=', $post_id ],
 		], $field, $count, $offset, $order_by, $group_by );
 
 		if ( $is_count ) {

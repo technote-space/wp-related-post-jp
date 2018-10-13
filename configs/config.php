@@ -21,7 +21,7 @@ return [
 	'plugin_version'       => '1.0.2.1',
 
 	// db version
-	'db_version'           => '0.0.0.0.4',
+	'db_version'           => '0.0.0.1',
 
 	// twitter
 	'twitter'              => 'technote15',

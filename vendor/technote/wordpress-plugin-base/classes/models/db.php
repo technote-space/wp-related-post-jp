@@ -539,8 +539,10 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 							$fields[ $k ] .= ' AS ' . $option[1];
 						}
 					}
-				} else {
+				} elseif ( ! isset( $option ) ) {
 					$fields[ $k ] = $name === $key ? $name : $name . ' AS ' . $key;
+				} else {
+					$fields[ $k ] = $name . ' AS ' . $option;
 				}
 			}
 		}

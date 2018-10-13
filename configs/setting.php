@@ -40,15 +40,10 @@ return [
 
 			10 => [
 				'ranking_number'                    => [
-					'label'   => "Max number of ranking for each post.\nIf change this, it's necessary to run posts index ranking again.",
+					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
 					'default' => 10,
 					'min'     => 1,
 					'max'     => 25,
-				],
-				'max_index_target_length'           => [
-					'label'   => "Max length of target extracted content.\nIf change this, it's necessary to run posts index process again.",
-					'default' => 0,
-					'min'     => 0,
 				],
 				'target_post_types'                 => [
 					'label'   => "Target post types (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
@@ -56,7 +51,20 @@ return [
 				],
 				'exclude_categories'                => [
 					'label'   => "Exclude category slugs (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
-					'default' => 'post',
+					'default' => '',
+				],
+				'exclude_threshold_days'            => [
+					'label'   => "Exclude threshold days of old post date (empty to invalidate)\nIf change this, it's necessary to run posts index ranking again.",
+					'default' => '',
+				],
+				'exclude_threshold_days_field'      => [
+					'label'   => "Column name of post to use exclude check\nIf change this, it's necessary to run posts index ranking again.",
+					'default' => 'post_modified',
+				],
+				'max_index_target_length'           => [
+					'label'   => "Max length of target extracted content\nIf change this, it's necessary to run posts index process again.",
+					'default' => 0,
+					'min'     => 0,
 				],
 				'index_background_when_update_post' => [
 					'label'   => 'Whether to index in the background when post updated.',

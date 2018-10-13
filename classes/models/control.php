@@ -171,7 +171,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			}
 		}
 		if ( $this->app->post->get( 'setup_ranking', $post_id ) ) {
-			return array_map( function ( $d ) {
+			return array_filter( array_map( function ( $d ) {
 				$post_id = $d['rank_post_id'];
 				$score   = $d['score'];
 				$post    = get_post( $post_id );
@@ -183,7 +183,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				return $post;
 			}, $this->app->db->select( 'ranking', [
 				'post_id' => $post_id,
-			], [ 'rank_post_id', 'score' ], null, null, [ 'score' => 'DESC' ] ) );
+			], [ 'rank_post_id', 'score' ], null, null, [ 'score' => 'DESC' ] ) ), function ( $p ) {
+				return false !== $p;
+			} );
 		}
 
 		return false;
@@ -621,7 +623,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$group_by = null;
 			$output   = ARRAY_A;
 		} else {
-			$fields   = [ '*', 'p.ID' => [ 'AS', 'ID' ] ];
+			$fields   = [ '*', 'p.ID' => 'ID' ];
 			$order_by = [ 'p.ID' => 'ASC' ];
 			$group_by = [ 'p.ID' ];
 			$output   = OBJECT;
@@ -753,11 +755,17 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function changed_option( $key ) {
-		if ( $key === $this->get_filter_prefix() . 'target_post_types' ) {
+		if ( in_array( $key, [
+			$this->get_filter_prefix() . 'target_post_types',
+			$this->get_filter_prefix() . 'ranking_number',
+			$this->get_filter_prefix() . 'exclude_categories',
+			$this->get_filter_prefix() . 'exclude_threshold_days',
+			$this->get_filter_prefix() . 'exclude_threshold_days_field',
+		] ) ) {
 			$this->init_posts_rankings();
-		} elseif ( $key === $this->get_filter_prefix() . 'ranking_number' ) {
-			$this->init_posts_rankings();
-		} elseif ( $key === $this->get_filter_prefix() . 'max_index_target_length' ) {
+		} elseif ( in_array( $key, [
+			$this->get_filter_prefix() . 'max_index_target_length',
+		] ) ) {
 			$this->init_posts_index();
 		}
 	}
