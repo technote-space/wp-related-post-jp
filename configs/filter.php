@@ -15,14 +15,8 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 return [
 
 	'\Related_Post\Models\Control' => [
-		'save_post'              => [
-			'save_post' => [],
-		],
 		'transition_post_status' => [
 			'transition_post_status' => [],
-		],
-		'delete_post'            => [
-			'delete_post' => [],
 		],
 
 		'${prefix}app_initialized' => [
@@ -45,6 +39,12 @@ return [
 
 		'admin_head-edit.php' => [
 			'edit_post_page' => [],
+		],
+		'wp_ajax_fetch-list'  => [
+			'edit_post_page' => [ 0 ],
+		],
+		'wp_ajax_inline-save' => [
+			'edit_post_page' => [ 0 ],
 		],
 	],
 ];

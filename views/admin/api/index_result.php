@@ -19,7 +19,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
     (function () {
         let is_loading = false;
         const loading_message = '<?php $instance->h( 'loading', true );?>...';
-        $('.wrpj_show_index_result_button').click(function () {
+        $(document).on('click', '.wrpj_show_index_result_button', function () {
             if (is_loading) {
                 return false;
             }

@@ -226,6 +226,13 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			$prev_N = $this->app->get_option( 'document_count' );
 			if ( $prev_N != $N ) {
 				$this->app->option->set( 'document_count', $N );
+				$where = [
+					'p.post_status' => 'publish',
+					'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+				];
+				if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+					$where['NOT EXISTS'] = $subquery;
+				}
 				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
 					[ 'document', 'd' ],
 					[
@@ -237,10 +244,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 							'p.ID',
 						],
 					],
-				], [
-					'p.post_status' => 'publish',
-					'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-				], [
+				], $where, [
 					'DISTINCT d.post_id' => 'post_id',
 				] ), 'post_id' );
 			} else {
@@ -248,6 +252,14 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'pm.post_id'  => [ '=', 'd.post_id', true ],
 					'pm.meta_key' => [ '=', $this->app->post->get_meta_key( 'word_updated' ) ],
 				], '"X"' );
+				$where    = [
+					'p.post_status' => 'publish',
+					'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+					'NOT EXISTS'    => [ $subquery ],
+				];
+				if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+					$where['NOT EXISTS'][] = $subquery;
+				}
 
 				$post_ids = \Technote\Models\Utility::array_pluck( $this->app->db->select( [
 					[ 'document', 'd' ],
@@ -260,11 +272,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 							'p.ID',
 						],
 					],
-				], [
-					'p.post_status' => 'publish',
-					'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-					'NOT EXISTS'    => $subquery,
-				], [
+				], $where, [
 					'DISTINCT d.post_id' => 'post_id',
 				] ), 'post_id' );
 			}
@@ -470,6 +478,13 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	private function calc_n( $post_types ) {
 		/** @var \wpdb $wpdb */
 		global $wpdb;
+		$where = [
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+		];
+		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'] = $subquery;
+		}
 
 		return \Technote\Models\Utility::array_get( $this->app->db->select( [
 			[ 'rel_document_word', 'w' ],
@@ -491,10 +506,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'p.ID',
 				],
 			],
-		], [
-			'p.post_status' => 'publish',
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-		], [
+		], $where, [
 			'DISTINCT d.document_id' => [
 				'COUNT',
 				'N',
@@ -517,6 +529,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		];
 		if ( isset( $word_ids ) ) {
 			$where['w.word_id'] = [ 'in', $word_ids ];
+		}
+		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'] = $subquery;
 		}
 		$data = $this->app->db->select( [
 			[ 'rel_document_word', 'w' ],
@@ -575,6 +590,14 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	private function get_update_post_ids( $post_types, $word_ids ) {
 		/** @var \wpdb $wpdb */
 		global $wpdb;
+		$where = [
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'w.word_id'     => [ 'in', $word_ids ],
+		];
+		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'] = $subquery;
+		}
 
 		return \Technote\Models\Utility::array_pluck( $this->app->db->select( [
 			[ 'rel_document_word', 'w' ],
@@ -596,11 +619,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'p.ID',
 				],
 			],
-		], [
-			'p.post_status' => 'publish',
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'w.word_id'     => [ 'in', $word_ids ],
-		], [
+		], $where, [
 			'DISTINCT d.post_id' => 'post_id',
 		] ), 'post_id' );
 	}
@@ -670,6 +689,13 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	private function calc_avg_dl( $post_types ) {
 		/** @var \wpdb $wpdb */
 		global $wpdb;
+		$where = [
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+		];
+		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'] = $subquery;
+		}
 
 		return \Technote\Models\Utility::array_get( $this->app->db->select( [
 			[ 'document', 'd' ],
@@ -682,10 +708,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'p.ID',
 				],
 			],
-		], [
-			'p.post_status' => 'publish',
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-		], [
+		], $where, [
 			'd.count' => [ 'AVG', 'cnt' ],
 		], 1 ), 'cnt' );
 	}
@@ -751,6 +774,14 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				'd.post_id',
 			];
 		}
+		$where = [
+			'p.post_status' => 'publish',
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'd.post_id'     => [ '!=', $post_id ],
+		];
+		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'] = $subquery;
+		}
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
@@ -792,11 +823,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 					'w.word_id',
 				],
 			],
-		], [
-			'p.post_status' => 'publish',
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'd.post_id'     => [ '!=', $post_id ],
-		], $field, $count, $offset, $order_by, $group_by );
+		], $where, $field, $count, $offset, $order_by, $group_by );
 
 		if ( $is_count ) {
 			return \Technote\Models\Utility::array_get( $results, 'num', 0 );

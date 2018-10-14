@@ -28,6 +28,12 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/** @var array $valid_post_types */
 	private $valid_post_types;
 
+	/** @var array $exclude_categories */
+	private $exclude_categories;
+
+	/** @var array $target_taxonomies */
+	private $target_taxonomies;
+
 	/**
 	 * @return int
 	 */
@@ -43,29 +49,25 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
-	 * @param string|null $raw_target_post_types
-	 *
 	 * @return array
 	 */
-	private function get_target_post_types( $raw_target_post_types = null ) {
-		! isset( $raw_target_post_types ) and $raw_target_post_types = $this->apply_filters( 'target_post_types' );
+	private function load_post_types() {
+		if ( ! isset( $this->valid_post_types ) ) {
+			$raw_target_post_types = $this->apply_filters( 'target_post_types' );
+			$target_post_types     = array_unique( array_filter( array_map( 'trim', explode( ',', $raw_target_post_types ) ) ) );
+			$target_post_types     = array_combine( $target_post_types, array_fill( 0, count( $target_post_types ), $target_post_types ) );
 
-		return array_unique( array_filter( array_map( 'trim', explode( ',', $raw_target_post_types ) ) ) );
+			$this->valid_post_types = $this->apply_filters( 'load_post_types', $target_post_types, $raw_target_post_types );
+		}
+
+		return $this->valid_post_types;
 	}
 
 	/**
 	 * @return array
 	 */
 	private function get_valid_post_types() {
-		if ( ! isset( $this->valid_post_types ) ) {
-			$raw_target_post_types = $this->apply_filters( 'target_post_types' );
-			$target_post_types     = $this->get_target_post_types( $raw_target_post_types );
-			$target_post_types     = array_combine( $target_post_types, array_fill( 0, count( $target_post_types ), $target_post_types ) );
-
-			$this->valid_post_types = $this->apply_filters( 'get_valid_post_types', $target_post_types, $raw_target_post_types );
-		}
-
-		return $this->valid_post_types;
+		return \Technote\Models\Utility::flatten( $this->load_post_types() );
 	}
 
 	/**
@@ -74,12 +76,74 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return array|false
 	 */
 	public function get_post_types( $post_type ) {
-		$target_post_types = $this->get_valid_post_types();
+		$target_post_types = $this->load_post_types();
 		if ( ! isset( $target_post_types[ $post_type ] ) ) {
 			return false;
 		}
 
 		return $target_post_types[ $post_type ];
+	}
+
+	/**
+	 * @return array
+	 */
+	private function get_target_taxonomies() {
+		if ( ! isset( $this->target_taxonomies ) ) {
+			global $wp_taxonomies;
+			$post_types        = $this->get_valid_post_types();
+			$target_taxonomies = [];
+			foreach ( $wp_taxonomies as $taxonomy => $taxonomy_object ) {
+				if ( ! empty( array_intersect( $taxonomy_object->object_type, $post_types ) ) ) {
+					$is_category = strpos( $taxonomy, 'categor' ) !== false;
+					if ( $this->apply_filters( 'is_category_taxonomy', $is_category, $taxonomy, $taxonomy_object ) ) {
+						$target_taxonomies[ $taxonomy ] = $taxonomy;
+					}
+				}
+			}
+			$this->target_taxonomies = $this->apply_filters( 'get_target_taxonomies', $target_taxonomies, $post_types );
+		}
+
+		return $this->target_taxonomies;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_exclude_category() {
+		if ( ! isset( $this->exclude_categories ) ) {
+			$raw_exclude_categories = $this->apply_filters( 'exclude_categories' );
+			$exclude_categories     = [];
+			$target_taxonomies      = $this->get_target_taxonomies();
+			if ( ! empty( $target_taxonomies ) ) {
+				$target_taxonomies  = array_values( $target_taxonomies );
+				$exclude_categories = array_filter( array_map( function ( $category ) use ( $target_taxonomies ) {
+					$category = trim( $category );
+					if ( empty( $category ) ) {
+						return false;
+					}
+					$terms = get_terms( [
+						'get'                    => 'all',
+						'number'                 => 1,
+						'taxonomy'               => $target_taxonomies,
+						'update_term_meta_cache' => false,
+						'orderby'                => 'none',
+						'suppress_filter'        => true,
+						'slug'                   => $category,
+					] );
+					if ( is_wp_error( $terms ) || empty( $terms ) ) {
+						return false;
+					}
+					$term = array_shift( $terms );
+
+					return $term->term_taxonomy_id;
+				}, explode( ',', $raw_exclude_categories ) ), function ( $term ) {
+					return ! empty( $term );
+				} );
+			}
+			$this->exclude_categories = $this->apply_filters( 'get_exclude_category', $exclude_categories, $raw_exclude_categories, $target_taxonomies );
+		}
+
+		return $this->exclude_categories;
 	}
 
 
@@ -102,25 +166,28 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
-	 * @param int $id
-	 * @param \WP_Post $post
+	 * @param string $post_type
+	 *
+	 * @return bool
 	 */
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function save_post( $id, $post ) {
-		if ( $this->is_valid_update_post() ) {
-			if ( ! ( defined( 'DOUNG_AUTOSAVE' ) && DOING_AUTOSAVE ) && $post->post_status == 'publish' ) {
-				if ( $this->apply_filters( 'index_background_when_update_post' ) ) {
-					$this->app->post->delete( $id, 'indexed' );
-					$this->app->option->delete( 'posts_indexed' );
-					$this->app->option->delete( 'word_updated' );
-				} else {
-					$this->get_bm25()->update( $post );
-				}
-				delete_site_transient( $this->get_total_posts_count_transient_key() );
-				delete_site_transient( $this->get_update_posts_count_transient_key() );
-				$this->unlock_process();
+	private function is_invalid_post_type( $post_type ) {
+		return ! ( ( $post_types = $this->get_valid_post_types() ) && in_array( $post_type, $post_types ) );
+	}
+
+	/**
+	 * @param int $post_id
+	 *
+	 * @return bool
+	 */
+	private function is_invalid_category( $post_id ) {
+		if ( $exclude_category = $this->get_exclude_category() ) {
+			$terms = wp_get_post_terms( $post_id, $this->target_taxonomies, [ 'fields' => 'tt_ids' ] );
+			if ( ! empty( array_intersect( $terms, $exclude_category ) ) ) {
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	/**
@@ -130,23 +197,24 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function transition_post_status( $new_status, $old_status, $post ) {
-		if ( $this->is_valid_update_post() ) {
-			if ( $old_status == 'publish' && $new_status != 'publish' ) {
+		if ( ! ( defined( 'DOUNG_AUTOSAVE' ) && DOING_AUTOSAVE ) && $this->is_valid_update_post() ) {
+			if ( $new_status === 'publish' ) {
+				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
+					$this->get_bm25()->delete( $post->ID );
+				} else {
+					if ( $this->apply_filters( 'index_background_when_update_post' ) ) {
+						$this->app->post->delete( $post->ID, 'indexed' );
+						$this->app->option->delete( 'posts_indexed' );
+						$this->app->option->delete( 'word_updated' );
+					} else {
+						$this->get_bm25()->update( $post );
+					}
+				}
+			} elseif ( $old_status === 'publish' ) {
 				$this->get_bm25()->delete( $post->ID );
-				delete_site_transient( $this->get_total_posts_count_transient_key() );
-				delete_site_transient( $this->get_update_posts_count_transient_key() );
-				$this->unlock_process();
+			} else {
+				return;
 			}
-		}
-	}
-
-	/**
-	 * @param int $id
-	 */
-	/** @noinspection PhpUnusedPrivateMethodInspection */
-	private function delete_post( $id ) {
-		if ( $this->is_valid_update_post() ) {
-			$this->get_bm25()->delete( $id );
 			delete_site_transient( $this->get_total_posts_count_transient_key() );
 			delete_site_transient( $this->get_update_posts_count_transient_key() );
 			$this->unlock_process();
@@ -163,8 +231,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			if ( $this->app->get_option( 'word_updated', false ) ) {
 				$post = get_post( $post_id );
 				if ( $post ) {
-					$post_types = $this->get_post_types( $post->post_type );
-					$this->get_bm25()->update_ranking( $post_id, $post_types, true );
+					$this->get_bm25()->update_ranking( $post_id, $this->get_post_types( $post->post_type ), true );
 				}
 			} else {
 				return false;
@@ -248,7 +315,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$posts_per_page = get_option( 'posts_per_page' );
 		}
 		$paged       = $query->get( 'paged' );
-		$post_types  = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
+		$post_types  = $this->get_valid_post_types();
 		$ranking     = [];
 		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true );
 		$total_pages = ceil( $total / $posts_per_page );
@@ -269,7 +336,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 					$ra = $ranking[ $a->ID ];
 					$rb = $ranking[ $b->ID ];
 
-					return $ra == $rb ? 0 : ( $ra < $rb ) ? 1 : - 1;
+					return $ra === $rb ? 0 : ( $ra < $rb ) ? 1 : - 1;
 				} );
 				$query->set( 's', $q );
 				$query->set( 'paged', $paged );
@@ -414,9 +481,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * unlock
 	 */
 	private function unlock_process() {
-		delete_site_transient( $this->get_transient_key() );
 		delete_site_transient( $this->get_executing_transient_key() );
 		delete_site_transient( $this->get_executing_process_transient_key() );
+		delete_site_transient( $this->get_transient_key() );
 	}
 
 	/**
@@ -463,6 +530,12 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	private function is_process_running() {
 		if ( get_site_transient( $this->get_transient_key() ) || get_site_transient( $this->get_interval_transient_key() ) ) {
+			$transient_timeout = '_site_transient_timeout_' . $this->get_transient_key();
+			$timeout           = get_site_option( $transient_timeout );
+			if ( false === $timeout ) {
+				delete_site_transient( $this->get_transient_key() );
+			}
+
 			return true;
 		}
 
@@ -550,7 +623,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 
 			$uuid  = $this->lock_process( true, 'word index process' );
 			$cache = [];
-			foreach ( \Technote\Models\Utility::flatten( $this->get_valid_post_types() ) as $post_type ) {
+			foreach ( $this->get_valid_post_types() as $post_type ) {
 				if ( in_array( $post_type, $cache ) ) {
 					continue;
 				}
@@ -585,10 +658,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				}
 				$uuid = $this->lock_process( true, 'ranking process' );
 
-				$post_id    = $post->ID;
-				$post_type  = $post->post_type;
-				$post_types = $this->get_post_types( $post_type );
-				$this->get_bm25()->update_ranking( $post_id, $post_types, true );
+				$post_id   = $post->ID;
+				$post_type = $post->post_type;
+				$this->get_bm25()->update_ranking( $post_id, $this->get_post_types( $post_type ), true );
 
 				$count = get_site_transient( $this->get_update_posts_count_transient_key() );
 				if ( false !== $count ) {
@@ -602,6 +674,29 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 
 		return $uuid;
+	}
+
+	/**
+	 * @param $term_taxonomy_ids
+	 * @param string $post_table
+	 * @param string $post_id_column
+	 * @param string $term_relationships_table
+	 *
+	 * @return false|string
+	 */
+	public function get_taxonomy_subquery( $term_taxonomy_ids = null, $post_table = 'p', $post_id_column = 'ID', $term_relationships_table = 'tr' ) {
+		! isset( $term_taxonomy_ids ) and $term_taxonomy_ids = $this->get_exclude_category();
+		if ( empty( $term_taxonomy_ids ) ) {
+			return false;
+		}
+
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
+		return $this->app->db->get_select_sql( [ [ $wpdb->term_relationships, $term_relationships_table ] ], [
+			$term_relationships_table . '.object_id'        => [ '=', $post_table . '.' . $post_id_column, true ],
+			$term_relationships_table . '.term_taxonomy_id' => [ 'in', $term_taxonomy_ids ],
+		], '"X"' );
 	}
 
 	/**
@@ -631,11 +726,19 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
-		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
+		$post_types = $this->get_valid_post_types();
 		$subquery   = $this->app->db->get_select_sql( [ [ $wpdb->postmeta, 'pm2' ] ], [
 			'pm2.post_id'  => [ '=', 'pm.post_id', true ],
 			'pm2.meta_key' => [ '=', $this->app->post->get_meta_key( $key ) ],
 		], '"X"' );
+		$where      = [
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'p.post_status' => 'publish',
+			'NOT EXISTS'    => [ $subquery ],
+		];
+		if ( $subquery = $this->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'][] = $subquery;
+		}
 
 		$results = $this->app->db->select( [
 			[ $wpdb->posts, 'p' ],
@@ -646,11 +749,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 					[ 'p.ID', '=', 'pm.post_id' ],
 				],
 			],
-		], [
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'p.post_status' => 'publish',
-			'NOT EXISTS'    => $subquery,
-		], $fields, $limit, null, $order_by, $group_by, $output );
+		], $where, $fields, $limit, null, $order_by, $group_by, $output );
 
 		if ( $is_count ) {
 			return \Technote\Models\Utility::array_get( $results, 'num', 0 );
@@ -694,14 +793,18 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
-		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
+		$post_types = $this->get_valid_post_types();
+		$where      = [
+			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
+			'p.post_status' => 'publish',
+		];
+		if ( $subquery = $this->get_taxonomy_subquery() ) {
+			$where['NOT EXISTS'] = $subquery;
+		}
 
 		$count = \Technote\Models\Utility::array_get( $this->app->db->select( [
 			[ $wpdb->posts, 'p' ],
-		], [
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'p.post_status' => 'publish',
-		], [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ], 1 ), 'num' );
+		], $where, [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ], 1 ), 'num' );
 
 		// index, ranking
 		$count *= 2;
@@ -836,9 +939,8 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function edit_post_page() {
-		$post_type  = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'post';
-		$post_types = \Technote\Models\Utility::flatten( $this->get_valid_post_types() );
-		if ( ! in_array( $post_type, $post_types ) ) {
+		$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
+		if ( $this->is_invalid_post_type( $post_type ) ) {
 			return;
 		}
 
@@ -854,6 +956,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		add_action( "manage_{$post_type}_posts_custom_column", function ( $column_name, $post_id ) {
 			if ( 'wrpj_show_related_post' === $column_name ) {
 				if ( ( $post = get_post( $post_id ) ) && 'publish' === $post->post_status ) {
+					if ( $this->is_invalid_category( $post_id ) ) {
+						return;
+					}
 					$this->get_view( 'admin/edit_post', [ 'post_id' => $post_id ], true );
 				}
 			}

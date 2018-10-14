@@ -47,3 +47,11 @@ add_filter( 'related_post-get_help_contents', function ( $contents, $slug ) {
 	return $contents;
 }, 10, 2 );
 
+// allowed wp tables
+add_filter( 'related_post-allowed_wp_tables', function ( $tables ) {
+	/** @var \wpdb $wpdb */
+	global $wpdb;
+	$tables[ $wpdb->term_relationships ] = $wpdb->term_relationships;
+
+	return $tables;
+} );
