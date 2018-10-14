@@ -93,13 +93,13 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 		$tables = [
-			$wpdb->posts,
-			$wpdb->postmeta,
-			$wpdb->users,
-			$wpdb->usermeta,
-			$wpdb->options,
+			$wpdb->posts    => $wpdb->posts,
+			$wpdb->postmeta => $wpdb->postmeta,
+			$wpdb->users    => $wpdb->users,
+			$wpdb->usermeta => $wpdb->usermeta,
+			$wpdb->options  => $wpdb->options,
 		];
-		foreach ( $tables as $table ) {
+		foreach ( $this->apply_filters( 'allowed_wp_tables', $tables ) as $table ) {
 			$sql          = "DESCRIBE $table";
 			$columns      = $wpdb->get_results( $sql, ARRAY_A );
 			$table_define = [];

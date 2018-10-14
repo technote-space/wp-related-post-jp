@@ -13,6 +13,7 @@
 if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
+define( 'TECHNOTE_IS_MOCK', false );
 
 /**
  * Class Technote
@@ -122,6 +123,14 @@ class Technote {
 		add_action( 'init', function () {
 			$this->initialize();
 		}, 1 );
+
+		add_action( 'plugins_loaded', function () {
+			$functions = $this->define->plugin_dir . DS . 'functions.php';
+			if ( is_readable( $functions ) ) {
+				/** @noinspection PhpIncludeInspection */
+				require_once $functions;
+			}
+		} );
 	}
 
 	/**
@@ -157,7 +166,7 @@ class Technote {
 	 */
 	private function setup_property( $uninstall ) {
 		if ( ! function_exists( 'get_plugin_data' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		$this->plugin_data = get_plugin_data( $this->plugin_file );
 		spl_autoload_register( [ $this, 'load_class' ] );

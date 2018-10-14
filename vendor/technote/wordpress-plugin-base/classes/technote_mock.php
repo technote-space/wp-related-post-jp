@@ -13,6 +13,7 @@
 if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
+define( 'TECHNOTE_IS_MOCK', true );
 
 /**
  * Class Technote

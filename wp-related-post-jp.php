@@ -15,5 +15,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 @require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 Technote::get_instance( 'Related_Post', __FILE__ );
-
-@require_once dirname( __FILE__ ) . DS . 'functions.php';
