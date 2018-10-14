@@ -76,7 +76,7 @@ class Progress extends \Technote\Controllers\Api\Base {
 			$processed      = $total - $target;
 			$processed_rate = ceil( $processed * 100 / $total );
 			list( $next, $process ) = $control->get_interval_lock_process();
-			if ( $next < 0 ) {
+			if ( $next <= 0 ) {
 				if ( ! empty( $process ) ) {
 					$next = sprintf( $this->app->translate( 'Running %s...' ), $this->app->translate( $process ) );
 				} else {
