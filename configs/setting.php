@@ -54,7 +54,7 @@ return [
 					'default' => '',
 				],
 				'exclude_threshold_days'            => [
-					'label'   => "Exclude threshold days of old post date (empty to invalidate)\nIf change this, it's necessary to run posts index ranking again.",
+					'label'   => "Exclude threshold days of old post date (set empty to invalidate)\nIf change this, it's necessary to run posts index ranking again.",
 					'default' => '',
 				],
 				'exclude_threshold_days_field'      => [
@@ -62,8 +62,8 @@ return [
 					'default' => 'post_modified',
 				],
 				'max_index_target_length'           => [
-					'label'   => "Max length of target extracted content\nIf change this, it's necessary to run posts index process again.",
-					'default' => 0,
+					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
+					'default' => 1000,
 					'min'     => 0,
 				],
 				'index_background_when_update_post' => [

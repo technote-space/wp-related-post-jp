@@ -719,7 +719,12 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		if ( false !== $count ) {
 			return $count;
 		}
-		$count = $this->get_update_posts( true ) + $this->get_setup_ranking_posts( true );
+		$update = $this->get_update_posts( true );
+		if ( $update > 0 ) {
+			$count = $update + $this->get_update_posts( true, 1, '_' );
+		} else {
+			$count = $update + $this->get_setup_ranking_posts( true );
+		}
 		set_site_transient( $this->get_update_posts_count_transient_key(), $count, HOUR_IN_SECONDS );
 
 		return $count;
