@@ -4,7 +4,7 @@ Plugin Name: WP Related Post JP
 Plugin URI:
 Description: Plugin Description
 Author: technote
-Version: 1.0.2.1
+Version: 1.0.2.2
 Author URI: https://technote.space
 */
 

@@ -18,7 +18,7 @@ return [
 	'plugin_title'         => 'Related Post',
 
 	// plugin version
-	'plugin_version'       => '1.0.2.1',
+	'plugin_version'       => '1.0.2.2',
 
 	// db version
 	'db_version'           => '0.0.0.1',
