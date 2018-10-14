@@ -21,20 +21,13 @@ include 'style/index_result.php';
 ?>
 
 <h2><?php echo esc_html( $post->post_title ); ?></h2>
-<?php if ( ! $indexed || ! $setup_ranking ): ?>
-	<?php if ( ! $indexed ): ?>
-        <div class="error-message">
-			<?php $instance->h( 'Not finished index process.', true ); ?>
-        </div>
-	<?php endif; ?>
+<div class="ranking-posts">
+    <h3><?php $instance->h( 'Related Posts', true ); ?></h3>
 	<?php if ( ! $setup_ranking ): ?>
         <div class="error-message">
 			<?php $instance->h( 'Not finished ranking process.', true ); ?>
         </div>
-	<?php endif; ?>
-<?php else: ?>
-    <div class="ranking-posts">
-        <h3><?php $instance->h( 'Related Posts', true ); ?></h3>
+	<?php else: ?>
         <table class="widefat striped">
             <tr>
                 <th><?php $instance->h( 'Rank', true ); ?></th>
@@ -60,9 +53,15 @@ include 'style/index_result.php';
 				<?php endforeach; ?>
 			<?php endif; ?>
         </table>
-    </div>
-    <div class="important-words">
-        <h3><?php $instance->h( 'Important Words', true ); ?></h3>
+	<?php endif; ?>
+</div>
+<div class="important-words">
+    <h3><?php $instance->h( 'Important Words', true ); ?></h3>
+	<?php if ( ! $indexed ): ?>
+        <div class="error-message">
+			<?php $instance->h( 'Not finished index process.', true ); ?>
+        </div>
+	<?php else: ?>
         <table class="widefat striped">
             <tr>
                 <th><?php $instance->h( 'Word', true ); ?></th>
@@ -85,8 +84,9 @@ include 'style/index_result.php';
 				<?php endforeach; ?>
 			<?php endif; ?>
         </table>
-    </div>
-<?php endif; ?>
+	<?php endif; ?>
+</div>
+
 <?php $instance->form( 'input/button', $args, [
 	'class'      => 'button-primary',
 	'name'       => 'close',
