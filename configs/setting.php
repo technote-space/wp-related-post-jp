@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.2
+ * @version 1.0.2.3
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -44,6 +44,16 @@ return [
 					'default' => 10,
 					'min'     => 1,
 					'max'     => 25,
+				],
+				'auto_insert_related_post'          => [
+					'label'   => "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)",
+					'type'    => 'bool',
+					'default' => true,
+				],
+				'related_posts_title'               => [
+					'label'     => "Related posts title",
+					'default'   => 'More from my site',
+					'translate' => true,
 				],
 				'target_post_types'                 => [
 					'label'   => "Target post types (comma separated)\nIf change this, it's necessary to run posts index ranking again.",

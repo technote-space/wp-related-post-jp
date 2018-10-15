@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.0
+ * @version 1.0.2.3
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -18,7 +18,7 @@ return [
 	'plugin_title'         => 'Related Post',
 
 	// plugin version
-	'plugin_version'       => '1.0.2.2',
+	'plugin_version'       => '1.0.2.3',
 
 	// db version
 	'db_version'           => '0.0.0.1',

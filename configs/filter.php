@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.2
+ * @version 1.0.2.3
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -45,6 +45,10 @@ return [
 		],
 		'wp_ajax_inline-save' => [
 			'edit_post_page' => [ 0 ],
+		],
+
+		'the_content' => [
+			'the_content' => [],
 		],
 	],
 ];

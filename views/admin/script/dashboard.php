@@ -29,6 +29,23 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             return false;
         }).eq(0).trigger('click');
 
-
+        const check_changed = function () {
+            let result = false;
+            $('.check-value-changed').each(function () {
+                result |= $(this).val() + '' != $(this).data('value') + '';
+            });
+            $('.check-checked-changed').each(function () {
+                result = $(this).prop('checked') != $(this).data('value');
+            });
+            return result;
+        };
+        $(window).on('submit', function () {
+            $(window).off('beforeunload');
+        });
+        $(window).on('beforeunload', function () {
+            if (check_changed()) {
+                return '<?php $instance->h( 'Are you sure you want to discard the changes?' );?>';
+            }
+        });
     })(jQuery);
 </script>

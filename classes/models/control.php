@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.2
+ * @version 1.0.2.3
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -370,6 +370,33 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 				add_filter( 'posts_results', $posts_results, 10, 2 );
 			}
 		}
+	}
+
+	/**
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function the_content( $content ) {
+		global $post;
+		if ( ! is_object( $post ) || empty( $content ) || $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
+			return $content;
+		}
+		if ( ! ( is_single() && $this->apply_filters( 'auto_insert_related_post' ) ) ) {
+			return $content;
+		}
+
+		$related_posts = $this->get_related_posts( $post->ID );
+		if ( empty( $related_posts ) ) {
+			return $content;
+		}
+
+		return $content . $this->get_view( 'front/related_posts', [
+				'title'         => $this->apply_filters( 'related_posts_title' ),
+				'post'          => $post,
+				'related_posts' => $related_posts,
+			] );
 	}
 
 

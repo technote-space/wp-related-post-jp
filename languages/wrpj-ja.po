@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wrpj\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2018-10-15 04:22+0900\n"
+"PO-Revision-Date: 2018-10-15 18:47+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -151,14 +151,29 @@ msgstr "ランキング処理が完了していません。"
 msgid "Detail Settings"
 msgstr "詳細設定"
 
-msgid "Main Settings"
-msgstr "メイン設定"
+msgid "Basic Settings"
+msgstr "基本設定"
 
 msgid "Exclude Settings"
 msgstr "除外設定"
 
-msgid "Design Settings"
-msgstr "デザイン設定"
+msgid "Auto Insert Settings"
+msgstr "自動挿入設定"
 
 msgid "Go to Detail Settings"
 msgstr "詳細設定へ移動"
+
+msgid "Display Count"
+msgstr "表示数"
+
+msgid "Related posts title"
+msgstr "関連記事タイトル"
+
+msgid "More from my site"
+msgstr "関連記事一覧"
+
+msgid "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)"
+msgstr "関連記事を自動挿入するかどうか (もしくは <?php wp_related_posts()?> を「single.php」などに貼り付けて表示させます)"
+
+msgid "Auto insert related posts"
+msgstr "関連記事を自動挿入するかどうか"
