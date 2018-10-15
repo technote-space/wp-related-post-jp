@@ -136,15 +136,16 @@ class Option implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 
 	/**
 	 * @param string $key
+	 * @param mixed $default
 	 *
 	 * @return bool
 	 */
-	public function set_post_value( $key ) {
-		if ( ! isset( $_POST[ $key ] ) ) {
+	public function set_post_value( $key, $default = null ) {
+		if ( ! isset( $_POST[ $key ] ) && ! isset( $default ) ) {
 			return false;
 		}
 
-		return $this->set( $key, $_POST[ $key ] );
+		return $this->set( $key, isset( $_POST[ $key ] ) ? $_POST[ $key ] : $default );
 	}
 
 	/**

@@ -54,6 +54,9 @@ trait Hook {
 			if ( is_callable( [ $this, 'get_' . $type . '_value' ] ) ) {
 				$value = call_user_func( [ $this, 'get_' . $type . '_value' ], $value, $default, $setting );
 			}
+			if ( ! empty( $setting['translate'] ) && $value === $default ) {
+				$value = $this->app->translate( $value );
+			}
 
 			return $value;
 		}

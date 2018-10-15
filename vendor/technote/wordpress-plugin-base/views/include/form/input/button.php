@@ -17,5 +17,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var array $args */
 ?>
 <?php $instance->form( 'input', array_merge( $args, [
-	'type' => 'button',
+	'type'      => 'button',
+	'translate' => [ 'value' ],
 ] ) ); ?>

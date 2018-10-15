@@ -142,9 +142,14 @@ class Setting implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return array
 	 */
 	private function get_detail_setting( $setting, $data ) {
-		$data['key']  = $setting;
-		$type         = Utility::array_get( $data, 'type', '' );
-		$default      = $this->get_expression( Utility::array_get( $data, 'default', '' ), $type );
+		$data['key'] = $setting;
+		$type        = Utility::array_get( $data, 'type', '' );
+		$_default    = $this->get_expression( Utility::array_get( $data, 'default', '' ), $type );
+		if ( ! empty( $data['translate'] ) ) {
+			$default = $this->app->translate( $_default );
+		} else {
+			$default = $_default;
+		}
 		$data['info'] = [];
 		if ( '' !== $default ) {
 			$data['info'][] = $this->app->translate( 'default' ) . ' = ' . $default;
@@ -158,7 +163,9 @@ class Setting implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$data['name']        = $this->get_filter_prefix() . $data['key'];
 		$data['saved']       = $this->app->get_option( $data['name'] );
 		$data['placeholder'] = $default;
-		$data['used']        = $this->get_expression( $this->apply_filters( $data['key'], $default ), $type );
+		$value               = $this->apply_filters( $data['key'], $default );
+		$data['value']       = $value;
+		$data['used']        = $this->get_expression( $value, $type );
 
 		return $data;
 	}
