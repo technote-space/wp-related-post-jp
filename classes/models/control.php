@@ -100,7 +100,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 					}
 				}
 			}
-			$this->target_taxonomies = $this->apply_filters( 'get_target_taxonomies', $target_taxonomies, $post_types );
+			$this->target_taxonomies = $this->apply_filters( 'get_target_taxonomies', array_values( $target_taxonomies ), $post_types );
 		}
 
 		return $this->target_taxonomies;
@@ -180,7 +180,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return bool
 	 */
 	private function is_invalid_category( $post_id ) {
-		if ( $exclude_category = $this->get_exclude_category() ) {
+		if ( ( $exclude_category = $this->get_exclude_category() ) && ! empty( $this->target_taxonomies ) ) {
 			$terms = wp_get_post_terms( $post_id, $this->target_taxonomies, [ 'fields' => 'tt_ids' ] );
 			if ( ! empty( array_intersect( $terms, $exclude_category ) ) ) {
 				return true;
