@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.3
+ * @version 1.0.2.4
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -295,26 +295,24 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
-	 * @param \WP_Query $query
 	 * @param string $q
+	 * @param int $posts_per_page
+	 * @param int $paged
+	 *
+	 * @return array
 	 */
-	private function keyword_search( $query, $q ) {
+	private function get_posts_ranking_from_keyword( $q, $posts_per_page, $paged ) {
 		$data = $this->get_bm25()->parse_text( $q, false );
 		if ( empty( $data ) ) {
-			return;
+			return [ [], 0 ];
 		}
 
-		$words          = array_map( function ( $k, $v ) {
+		$words       = array_map( function ( $k, $v ) {
 			return [
 				'word_id' => $k,
 				'count'   => $v,
 			];
 		}, array_keys( $data ), array_values( $data ) );
-		$posts_per_page = $query->get( 'posts_per_page' );
-		if ( empty( $posts_per_page ) ) {
-			$posts_per_page = get_option( 'posts_per_page' );
-		}
-		$paged       = $query->get( 'paged' );
 		$post_types  = $this->get_valid_post_types();
 		$ranking     = [];
 		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true );
@@ -322,6 +320,21 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, false, $posts_per_page, $paged ) as $item ) {
 			$ranking[ $item['post_id'] ] = $item['score'];
 		}
+
+		return [ $ranking, $total_pages ];
+	}
+
+	/**
+	 * @param \WP_Query $query
+	 * @param string $q
+	 */
+	private function keyword_search( $query, $q ) {
+		$posts_per_page = $query->get( 'posts_per_page' );
+		if ( empty( $posts_per_page ) ) {
+			$posts_per_page = get_option( 'posts_per_page' );
+		}
+		$paged = $query->get( 'paged' );
+		list( $ranking, $total_pages ) = $this->get_posts_ranking_from_keyword( $q, $posts_per_page, $paged );
 		if ( ! empty( $ranking ) ) {
 			$query->set( 's', '' );
 			$query->set( 'post__in', array_keys( $ranking ) );

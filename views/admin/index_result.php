@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.2
+ * @version 1.0.2.4
  * @author technote-space
  * @since 1.0.1.9
  * @copyright technote All Rights Reserved
@@ -31,8 +31,8 @@ include 'style/index_result.php';
         <table class="widefat striped">
             <tr>
                 <th><?php $instance->h( 'Rank', true ); ?></th>
-                <th><?php $instance->h( 'Post id', true ); ?></th>
-                <th><?php $instance->h( 'Post name', true ); ?></th>
+                <th><?php $instance->h( 'Post ID', true ); ?></th>
+                <th><?php $instance->h( 'Post Title', true ); ?></th>
                 <th><?php $instance->h( 'Score', true ); ?></th>
             </tr>
 			<?php if ( count( $posts ) <= 0 ): ?>

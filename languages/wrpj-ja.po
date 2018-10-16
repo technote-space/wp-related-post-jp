@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wrpj\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2018-10-15 18:47+0900\n"
+"PO-Revision-Date: 2018-10-17 02:31+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -177,3 +177,21 @@ msgstr "関連記事を自動挿入するかどうか (もしくは <?php wp_rel
 
 msgid "Auto insert related posts"
 msgstr "関連記事を自動挿入するかどうか"
+
+msgid "Rank"
+msgstr "順位"
+
+msgid "Post ID"
+msgstr "投稿ID"
+
+msgid "Post Title"
+msgstr "投稿タイトル"
+
+msgid "Score"
+msgstr "スコア"
+
+msgid "Word"
+msgstr "単語"
+
+msgid "Show"
+msgstr "表示"
