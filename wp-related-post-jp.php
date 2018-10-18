@@ -6,6 +6,8 @@ Description: Plugin Description
 Author: technote
 Version: 1.0.2.3
 Author URI: https://technote.space
+Text Domain: wrpj
+Domain Path: /languages/
 */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -2,9 +2,9 @@
 /**
  * Technote Configs Config
  *
- * @version 0.0.0.0.0
+ * @version 1.1.13
  * @author technote-space
- * @since 0.0.0.0.0
+ * @since 1.0.0
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -27,9 +27,6 @@ return [
 
 	// github
 	'github'               => '',
-
-	// plugin version
-	'plugin_version'       => '0.0.0.0.0',
 
 	// db version
 	'db_version'           => '0.0.0.0.0',

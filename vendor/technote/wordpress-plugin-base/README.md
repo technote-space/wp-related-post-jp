@@ -76,7 +76,6 @@ example - example.php
 
 |設定値|説明|
 |---|---|
-|plugin_version|プラグインのバージョンを指定します|
 |db_version|DBの設定を変更したら更新します|
 |twitter|ツイッターのアカウントを指定します（空で未使用）|
 |github|Githubのアカウントを指定します（空で未使用）|
