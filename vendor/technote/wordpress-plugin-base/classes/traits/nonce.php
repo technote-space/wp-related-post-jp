@@ -64,4 +64,11 @@ trait Nonce {
 		return $this->is_post() && isset( $_POST[ $nonce_key ] ) && wp_verify_nonce( $_POST[ $nonce_key ], $this->get_nonce_action() );
 	}
 
+	/**
+	 * @return bool
+	 */
+	protected function is_post() {
+		return $this->app->input->is_post();
+	}
+
 }

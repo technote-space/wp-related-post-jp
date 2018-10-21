@@ -125,10 +125,26 @@ class Technote {
 		}, 1 );
 
 		add_action( 'plugins_loaded', function () {
-			$functions = $this->define->plugin_dir . DS . 'functions.php';
-			if ( is_readable( $functions ) ) {
-				/** @noinspection PhpIncludeInspection */
-				require_once $functions;
+			$this->load_functions();
+		} );
+
+		add_action( 'activated_plugin', function ( $plugin ) {
+			if ( ! $this->initialized ) {
+				if ( did_action( 'init' ) ) {
+					$this->initialize();
+				}
+				if ( did_action( 'plugins_loaded' ) ) {
+					$this->load_functions();
+				}
+			}
+			if ( $this->define->plugin_base_name === $plugin ) {
+				$this->filter->do_action( 'app_activated' );
+			}
+		} );
+
+		add_action( 'deactivated_plugin', function ( $plugin ) {
+			if ( $this->define->plugin_base_name === $plugin ) {
+				$this->filter->do_action( 'app_deactivated' );
 			}
 		} );
 	}
@@ -159,6 +175,17 @@ class Technote {
 		$this->setup_update();
 		$this->setup_textdomain();
 		$this->filter->do_action( 'app_initialized' );
+	}
+
+	/**
+	 * load functions file
+	 */
+	private function load_functions() {
+		$functions = $this->define->plugin_dir . DS . 'functions.php';
+		if ( is_readable( $functions ) ) {
+			/** @noinspection PhpIncludeInspection */
+			require_once $functions;
+		}
 	}
 
 	/**

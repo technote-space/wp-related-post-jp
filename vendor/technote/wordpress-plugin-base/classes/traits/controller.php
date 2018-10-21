@@ -25,11 +25,4 @@ trait Controller {
 
 	use Singleton, Presenter;
 
-	/**
-	 * @return bool
-	 */
-	protected function is_post() {
-		return $this->app->input->is_post();
-	}
-
 }

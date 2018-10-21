@@ -43,6 +43,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * @property string $plugin_languages_dir
  * @property string $plugin_languages_rel_path
  * @property string $plugin_logs_dir
+ * @property string $plugin_url
  * @property string $plugin_assets_url
  */
 class Define implements \Technote\Interfaces\Singleton {
@@ -97,6 +98,8 @@ class Define implements \Technote\Interfaces\Singleton {
 	public $plugin_languages_rel_path;
 	/** @var string $plugin_logs_dir */
 	public $plugin_logs_dir;
+	/** @var string $plugin_url */
+	public $plugin_url;
 	/** @var string $plugin_assets_url */
 	public $plugin_assets_url;
 
@@ -132,7 +135,8 @@ class Define implements \Technote\Interfaces\Singleton {
 		$this->plugin_logs_dir           = $this->plugin_dir . DS . 'logs';
 
 		$this->lib_assets_url    = plugins_url( 'assets', TECHNOTE_BOOTSTRAP );
-		$this->plugin_assets_url = plugins_url( 'assets', $this->plugin_file );
+		$this->plugin_url        = plugins_url( '', $this->plugin_file );
+		$this->plugin_assets_url = $this->plugin_url . '/assets';
 	}
 
 }
