@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.2
+ * @version 1.0.2.5
  * @author technote-space
  * @since 1.0.0.0
  * @copyright technote All Rights Reserved
@@ -56,11 +56,11 @@ class Progress extends \Technote\Controllers\Api\Base {
 	}
 
 	/**
-	 * @param \WP_REST_Request $params
+	 * @param \WP_REST_Request|array $params
 	 *
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
-	public function callback( \WP_REST_Request $params ) {
+	public function callback( $params ) {
 		$posts_indexed        = ! empty( $this->app->get_option( 'posts_indexed' ) );
 		$is_valid_posts_index = ! empty( $this->app->get_option( 'is_valid_posts_index' ) );
 		$total                = 0;

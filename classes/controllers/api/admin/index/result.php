@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.1.9
+ * @version 1.0.2.5
  * @author technote-space
  * @since 1.0.1.9
  * @copyright technote All Rights Reserved
@@ -81,11 +81,11 @@ class Result extends \Technote\Controllers\Api\Base {
 	}
 
 	/**
-	 * @param \WP_REST_Request $params
+	 * @param \WP_REST_Request|array $params
 	 *
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
-	public function callback( \WP_REST_Request $params ) {
+	public function callback( $params ) {
 		/** @var \Related_Post\Models\Control $control */
 		$control = \Related_Post\Models\Control::get_instance( $this->app );
 

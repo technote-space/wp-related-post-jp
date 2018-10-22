@@ -1,8 +1,8 @@
 === WP Related Post JP ===
 Contributors: technote-space
 Tags: related posts, recommend, recommendation
-Requires at least: 3.9
-Tested up to: 4.9
+Requires at least: 3.9.3
+Tested up to: 4.9.8
 Stable tag: 1.0.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

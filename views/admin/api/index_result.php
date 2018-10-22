@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.2.2
+ * @version 1.0.2.5
  * @author technote-space
  * @since 1.0.1.9
  * @copyright technote All Rights Reserved
@@ -16,7 +16,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 ?>
 
 <script>
-    (function () {
+    (function ($) {
         let is_loading = false;
         const loading_message = '<?php $instance->h( 'loading', true );?>...';
         $(document).on('click', '.wrpj_show_index_result_button', function () {
@@ -43,5 +43,5 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             }, loading_message);
             return false;
         });
-    })();
+    })(jQuery);
 </script>
