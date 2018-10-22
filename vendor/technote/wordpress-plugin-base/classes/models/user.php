@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.13
+ * @version 1.1.18
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -27,6 +27,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * @property string $display_name
  * @property string $user_email
  * @property bool $logged_in
+ * @property string|false $user_role
  */
 class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall {
 
@@ -48,6 +49,8 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 	public $user_email;
 	/** @var bool $logged_in */
 	public $logged_in;
+	/** @var string|false $user_role */
+	public $user_role;
 
 	/**
 	 * initialize
@@ -73,6 +76,11 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 		$this->logged_in    = is_user_logged_in();
 		if ( empty( $this->user_name ) ) {
 			$this->user_name = $this->app->input->ip();
+		}
+		if ( $this->logged_in || empty( $this->user_data->roles ) ) {
+			$this->user_role = $this->user_data->roles[0];
+		} else {
+			$this->user_role = false;
 		}
 	}
 
