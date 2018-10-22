@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wrpj\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2018-10-17 02:31+0900\n"
+"PO-Revision-Date: 2018-10-22 15:51+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -148,6 +148,9 @@ msgstr "インデックス処理が完了していません。"
 msgid "Not finished ranking process."
 msgstr "ランキング処理が完了していません。"
 
+msgid "Settings"
+msgstr "設定"
+
 msgid "Detail Settings"
 msgstr "詳細設定"
 
@@ -195,3 +198,6 @@ msgstr "単語"
 
 msgid "Show"
 msgstr "表示"
+
+msgid "WP Related Post JP provides functions to get related posts."
+msgstr "WP Related Post JP は関連記事を取得するための機能を提供します。"
