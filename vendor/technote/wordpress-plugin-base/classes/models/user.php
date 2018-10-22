@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.18
+ * @version 1.1.19
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -77,8 +77,9 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 		if ( empty( $this->user_name ) ) {
 			$this->user_name = $this->app->input->ip();
 		}
-		if ( $this->logged_in || empty( $this->user_data->roles ) ) {
-			$this->user_role = $this->user_data->roles[0];
+		if ( $this->logged_in && ! empty( $this->user_data->roles ) ) {
+			$roles           = array_values( $this->user_data->roles );
+			$this->user_role = $roles[0];
 		} else {
 			$this->user_role = false;
 		}
