@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Related Post JP
 Plugin URI:
-Description: Plugin Description
+Description: WP Related Post JP provides functions to get related posts.
 Author: technote
 Version: 1.0.2.3
 Author URI: https://technote.space

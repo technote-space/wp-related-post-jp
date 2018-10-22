@@ -7,7 +7,7 @@ Stable tag: 1.0.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Related Post JP provides related posts.
+WP Related Post JP provides functions to get related posts.
 
 == Description ==
 
