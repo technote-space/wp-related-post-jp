@@ -2,7 +2,7 @@
 /**
  * Technote Configs Setting
  *
- * @version 1.1.13
+ * @version 1.1.21
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -51,6 +51,11 @@ return [
 					'label'   => 'Assets Version',
 					'type'    => 'string',
 					'default' => '',
+				],
+				'use_admin_ajax'      => [
+					'label'   => 'Use admin-ajax.php instead of wp-json.',
+					'type'    => 'bool',
+					'default' => false,
 				],
 			],
 		],

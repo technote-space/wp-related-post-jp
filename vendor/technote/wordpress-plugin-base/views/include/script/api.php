@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Api
  *
- * @version 1.1.13
+ * @version 1.1.21
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -20,13 +20,16 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var array $functions */
 /** @var string $api_class */
 /** @var array $scripts */
+/** @var bool $is_admin_ajax */
+/** @var string $nonce_key */
+/** @var string $nonce_value */
 ?>
 
 <script>
     (function () {
         class <?php $instance->h( $api_class );?> {
             constructor() {
-                this.endpoint = '<?php $instance->h( $endpoint . $namespace );?>/';
+                this.endpoint = '<?php $instance->h( $is_admin_ajax ? $endpoint : $endpoint . $namespace );?>/';
                 this.functions = <?php echo json_encode( $functions );?>;
                 this.xhr = {};
             }
@@ -35,7 +38,11 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                 if (args === undefined) args = {};
                 if (this.functions[func]) {
                     const setting = this.functions[func];
-                    let url = this.endpoint + setting.endpoint;
+                    let url = this.endpoint<?php if (! $is_admin_ajax):?> + setting.endpoint<?php endif;?>;
+					<?php if ($is_admin_ajax):?>
+                    args.<?php $instance->h( $nonce_key );?> = '<?php $instance->h( $nonce_value );?>';
+                    args.action = '<?php $instance->h( $namespace );?>_' + setting.endpoint;
+					<?php endif;?>
                     const method = setting.method.toUpperCase();
                     const config = {
                         method: method,
@@ -69,6 +76,13 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                             reject(-1, null, null);
                         }, 1);
                     });
+                }
+            }
+
+            abort(func) {
+                if (this.xhr[func]) {
+                    this.xhr[func].abort();
+                    this.xhr[func] = null;
                 }
             }
 
@@ -131,7 +145,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 
                     xhr.open(config.method, config.url, true);
                     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					<?php if (! $is_admin_ajax):?>
                     xhr.setRequestHeader('X-WP-Nonce', '<?php $instance->h( $nonce );?>');
+					<?php endif;?>
                     xhr.onreadystatechange = function () {
                         if (4 === xhr.readyState) {
                             if (200 === xhr.status) {
@@ -154,13 +170,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                     }
                     this.xhr[func] = xhr;
                 });
-            }
-
-            abort(func) {
-                if (this.xhr[func] !== undefined && this.xhr[func] !== null) {
-                    this.xhr[func].abort();
-                    this.xhr[func] = null;
-                }
             }
         }
 

@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.13
+ * @version 1.1.21
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -174,6 +174,7 @@ class Technote {
 		$this->setup_property( $uninstall );
 		$this->setup_update();
 		$this->setup_textdomain();
+		$this->setup_settings();
 		$this->filter->do_action( 'app_initialized' );
 	}
 
@@ -233,6 +234,15 @@ class Technote {
 		$text_domain = $this->get_config( 'config', 'text_domain' );
 		if ( ! empty( $text_domain ) ) {
 			load_plugin_textdomain( $text_domain, false, $this->define->plugin_languages_rel_path );
+		}
+	}
+
+	/**
+	 * setup settings
+	 */
+	private function setup_settings() {
+		if ( ! class_exists( '\WP_REST_Request' ) ) {
+			$this->setting->remove_setting( 'use_admin_ajax' );
 		}
 	}
 
@@ -394,3 +404,40 @@ class Technote {
 	}
 }
 
+if ( ! class_exists( 'WP_REST_Response' ) ) {
+	// < v4.4
+	class WP_REST_Response {
+		/**
+		 * Response data.
+		 * @var mixed
+		 */
+		public $data;
+
+		/**
+		 * Response headers.
+		 *
+		 * @var array
+		 */
+		public $headers;
+
+		/**
+		 * Response status.
+		 *
+		 * @var int
+		 */
+		public $status;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param mixed $data Response data. Default null.
+		 * @param int $status Optional. HTTP status code. Default 200.
+		 * @param array $headers Optional. HTTP header map. Default empty array.
+		 */
+		public function __construct( $data = null, $status = 200, $headers = [] ) {
+			$this->data    = $data;
+			$this->status  = $status;
+			$this->headers = $headers;
+		}
+	}
+}

@@ -2,7 +2,7 @@
 /**
  * Technote Traits Controller Api
  *
- * @version 1.1.13
+ * @version 1.1.21
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -90,13 +90,13 @@ trait Api {
 	}
 
 	/**
-	 * @param \WP_REST_Request $params
+	 * @param \WP_REST_Request|array $params
 	 *
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
 	public function callback(
 		/** @noinspection PhpUnusedParameterInspection */
-		\WP_REST_Request $params
+		$params
 	) {
 		return new \WP_REST_Response( null, 404 );
 	}
