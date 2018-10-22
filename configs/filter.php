@@ -50,5 +50,9 @@ return [
 		'the_content' => [
 			'the_content' => [],
 		],
+
+		'${prefix}app_activated' => [
+			'init_posts_rankings' => [],
+		],
 	],
 ];
