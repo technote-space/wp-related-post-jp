@@ -2,7 +2,7 @@
 /**
  * Technote Traits Loader
  *
- * @version 1.1.22
+ * @version 1.1.23
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -85,6 +85,13 @@ trait Loader {
 		}
 
 		return $this->list;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_loaded_count() {
+		return count( $this->get_class_list() );
 	}
 
 	/**

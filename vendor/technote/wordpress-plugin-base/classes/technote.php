@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.21
+ * @version 1.1.23
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -242,6 +242,9 @@ class Technote {
 	 */
 	private function setup_settings() {
 		if ( ! class_exists( '\WP_REST_Request' ) ) {
+			$this->setting->remove_setting( 'use_admin_ajax' );
+		}
+		if ( $this->loader->api->get_loaded_count() === 0 ) {
 			$this->setting->remove_setting( 'use_admin_ajax' );
 		}
 	}
