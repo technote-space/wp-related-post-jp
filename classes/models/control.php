@@ -162,7 +162,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return bool
 	 */
 	private function is_valid_update_post() {
-		return $this->app->get_option( 'posts_indexed' ) || $this->app->get_option( 'is_valid_posts_index' );
+		return $this->app->get_option( 'is_valid_posts_index' );
 	}
 
 	/**
@@ -418,6 +418,10 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function setup_index_posts() {
+		if ( $this->app->get_option( 'posts_indexed' ) || ! $this->app->get_option( 'is_valid_posts_index' ) || $this->is_process_running() ) {
+			return;
+		}
+
 		add_action( $this->get_hook_name(), function () {
 			$this->index_posts();
 		} );
