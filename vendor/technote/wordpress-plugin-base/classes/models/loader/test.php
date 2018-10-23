@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Test
  *
- * @version 1.1.13
+ * @version 1.1.22
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -26,9 +26,6 @@ class Test implements \Technote\Interfaces\Loader {
 
 	/** @var bool $is_valid */
 	private $is_valid = false;
-
-	/** @var array */
-	protected $tests = null;
 
 	/**
 	 * initialize
@@ -66,25 +63,7 @@ class Test implements \Technote\Interfaces\Loader {
 			return [];
 		}
 
-		if ( ! isset( $this->tests ) ) {
-			$this->tests = [];
-			/** @var \Technote\Tests\Base $class */
-			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'tests', '\Technote\Tests\Base' ) as $class ) {
-				$slug = $class->class_name;
-				if ( ! isset( $this->tests[ $slug ] ) ) {
-					$this->tests[ $slug ] = $class;
-				}
-			}
-
-			foreach ( $this->get_classes( $this->app->define->plugin_classes_dir . DS . 'tests', '\Technote\Tests\Base' ) as $class ) {
-				$slug = $class->class_name;
-				if ( ! isset( $this->tests[ $slug ] ) ) {
-					$this->tests[ $slug ] = $class;
-				}
-			}
-		}
-
-		return $this->tests;
+		return $this->get_class_list();
 	}
 
 	/**
@@ -95,19 +74,20 @@ class Test implements \Technote\Interfaces\Loader {
 	}
 
 	/**
-	 * @param $page
-	 * @param $add_namespace
-	 *
 	 * @return array
 	 */
-	protected function get_namespaces(
-		/** @noinspection PhpUnusedParameterInspection */
-		$page, $add_namespace
-	) {
+	protected function get_namespaces() {
 		return [
 			$this->app->define->plugin_namespace . '\\Tests',
 			$this->app->define->lib_namespace . '\\Tests',
 		];
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_instanceof() {
+		return '\Technote\Tests\Base';
 	}
 
 	/**

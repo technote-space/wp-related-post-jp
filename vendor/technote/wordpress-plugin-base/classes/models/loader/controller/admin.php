@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Admin
  *
- * @version 1.1.13
+ * @version 1.1.22
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -24,9 +24,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 
 	use \Technote\Traits\Loader, \Technote\Traits\Nonce;
-
-	/** @var array */
-	private $admin_controllers = null;
 
 	/** @var array $messages */
 	private $messages = [];
@@ -105,7 +102,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		}
 
 		$pages = [];
-		foreach ( $this->get_admin_controllers() as $page ) {
+		foreach ( $this->get_class_list() as $page ) {
 			/** @var \Technote\Controllers\Admin\Base $page */
 			if ( $this->app->user_can( $this->apply_filters( 'admin_menu_capability', $page->get_capability(), $page ) ) ) {
 				$priority = $this->apply_filters( 'admin_menu_priority', $page->get_priority(), $page );
@@ -192,42 +189,18 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	/**
 	 * @return array
 	 */
-	private function get_admin_controllers() {
-		if ( ! isset( $this->admin_controllers ) ) {
-			$this->admin_controllers = [];
-			/** @var \Technote\Controllers\Admin\Base $class */
-			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'controllers' . DS . 'admin', '\Technote\Controllers\Admin\Base' ) as $class ) {
-				$slug = $class->get_page_slug();
-				if ( ! isset( $this->admin_controllers[ $slug ] ) ) {
-					$this->admin_controllers[ $slug ] = $class;
-				}
-			}
-
-			foreach ( $this->get_classes( $this->app->define->plugin_classes_dir . DS . 'controllers' . DS . 'admin', '\Technote\Controllers\Admin\Base' ) as $class ) {
-				$slug = $class->get_page_slug();
-				if ( ! isset( $this->admin_controllers[ $slug ] ) ) {
-					$this->admin_controllers[ $slug ] = $class;
-				}
-			}
-		}
-
-		return $this->admin_controllers;
-	}
-
-	/**
-	 * @param string $page
-	 * @param string $add_namespace
-	 *
-	 * @return array
-	 */
-	protected function get_namespaces(
-		/** @noinspection PhpUnusedParameterInspection */
-		$page, $add_namespace
-	) {
+	protected function get_namespaces() {
 		return [
 			$this->app->define->plugin_namespace . '\\Controllers\\Admin\\',
 			$this->app->define->lib_namespace . '\\Controllers\\Admin\\',
 		];
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_instanceof() {
+		return '\Technote\Controllers\Admin\Base';
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Api
  *
- * @version 1.1.21
+ * @version 1.1.22
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -23,9 +23,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 
 	use \Technote\Traits\Loader, \Technote\Traits\Nonce;
-
-	/** @var array */
-	private $api_controllers = null;
 
 	/**
 	 * @return bool
@@ -267,19 +264,20 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	}
 
 	/**
-	 * @param string $page
-	 * @param string $add_namespace
-	 *
 	 * @return array
 	 */
-	protected function get_namespaces(
-		/** @noinspection PhpUnusedParameterInspection */
-		$page, $add_namespace
-	) {
+	protected function get_namespaces() {
 		return [
 			$this->app->define->plugin_namespace . '\\Controllers\\Api\\',
 			$this->app->define->lib_namespace . '\\Controllers\\Api\\',
 		];
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_instanceof() {
+		return '\Technote\Controllers\Api\Base';
 	}
 
 	/**
@@ -288,33 +286,18 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 * @return array
 	 */
 	private function get_api_controllers( $filter ) {
-		if ( ! isset( $this->api_controllers ) ) {
-			$this->api_controllers = [];
-			/** @var \Technote\Traits\Controller\Api $class */
-			foreach ( $this->get_classes( $this->app->define->lib_classes_dir . DS . 'controllers' . DS . 'api', '\Technote\Controllers\Api\Base' ) as $class ) {
-				$name = $class->get_call_function_name();
-				if ( ! isset( $this->api_controllers[ $name ] ) ) {
-					$this->api_controllers[ $name ] = $class;
-				}
-			}
-
-			foreach ( $this->get_classes( $this->app->define->plugin_classes_dir . DS . 'controllers' . DS . 'api', '\Technote\Controllers\Api\Base' ) as $class ) {
-				$name = $class->get_call_function_name();
-				if ( ! isset( $this->api_controllers[ $name ] ) ) {
-					$this->api_controllers[ $name ] = $class;
-				}
-			}
-		}
+		$api_controllers = $this->get_class_list();
 
 		if ( $filter ) {
-			foreach ( $this->api_controllers as $name => $class ) {
+			/** @var \Technote\Traits\Controller\Api $class */
+			foreach ( $api_controllers as $name => $class ) {
 				if ( ! $class->is_valid() || ( is_admin() && $class->is_only_front() ) || ( ! is_admin() && $class->is_only_admin() ) ) {
-					unset( $this->api_controllers[ $name ] );
+					unset( $api_controllers[ $name ] );
 				}
 			}
 		}
 
-		return $this->api_controllers;
+		return $api_controllers;
 	}
 
 	/**
@@ -327,7 +310,9 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function rest_pre_dispatch(
 		/** @noinspection PhpUnusedParameterInspection */
-		$result, $server, $request
+		$result,
+		$server,
+		$request
 	) {
 		if ( $this->use_admin_ajax() ) {
 			return $result;

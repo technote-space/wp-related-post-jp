@@ -2,7 +2,7 @@
 /**
  * Technote Traits Loader
  *
- * @version 1.1.13
+ * @version 1.1.22
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -26,6 +26,9 @@ trait Loader {
 	use Singleton, Hook, Presenter;
 
 	/** @var array */
+	private $list = null;
+
+	/** @var array */
 	private $cache = [];
 
 	/**
@@ -33,6 +36,55 @@ trait Loader {
 	 */
 	public function get_loader_name() {
 		return $this->get_file_slug();
+	}
+
+	/**
+	 * @param string $namespace
+	 *
+	 * @return string|false
+	 */
+	private function namespace_to_dir( $namespace ) {
+		$namespace = ltrim( $namespace, '\\' );
+		$dir       = null;
+		if ( preg_match( "#^{$this->app->define->plugin_namespace}#", $namespace ) ) {
+			$namespace = preg_replace( "#^{$this->app->define->plugin_namespace}#", '', $namespace );
+			$dir       = $this->app->define->plugin_classes_dir;
+		} elseif ( preg_match( "#^{$this->app->define->lib_namespace}#", $namespace ) ) {
+			$namespace = preg_replace( "#^{$this->app->define->lib_namespace}#", '', $namespace );
+			$dir       = $this->app->define->lib_classes_dir;
+		}
+
+		if ( isset( $dir ) ) {
+			$namespace = ltrim( $namespace, '\\' );
+			$namespace = strtolower( $namespace );
+			$path      = $dir . DS . str_replace( '\\', DS, $namespace );
+			$path      = rtrim( $path, DS );
+			if ( is_dir( $path ) ) {
+				return $path;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_class_list() {
+		if ( ! isset( $this->list ) ) {
+			$this->list = [];
+			/** @var \Technote\Traits\Singleton $class */
+			foreach ( $this->get_namespaces() as $namespace ) {
+				foreach ( $this->get_classes( $this->namespace_to_dir( $namespace ), $this->get_instanceof() ) as $class ) {
+					$slug = $class->class_name;
+					if ( ! isset( $this->list[ $slug ] ) ) {
+						$this->list[ $slug ] = $class;
+					}
+				}
+			}
+		}
+
+		return $this->list;
 	}
 
 	/**
@@ -101,7 +153,7 @@ trait Loader {
 		if ( isset( $this->cache[ $add_namespace . $page ] ) ) {
 			return $this->cache[ $add_namespace . $page ];
 		}
-		$namespaces = $this->get_namespaces( $page, $add_namespace );
+		$namespaces = $this->get_namespaces();
 		if ( ! empty( $namespaces ) ) {
 			foreach ( $namespaces as $namespace ) {
 				$class = rtrim( $namespace, '\\' ) . '\\' . $add_namespace . $this->get_class_name( $page );
@@ -142,11 +194,13 @@ trait Loader {
 	}
 
 	/**
-	 * @param string $page
-	 * @param string $add_namespace
-	 *
 	 * @return array
 	 */
-	protected abstract function get_namespaces( $page, $add_namespace );
+	protected abstract function get_namespaces();
+
+	/**
+	 * @return string
+	 */
+	protected abstract function get_instanceof();
 
 }

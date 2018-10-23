@@ -2,7 +2,7 @@
 /**
  * Technote Models Utility
  *
- * @version 1.1.13
+ * @version 1.1.22
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -49,7 +49,7 @@ class Utility {
 	 */
 	public static function uuid() {
 		$pid  = getmypid();
-		$node = $_SERVER['SERVER_ADDR'];
+		$node = isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : '0.0.0.0';
 		list( $timeMid, $timeLow ) = explode( ' ', microtime() );
 
 		return sprintf( "%08x%04x%04x%02x%02x%04x%08x", (int) $timeLow, (int) substr( $timeMid, 2 ) & 0xffff,
