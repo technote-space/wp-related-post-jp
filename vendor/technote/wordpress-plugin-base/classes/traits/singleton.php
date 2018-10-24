@@ -2,7 +2,7 @@
 /**
  * Technote Traits Singleton
  *
- * @version 1.1.13
+ * @version 1.1.24
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -59,9 +59,13 @@ trait Singleton {
 		$this->reflection = $reflection;
 		$this->class_name = $reflection->getName();
 		if ( $this instanceof \Technote\Interfaces\Hook ) {
-			add_action( $this->get_filter_prefix() . 'app_initialized', function () {
+			if ( $app->has_initialized() ) {
 				$this->initialized();
-			} );
+			} else {
+				add_action( $this->get_filter_prefix() . 'app_initialized', function () {
+					$this->initialized();
+				} );
+			}
 		}
 	}
 

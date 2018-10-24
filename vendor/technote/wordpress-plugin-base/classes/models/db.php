@@ -2,7 +2,7 @@
 /**
  * Technote Models Db
  *
- * @version 1.1.13
+ * @version 1.1.24
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -84,6 +84,19 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$this->table_defines[ $table ]['columns']  = $columns;
 			$this->table_defines[ $table ]['is_added'] = true;
 		}
+	}
+
+	/**
+	 * switch blog
+	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function switch_blog() {
+		foreach ( $this->table_defines as $table => $table_define ) {
+			if ( ! empty( $table_define['wordpress'] ) ) {
+				unset( $this->table_defines[ $table ] );
+			}
+		}
+		$this->setup_wp_table_defines();
 	}
 
 	/**
@@ -230,7 +243,11 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * @return string
 	 */
 	public function get_table( $table ) {
-		if ( ! isset( $this->table_defines[ $table ] ) || ! empty( $this->table_defines[ $table ]['wordpress'] ) ) {
+		if (
+			! isset( $this->table_defines[ $table ] ) ||
+			! empty( $this->table_defines[ $table ]['wordpress'] ) ||
+			! empty( $this->table_defines[ $table ]['global'] )
+		) {
 			return $table;
 		}
 
@@ -356,7 +373,12 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			}
 		}
 		$sql .= implode( ",\n", $index );
-		$sql .= "\n) ENGINE = InnoDB DEFAULT CHARSET = {$char};";
+		$sql .= "\n) ENGINE = InnoDB DEFAULT CHARSET = {$char}";
+		if ( ! empty( $define['comment'] ) ) {
+			$define['comment'] = str_replace( '\'', '\\\'', $define['comment'] );
+			$sql               .= " COMMENT '{$define['comment']}'";
+		}
+		$sql .= ';';
 
 		return dbDelta( $sql );
 	}

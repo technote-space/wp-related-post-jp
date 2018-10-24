@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.23
+ * @version 1.1.24
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -176,6 +176,13 @@ class Technote {
 		$this->setup_textdomain();
 		$this->setup_settings();
 		$this->filter->do_action( 'app_initialized' );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function has_initialized() {
+		return $this->initialized;
 	}
 
 	/**

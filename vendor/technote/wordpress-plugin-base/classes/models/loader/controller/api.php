@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Api
  *
- * @version 1.1.22
+ * @version 1.1.24
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -90,6 +90,9 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		}
 	}
 
+	/**
+	 * @param callable $get_view_params
+	 */
 	private function register_script_common( $get_view_params ) {
 		$functions = [];
 		$scripts   = [];
