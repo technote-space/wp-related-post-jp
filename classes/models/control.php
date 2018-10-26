@@ -197,7 +197,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function transition_post_status( $new_status, $old_status, $post ) {
-		if ( ! ( defined( 'DOUNG_AUTOSAVE' ) && DOING_AUTOSAVE ) && $this->is_valid_update_post() ) {
+		if ( ! ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) && $this->is_valid_update_post() ) {
 			if ( $new_status === 'publish' ) {
 				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
 					$this->get_bm25()->delete( $post->ID );
