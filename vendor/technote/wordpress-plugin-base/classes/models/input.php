@@ -2,7 +2,7 @@
 /**
  * Technote Models Input
  *
- * @version 1.1.13
+ * @version 1.1.25
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -59,6 +59,16 @@ class Input implements \Technote\Interfaces\Singleton {
 	 */
 	public function post( $key = null, $default = null ) {
 		return func_num_args() === 0 ? $_POST : Utility::array_get( $_POST, $key, $default );
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $default
+	 *
+	 * @return mixed
+	 */
+	public function request( $key = null, $default = null ) {
+		return func_num_args() === 0 ? $_REQUEST : Utility::array_get( $_REQUEST, $key, $default );
 	}
 
 	/**

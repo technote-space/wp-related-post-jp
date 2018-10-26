@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.13
+ * @version 1.1.25
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -22,6 +22,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * @property \Technote $app
  */
 trait Presenter {
+
+	/** @var array $_prev_post */
+	private $_prev_post = null;
 
 	/**
 	 * @param string $name
@@ -111,6 +114,44 @@ trait Presenter {
 	 */
 	public function form( $name, $args = [], $overwrite = [], $echo = true, $error = true ) {
 		return $this->get_view( 'include/form/' . trim( $name, '/' . DS ), array_merge( $args, $overwrite ), $echo, $error );
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed $data
+	 * @param string|null $key
+	 * @param string $default
+	 * @param bool $checkbox
+	 *
+	 * @return mixed
+	 */
+	public function old( $name, $data, $key = null, $default = '', $checkbox = false ) {
+		if ( is_array( $data ) ) {
+			$default = \Technote\Models\Utility::array_get( $data, $key, $default );
+		} elseif ( $data instanceof \stdClass ) {
+			$default = property_exists( $data, $key ) ? $data->$key : $default;
+		} elseif ( ! isset( $key ) ) {
+			$default = $data;
+		}
+		if ( ! isset( $this->_prev_post ) ) {
+			$this->_prev_post = $this->app->session->get( $this->get_old_post_session_key(), null );
+			if ( empty( $this->_prev_post ) ) {
+				$this->_prev_post = [];
+			}
+			$this->app->session->delete( $this->get_old_post_session_key() );
+		}
+		if ( $checkbox && ! empty( $this->_prev_post ) ) {
+			$default = false;
+		}
+
+		return \Technote\Models\Utility::array_get( $this->_prev_post, $name, $default );
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_old_post_session_key() {
+		return '__prev_post';
 	}
 
 	/**

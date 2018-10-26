@@ -2,7 +2,7 @@
 /**
  * Technote Models Db
  *
- * @version 1.1.24
+ * @version 1.1.25
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -499,7 +499,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * @param $delete
 	 */
 	private function set_update_params( &$data, $create, $update, $delete ) {
-		$now  = $this->apply_filters( 'set_update_params_date', date( 'Y-m-d H:i:s' ) );
+		$now  = $this->apply_filters( 'set_update_params_date', date_i18n( 'Y-m-d H:i:s' ) );
 		$user = $this->apply_filters( 'set_update_params_user', $this->app->user->user_name );
 
 		if ( $create ) {
@@ -517,12 +517,15 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	}
 
 	/**
-	 * @param array|string $fields
+	 * @param null|array|string $fields
 	 * @param array $columns
 	 *
 	 * @return array
 	 */
 	private function build_fields( $fields, $columns ) {
+		if ( ! isset( $fields ) ) {
+			$fields = [ '*' ];
+		}
 		if ( is_string( $fields ) ) {
 			$fields = [ $fields ];
 		}
@@ -584,14 +587,16 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	/**
 	 * @param array $where
 	 * @param array $columns
+	 * @param string $glue
 	 *
 	 * @return array
 	 */
-	private function build_conditions( $where, $columns ) {
+	private function build_conditions( $where, $columns, $glue = 'AND' ) {
 		list ( $_where, $_where_format ) = $this->filter( $where, $columns );
 		$conditions = $values = [];
 		$index      = 0;
 		foreach ( $_where as $field => $value ) {
+			$field  = trim( $field );
 			$format = $_where_format[ $index ++ ];
 			if ( is_null( $value ) ) {
 				$conditions[] = "$field IS NULL";
@@ -612,8 +617,27 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$op = '=';
 			if ( is_array( $value ) ) {
 				if ( count( $value ) > 1 ) {
-					$op  = $value[0];
+					$op  = trim( $value[0] );
 					$val = $value[1];
+					if ( in_array( strtoupper( $op ), [
+						'OR',
+						'AND',
+					] ) ) {
+						array_shift( $value );
+						$_conditions = [];
+						foreach ( $value as $v ) {
+							if ( ! is_array( $v ) ) {
+								$_conditions[] = "1=0";
+								continue;
+							}
+							list( $c, $v ) = $this->build_conditions( $v, $columns );
+							$values        = array_merge( $values, $v );
+							$_conditions[] = "({$c})";
+						}
+						$conditions[] = implode( " {$op} ", $_conditions );
+
+						continue;
+					}
 					if ( is_array( $val ) ) {
 						if ( empty( $val ) ) {
 							$conditions[] = "1=0";
@@ -642,7 +666,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$conditions[] = "$field $op $format";
 			$values[]     = $val;
 		}
-		$conditions = implode( ' AND ', $conditions );
+		$conditions = implode( " {$glue} ", $conditions );
 
 		return [ $conditions, $values ];
 	}
@@ -841,7 +865,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	/**
 	 * @param array|string $tables
 	 * @param array $where
-	 * @param array|string $fields
+	 * @param null|array|string $fields
 	 * @param null|int $limit
 	 * @param null|int $offset
 	 * @param null|array $order_by
@@ -851,7 +875,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 *
 	 * @return array|bool|null
 	 */
-	public function select( $tables, $where = [], $fields = [ '*' ], $limit = null, $offset = null, $order_by = null, $group_by = null, $output = ARRAY_A, $for_update = false ) {
+	public function select( $tables, $where = [], $fields = null, $limit = null, $offset = null, $order_by = null, $group_by = null, $output = ARRAY_A, $for_update = false ) {
 		$sql = $this->get_select_sql( $tables, $where, $fields, $limit, $offset, $order_by, $group_by, $for_update );
 		if ( false === $sql ) {
 			return false;

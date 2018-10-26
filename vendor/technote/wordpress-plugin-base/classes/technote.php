@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.24
+ * @version 1.1.25
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -35,6 +35,7 @@ define( 'TECHNOTE_IS_MOCK', false );
  * @property \Technote\Models\Input $input
  * @property \Technote\Models\Db $db
  * @property \Technote\Models\Uninstall $uninstall
+ * @property \Technote\Models\Session $session
  */
 class Technote {
 
@@ -72,6 +73,7 @@ class Technote {
 		'input'     => '\Technote\Models\Input',
 		'db'        => '\Technote\Models\Db',
 		'uninstall' => '\Technote\Models\Uninstall',
+		'session'   => '\Technote\Models\Session',
 	];
 
 	/** @var array $property_instances */
@@ -292,6 +294,24 @@ class Technote {
 	 */
 	public function get_option( $key, $default = '' ) {
 		return $this->option->get( $key, $default );
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $default
+	 *
+	 * @return mixed
+	 */
+	public function get_session( $key, $default = null ) {
+		return $this->session->get( $key, $default );
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	public function set_session( $key, $value ) {
+		$this->session->set( $key, $value );
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * Technote Models Option
  *
- * @version 1.1.13
+ * @version 1.1.25
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -40,7 +40,7 @@ class Option implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	/**
 	 * reload options
 	 */
-	private function reload_options() {
+	public function reload_options() {
 		if ( $this->suspend_reload ) {
 			return;
 		}

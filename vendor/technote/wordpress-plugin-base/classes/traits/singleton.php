@@ -2,7 +2,7 @@
 /**
  * Technote Traits Singleton
  *
- * @version 1.1.24
+ * @version 1.1.25
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -153,5 +153,30 @@ trait Singleton {
 		$slug     = end( $exploded );
 
 		return strtolower( $slug );
+	}
+
+	/**
+	 * @param string $name
+	 * @param callable $func
+	 *
+	 * @return bool
+	 */
+	protected function lock_process( $name, $func ) {
+		$name .= '__LOCK_PROCESS__';
+		$this->app->option->reload_options();
+		$check = $this->app->option->get( $name );
+		if ( ! empty( $check ) ) {
+			return false;
+		}
+		$rand = md5( uniqid() );
+		$this->app->option->set( $name, $rand );
+		$this->app->option->reload_options();
+		if ( $this->app->option->get( $name ) != $rand ) {
+			return false;
+		}
+		$func();
+		$this->app->option->delete( $name );
+
+		return true;
 	}
 }
