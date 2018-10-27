@@ -2,7 +2,7 @@
 /**
  * Technote Configs Config
  *
- * @version 1.1.13
+ * @version 1.1.26
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -17,42 +17,47 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 return [
 
 	// plugin title
-	'plugin_title'         => '',
+	'plugin_title'              => '',
 
 	// contact url
-	'contact_url'          => '',
+	'contact_url'               => '',
 
 	// twitter
-	'twitter'              => '',
+	'twitter'                   => '',
 
 	// github
-	'github'               => '',
+	'github'                    => '',
 
 	// db version
-	'db_version'           => '0.0.0.0.0',
+	'db_version'                => '0.0.0.0.0',
 
 	// update
-	'update_info_file_url' => '',
+	'update_info_file_url'      => '',
 
 	// text domain
-	'text_domain'          => '',
+	'text_domain'               => '',
 
 	// menu image url
-	'menu_image'           => '',
+	'menu_image'                => '',
 
 	// log dir
-	'log_dir'              => '${Y}/${m}',
+	'log_dir'                   => '${Y}/${m}',
 
 	// log name
-	'log_name'             => '${d}',
+	'log_name'                  => '${d}',
 
 	// log extension
-	'log_extension'        => 'txt',
+	'log_extension'             => 'txt',
 
 	// api version
-	'api_version'          => 'v1',
+	'api_version'               => 'v1',
 
 	// default delete rule
-	'default_delete_rule'  => 'physical',
+	'default_delete_rule'       => 'physical',
 
+	// cache filter result
+	'cache_filter_result'       => true,
+
+	// cache filter exclude list
+	'cache_filter_exclude_list' => [],
 ];

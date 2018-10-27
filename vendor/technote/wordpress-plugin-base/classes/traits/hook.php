@@ -2,7 +2,7 @@
 /**
  * Technote Traits Hook
  *
- * @version 1.1.13
+ * @version 1.1.26
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -23,6 +23,28 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  */
 trait Hook {
 
+	/** @var bool $_is_valid_cache */
+	private $_is_valid_cache;
+
+	/** @var array $_cache */
+	private $_cache = [];
+
+	/** @var array $_prevent_cache */
+	private $_prevent_cache;
+
+	/**
+	 * load cache settings
+	 */
+	private function load_cache_settings() {
+		if ( isset( $this->_is_valid_cache ) ) {
+			return;
+		}
+
+		$this->_is_valid_cache = ! empty( $this->app->get_config( 'config', 'cache_filter_result' ) );
+		$this->_prevent_cache  = $this->app->get_config( 'config', 'cache_filter_exclude_list', [] );
+		$this->_prevent_cache  = empty( $this->_prevent_cache ) ? [] : array_combine( $this->_prevent_cache, array_fill( 0, count( $this->_prevent_cache ), true ) );
+	}
+
 	/**
 	 * @return string
 	 */
@@ -34,8 +56,15 @@ trait Hook {
 	 * @return mixed
 	 */
 	public function apply_filters() {
-		$args    = func_get_args();
-		$key     = $args[0];
+		$args = func_get_args();
+		$key  = $args[0];
+
+		$this->load_cache_settings();
+		$is_valid_cache = $this->_is_valid_cache && ! isset( $this->_prevent_cache[ $key ] );
+		if ( array_key_exists( $key, $this->_cache ) ) {
+			return $this->_cache[ $key ];
+		}
+
 		$args[0] = $this->get_filter_prefix() . $key;
 		if ( count( $args ) < 2 ) {
 			$args[] = null;
@@ -58,7 +87,15 @@ trait Hook {
 				$value = $this->app->translate( $value );
 			}
 
+			if ( $is_valid_cache ) {
+				$this->_cache[ $key ] = $value;
+			}
+
 			return $value;
+		}
+
+		if ( $is_valid_cache && count( $args ) <= 2 ) {
+			$this->_cache[ $key ] = $default;
 		}
 
 		return $default;
