@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Form Textarea
  *
- * @version 1.1.25
+ * @version 1.1.28
  * @author technote-space
  * @since 1.1.25
  * @copyright technote All Rights Reserved
@@ -25,5 +25,8 @@ isset( $id ) and $attributes['id'] = $id;
 isset( $class ) and $attributes['class'] = $class;
 $attributes['name'] = $name;
 ! isset( $value ) and $value = '';
+global $allowedposttags;
+$allowed = $allowedposttags;
+unset( $allowed['textarea'] );
 ?>
-<textarea <?php $instance->get_view( 'include/attributes', array_merge( $args, [ 'attributes' => $attributes ] ), true ); ?> ><?php echo sanitize_textarea_field( $value ); ?></textarea>
+<textarea <?php $instance->get_view( 'include/attributes', array_merge( $args, [ 'attributes' => $attributes ] ), true ); ?> ><?php echo wp_kses( $value, $allowed ); ?></textarea>
