@@ -2,7 +2,7 @@
 /**
  * Technote Models Utility
  *
- * @version 1.1.25
+ * @version 1.1.27
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -89,16 +89,34 @@ class Utility {
 	}
 
 	/**
-	 * @param array $array
+	 * @param array|object $obj
+	 *
+	 * @return array
+	 */
+	private static function get_array_value( $obj ) {
+		if ( $obj instanceof \stdClass ) {
+			$obj = get_object_vars( $obj );
+		} elseif ( ! is_array( $obj ) ) {
+			if ( method_exists( $obj, 'to_array' ) ) {
+				$obj = $obj->to_array();
+			}
+		}
+		if ( ! is_array( $obj ) || empty( $obj ) ) {
+			return [];
+		}
+
+		return $obj;
+	}
+
+	/**
+	 * @param array|object $array
 	 * @param string $key
 	 * @param mixed $default
 	 *
 	 * @return mixed
 	 */
-	public static function array_get( array $array, $key, $default = null ) {
-		if ( ! is_array( $array ) ) {
-			return $default;
-		}
+	public static function array_get( $array, $key, $default = null ) {
+		$array = self::get_array_value( $array );
 		if ( array_key_exists( $key, $array ) ) {
 			return $array[ $key ];
 		}
@@ -112,24 +130,19 @@ class Utility {
 	 * @param mixed $value
 	 */
 	public static function array_set( array &$array, $key, $value ) {
-		if ( ! is_array( $array ) ) {
-			$array = [];
-		}
 		$array[ $key ] = $value;
 	}
 
 	/**
-	 * @param array $array
+	 * @param array|object $array
 	 * @param string $key
 	 * @param mixed $default
 	 * @param bool $filter
 	 *
 	 * @return array
 	 */
-	public static function array_pluck( array $array, $key, $default = null, $filter = false ) {
-		if ( empty( $array ) ) {
-			return [];
-		}
+	public static function array_pluck( $array, $key, $default = null, $filter = false ) {
+		$array = self::get_array_value( $array );
 
 		return array_map( function ( $d ) use ( $key, $default ) {
 			is_object( $d ) and $d = (array) $d;
