@@ -329,6 +329,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @param string $q
 	 */
 	private function keyword_search( $query, $q ) {
+		if ( ! empty( $query->query['post_type'] ) && $this->is_invalid_post_type( $query->query['post_type'] ) ) {
+			return;
+		}
 		$posts_per_page = $query->get( 'posts_per_page' );
 		if ( empty( $posts_per_page ) ) {
 			$posts_per_page = get_option( 'posts_per_page' );
