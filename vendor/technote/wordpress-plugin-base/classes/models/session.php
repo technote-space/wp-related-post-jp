@@ -2,7 +2,7 @@
 /**
  * Technote Models Session
  *
- * @version 1.1.25
+ * @version 1.1.29
  * @author technote-space
  * @since 1.1.25
  * @copyright technote All Rights Reserved
@@ -56,8 +56,8 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	private function check_session() {
 		if ( ! isset( $_SESSION ) ) {
 			@session_start();
-			$this->_initialized = isset( $_SESSION );
 		}
+		$this->_initialized = isset( $_SESSION );
 		$this->security_process();
 	}
 

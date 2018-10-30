@@ -2,7 +2,7 @@
 /**
  * Technote Traits Hook
  *
- * @version 1.1.26
+ * @version 1.1.30
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -23,26 +23,22 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  */
 trait Hook {
 
-	/** @var bool $_is_valid_cache */
-	private $_is_valid_cache;
-
-	/** @var array $_cache */
-	private $_cache = [];
-
-	/** @var array $_prevent_cache */
-	private $_prevent_cache;
-
 	/**
 	 * load cache settings
 	 */
 	private function load_cache_settings() {
-		if ( isset( $this->_is_valid_cache ) ) {
+		if ( $this->app->isset_shared_object( 'is_valid_hook_cache' ) ) {
 			return;
 		}
 
-		$this->_is_valid_cache = ! empty( $this->app->get_config( 'config', 'cache_filter_result' ) );
-		$this->_prevent_cache  = $this->app->get_config( 'config', 'cache_filter_exclude_list', [] );
-		$this->_prevent_cache  = empty( $this->_prevent_cache ) ? [] : array_combine( $this->_prevent_cache, array_fill( 0, count( $this->_prevent_cache ), true ) );
+		$this->app->set_shared_object( 'is_valid_hook_cache', ! empty( $this->app->get_config( 'config', 'cache_filter_result' ) ) );
+		$prevent_cache = $this->app->get_config( 'config', 'cache_filter_exclude_list', [] );
+		$prevent_cache = empty( $prevent_cache ) ? [] : array_combine(
+			$prevent_cache,
+			array_fill( 0, count( $prevent_cache ), true )
+		);
+		$this->app->set_shared_object( 'prevent_hook_cache', $prevent_cache );
+		$this->app->set_shared_object( 'hook_cache', [] );
 	}
 
 	/**
@@ -53,16 +49,57 @@ trait Hook {
 	}
 
 	/**
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	private function add_hook_cache( $key, $value ) {
+		$cache         = $this->app->get_shared_object( 'hook_cache' );
+		$cache[ $key ] = $value;
+		$this->app->set_shared_object( 'hook_cache', $cache );
+	}
+
+	/**
+	 * @param string $key
+	 */
+	protected function delete_hook_cache( $key ) {
+		$cache = $this->app->get_shared_object( 'hook_cache' );
+		if ( ! empty( $cache ) && isset( $cache[ $key ] ) ) {
+			unset( $cache[ $key ] );
+			$this->app->set_shared_object( 'hook_cache', $cache );
+		}
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return array
+	 */
+	private function get_hook_cache( $key ) {
+		$this->load_cache_settings();
+		$prevent_cache  = $this->app->get_shared_object( 'prevent_hook_cache' );
+		$is_valid_cache = ! isset( $prevent_cache[ $key ] ) && $this->app->get_shared_object( 'is_valid_hook_cache' );
+		if ( ! $is_valid_cache ) {
+			return [ false, null, $is_valid_cache ];
+		}
+
+		$cache = $this->app->get_shared_object( 'hook_cache' );
+		if ( ! is_array( $cache ) || ! array_key_exists( $key, $cache ) ) {
+			return [ false, null, $is_valid_cache ];
+		}
+
+		return [ true, $cache[ $key ], $is_valid_cache ];
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function apply_filters() {
 		$args = func_get_args();
 		$key  = $args[0];
 
-		$this->load_cache_settings();
-		$is_valid_cache = $this->_is_valid_cache && ! isset( $this->_prevent_cache[ $key ] );
-		if ( array_key_exists( $key, $this->_cache ) ) {
-			return $this->_cache[ $key ];
+		list( $cache_is_valid, $cache, $is_valid_cache ) = $this->get_hook_cache( $key );
+		if ( $cache_is_valid ) {
+			return $cache;
 		}
 
 		$args[0] = $this->get_filter_prefix() . $key;
@@ -88,14 +125,14 @@ trait Hook {
 			}
 
 			if ( $is_valid_cache ) {
-				$this->_cache[ $key ] = $value;
+				$this->add_hook_cache( $key, $value );
 			}
 
 			return $value;
 		}
 
 		if ( $is_valid_cache && count( $args ) <= 2 ) {
-			$this->_cache[ $key ] = $default;
+			$this->add_hook_cache( $key, $default );
 		}
 
 		return $default;

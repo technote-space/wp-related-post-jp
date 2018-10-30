@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Form Input Radio
  *
- * @version 1.1.13
+ * @version 1.1.31
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -18,9 +18,15 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 /** @var string $label */
 /** @var array $args */
 ?>
-<?php $instance->form( 'input', array_merge( $args, [
-	'type' => 'radio',
-] ) ); ?>
-<?php if ( isset( $id, $label ) ): ?>
-    <label for="<?php $instance->h( $id ); ?>"><?php $instance->h( $label, true ); ?></label>
+<?php if ( isset( $label ) ): ?>
+    <label <?php if ( isset( $id ) ): ?>for="<?php $instance->h( $id ); ?>"<?php endif; ?>>
+		<?php $instance->form( 'input', array_merge( $args, [
+			'type' => 'radio',
+		] ) ); ?>
+		<?php $instance->h( $label, true ); ?>
+    </label>
+<?php else: ?>
+	<?php $instance->form( 'input', array_merge( $args, [
+		'type' => 'radio',
+	] ) ); ?>
 <?php endif; ?>

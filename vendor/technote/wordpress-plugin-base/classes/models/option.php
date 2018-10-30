@@ -2,7 +2,7 @@
 /**
  * Technote Models Option
  *
- * @version 1.1.25
+ * @version 1.1.30
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -144,8 +144,10 @@ class Option implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 		if ( ! isset( $_POST[ $key ] ) && ! isset( $default ) ) {
 			return false;
 		}
+		$result = $this->set( $key, isset( $_POST[ $key ] ) ? $_POST[ $key ] : $default );
+		$this->delete_hook_cache( preg_replace( '/^' . preg_quote( $this->get_filter_prefix(), '/' ) . '/', '', $key ) );
 
-		return $this->set( $key, isset( $_POST[ $key ] ) ? $_POST[ $key ] : $default );
+		return $result;
 	}
 
 	/**
