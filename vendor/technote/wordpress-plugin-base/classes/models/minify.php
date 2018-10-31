@@ -2,7 +2,7 @@
 /**
  * Technote Models Minify
  *
- * @version 1.1.13
+ * @version 1.1.33
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -37,6 +37,29 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	private $end_footer = false;
 
 	/**
+	 * @param string $src
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	private function check_cache( $src, $name ) {
+		$name  = $name . '_minify_cache';
+		$hash  = sha1( $src );
+		$cache = $this->app->get_shared_object( $name );
+		if ( $cache ) {
+			if ( isset( $cache[ $hash ] ) ) {
+				return true;
+			}
+		} else {
+			$cache = [];
+		}
+		$cache[ $hash ] = true;
+		$this->app->set_shared_object( $name, $cache );
+
+		return false;
+	}
+
+	/**
 	 * @param string $script
 	 * @param int $priority
 	 */
@@ -58,9 +81,14 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	 */
 	private function set_script( $script, $priority ) {
 		$script = trim( $script );
-		if ( "" === $script ) {
+		if ( '' === $script ) {
 			return;
 		}
+
+		if ( $this->check_cache( $script, 'script' ) ) {
+			return;
+		}
+
 		$this->script[ $priority ][] = $script;
 		if ( $this->has_output_script ) {
 			$this->output_js();
@@ -84,7 +112,7 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 		// を除去
 		$script = preg_replace( '#}\s*\)\s*\(\s*jQuery\s*\);?\n?\(\s*function\s*\(\s*\$\s*\)\s*\{#s', '', $script );
 
-		if ( $this->apply_filters( "minify_js" ) ) {
+		if ( $this->apply_filters( 'minify_js' ) ) {
 			$minify = new \MatthiasMullie\Minify\JS();
 			$minify->add( $script );
 			echo '<script>' . $minify->minify() . '</script>';
@@ -117,9 +145,14 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	 */
 	private function set_style( $css, $priority ) {
 		$css = trim( $css );
-		if ( "" === $css ) {
+		if ( '' === $css ) {
 			return;
 		}
+
+		if ( $this->check_cache( $css, 'style' ) ) {
+			return;
+		}
+
 		$this->css[ $priority ][] = $css;
 		if ( $this->end_footer ) {
 			$this->output_css();

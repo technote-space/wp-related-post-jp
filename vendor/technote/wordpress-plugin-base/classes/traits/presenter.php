@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.25
+ * @version 1.1.33
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -457,6 +457,36 @@ trait Presenter {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $handle
+	 * @param string $file
+	 * @param array $depends
+	 * @param string|bool|null $ver
+	 * @param string $media
+	 */
+	public function enqueue_style( $handle, $file, $depends = [], $ver = false, $media = 'all' ) {
+		wp_enqueue_style( $handle, $this->app->define->plugin_assets_url . '/css/' . $file, $depends, $ver, $media );
+	}
+
+	/**
+	 * @param string $handle
+	 * @param string $file
+	 * @param array $depends
+	 * @param string|bool|null $ver
+	 * @param bool $in_footer
+	 */
+	public function enqueue_script( $handle, $file, $depends = [], $ver = false, $in_footer = true ) {
+		wp_enqueue_script( $handle, $this->app->define->plugin_assets_url . '/js/' . $file, $depends, $ver, $in_footer );
+	}
+
+	/**
+	 * setup modal
+	 */
+	public function setup_modal() {
+		$this->add_script_view( 'include/script/modal', [], 1 );
+		$this->add_style_view( 'include/style/modal', [], 1 );
 	}
 
 	/**
