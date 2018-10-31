@@ -26,14 +26,14 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             is_loading = true;
 
             const post_id = $(this).data('id');
-            window.<?php $instance->h( $api_class );?>.ajax('wrpj_index_result', {p: post_id}).then(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('wrpj_index_result', {p: post_id}).done(function (json) {
                 window.<?php $instance->modal_class();?>.hide_loading();
                 window.<?php $instance->modal_class();?>.show_message(json.message);
                 $('#<?php $instance->id(); ?>-modal-message-wrap').animate({scrollTop: 0});
-            }, function (status) {
+            }).fail(function (err) {
                 window.<?php $instance->modal_class();?>.hide();
-                console.log(status);
-            }).then(function () {
+                console.log(err);
+            }).always(function () {
                 is_loading = false;
             });
 

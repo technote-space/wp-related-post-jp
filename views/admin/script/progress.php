@@ -28,13 +28,11 @@ $instance->js( 'progressbar.min.js' );
             $(this).addClass('disabled');
             if (!is_valid_button) return;
             is_valid_button = false;
-            window.<?php $instance->h( $api_class );?>.ajax('index_on').then(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('index_on').done(function (json) {
 
-            }, function (status) {
-                console.log(status);
-            }).catch(function (err) {
+            }).fail(function (err) {
                 console.log(err);
-            }).then(function () {
+            }).always(function () {
                 is_valid_button = true;
                 check_progress(false);
             });
@@ -44,13 +42,11 @@ $instance->js( 'progressbar.min.js' );
             $(this).addClass('disabled');
             if (!is_valid_button) return;
             is_valid_button = false;
-            window.<?php $instance->h( $api_class );?>.ajax('index_off').then(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('index_off').done(function (json) {
 
-            }, function (status) {
-                console.log(status);
-            }).catch(function (err) {
+            }).fail(function (err) {
                 console.log(err);
-            }).then(function () {
+            }).always(function () {
                 is_valid_button = true;
                 check_progress(false);
             });
@@ -60,13 +56,11 @@ $instance->js( 'progressbar.min.js' );
             $(this).addClass('disabled');
             if (!is_valid_button) return;
             is_valid_button = false;
-            window.<?php $instance->h( $api_class );?>.ajax('index_clear').then(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('index_clear').done(function (json) {
 
-            }, function (status) {
-                console.log(status);
-            }).catch(function (err) {
+            }).fail(function (err) {
                 console.log(err);
-            }).then(function () {
+            }).always(function () {
                 is_valid_button = true;
                 check_progress(false);
             });
@@ -74,7 +68,7 @@ $instance->js( 'progressbar.min.js' );
         });
 
         const check_progress = function (repeat) {
-            window.<?php $instance->h( $api_class );?>.ajax('progress').then(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('progress').done(function (json) {
                 if (json.posts_indexed) {
                     // すでに初期化済み
                     $('#<?php $instance->id(); ?>-switch-buttons').hide();
@@ -108,9 +102,9 @@ $instance->js( 'progressbar.min.js' );
                     $('#<?php $instance->id(); ?>-info-wrap').hide();
                     $('#<?php $instance->id(); ?>-finished-wrap').hide();
                 }
-            }, function (status) {
-                console.log(status);
-            }).then(function () {
+            }).fail(function (err) {
+                console.log(err);
+            }).always(function () {
                 if (repeat) {
                     setTimeout(function () {
                         check_progress(repeat);
