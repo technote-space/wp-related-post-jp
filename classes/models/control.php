@@ -991,8 +991,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return;
 		}
 
-		$this->add_script_view( 'include/script/modal' );
-		$this->add_style_view( 'include/style/modal' );
+		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
 			$columns['wrpj_show_related_post'] = $this->app->translate( 'Recommendation' );
