@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Modal
  *
- * @version 1.1.31
+ * @version 1.1.32
  * @author technote
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -22,41 +22,39 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             return;
         }
 
-        class <?php $instance->modal_class();?> {
-            constructor() {
-                const target = '<?php if ( is_admin() ): echo '#wpwrap'; else: echo '#container'; endif;?>';
-                const html = '<div id="<?php $instance->id();?>-modal"><div class="<?php $instance->id();?>-loading"></div><div class="<?php $instance->id();?>-loading-message"></div></div><div id="<?php $instance->id();?>-modal-message-wrap"><div id="<?php $instance->id();?>-modal-message"></div></div>';
-                $(html).prependTo(target).hide();
-                $('#<?php $instance->id();?>-modal-message').click(function (e) {
-                    e.stopPropagation();
-                });
-            }
+        function <?php $instance->modal_class();?>() {
+            const target = '<?php if ( is_admin() ): echo '#wpwrap'; else: echo '#container'; endif;?>';
+            const html = '<div id="<?php $instance->id();?>-modal"><div class="<?php $instance->id();?>-loading"></div><div class="<?php $instance->id();?>-loading-message"></div></div><div id="<?php $instance->id();?>-modal-message-wrap"><div id="<?php $instance->id();?>-modal-message"></div></div>';
+            $(html).prependTo(target).hide();
+            $('#<?php $instance->id();?>-modal-message').click(function (e) {
+                e.stopPropagation();
+            });
 
-            _modal() {
+            this._modal = function () {
                 return $('#<?php $instance->id();?>-modal');
-            }
+            };
 
-            _loading() {
+            this._loading = function () {
                 return $('#<?php $instance->id();?>-modal .<?php $instance->id();?>-loading');
-            }
+            };
 
-            _loading_message() {
+            this._loading_message = function () {
                 return $('#<?php $instance->id();?>-modal .<?php $instance->id();?>-loading-message');
-            }
+            };
 
-            _message_wrap() {
+            this._message_wrap = function () {
                 return $('#<?php $instance->id();?>-modal-message-wrap');
-            }
+            };
 
-            _message() {
+            this._message = function () {
                 return $('#<?php $instance->id();?>-modal-message');
-            }
+            };
 
-            _modal_and_message_wrap() {
+            this._modal_and_message_wrap = function () {
                 return $('#<?php $instance->id();?>-modal, #<?php $instance->id();?>-modal-message-wrap');
-            }
+            };
 
-            show(loading, click, message) {
+            this.show = function (loading, click, message) {
                 this._modal().fadeIn();
                 if (loading) {
                     this._loading().fadeIn();
@@ -72,13 +70,13 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                         return false;
                     });
                 }
-            }
+            };
 
-            show_loading() {
+            this.show_loading = function () {
                 this._loading().fadeIn();
-            }
+            };
 
-            show_message(message) {
+            this.show_message = function (message) {
                 if (message) {
                     this.set_message(message);
                 }
@@ -91,32 +89,32 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                     }
                 };
                 check_resize();
-            }
+            };
 
-            hide() {
+            this.hide = function () {
                 this._modal().fadeOut();
                 this.hide_loading();
                 this.hide_message();
-            }
+            };
 
-            hide_loading() {
+            this.hide_loading = function () {
                 this._loading().fadeOut();
                 this._loading_message().fadeOut();
-            }
+            };
 
-            hide_message() {
+            this.hide_message = function () {
                 this._message_wrap().fadeOut();
-            }
+            };
 
-            set_message(message) {
+            this.set_message = function (message) {
                 this._message().html(message);
                 this._set_message_size();
-            }
+            };
 
-            _set_message_size() {
+            this._set_message_size = function () {
                 const height = parseInt(this._message_wrap().get(0).offsetHeight / 2);
                 this._message_wrap().css('margin-top', -height + 'px');
-            }
+            };
 
         }
 
