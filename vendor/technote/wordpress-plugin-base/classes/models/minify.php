@@ -2,7 +2,7 @@
 /**
  * Technote Models Minify
  *
- * @version 1.1.33
+ * @version 1.1.37
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -45,7 +45,7 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 	private function check_cache( $src, $name ) {
 		$name  = $name . '_minify_cache';
 		$hash  = sha1( $src );
-		$cache = $this->app->get_shared_object( $name );
+		$cache = $this->app->get_shared_object( $name, 'all' );
 		if ( $cache ) {
 			if ( isset( $cache[ $hash ] ) ) {
 				return true;
@@ -54,7 +54,7 @@ class Minify implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hoo
 			$cache = [];
 		}
 		$cache[ $hash ] = true;
-		$this->app->set_shared_object( $name, $cache );
+		$this->app->set_shared_object( $name, $cache, 'all' );
 
 		return false;
 	}

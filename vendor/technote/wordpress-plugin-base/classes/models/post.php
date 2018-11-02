@@ -2,7 +2,7 @@
 /**
  * Technote Models Post
  *
- * @version 1.1.13
+ * @version 1.1.37
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -188,6 +188,55 @@ SQL;
 		$results = $wpdb->get_results( $wpdb->prepare( $query, $this->get_meta_key( $key ) ) );
 
 		return $this->apply_filters( 'find_post_meta', Utility::array_pluck( $results, 'post_id' ), $key );
+	}
+
+	/**
+	 * @param array|string $tags
+	 *
+	 * @return bool
+	 */
+	public function has_shortcode( $tags ) {
+		if ( empty( $tags ) ) {
+			return false;
+		}
+
+		$tagnames = $this->app->get_shared_object( 'tagnames_cache', 'all' );
+		if ( ! isset( $tagnames ) ) {
+			$tagnames = $this->get_tagnames();
+			$this->app->set_shared_object( 'tagnames_cache', $tagnames, 'all' );
+		}
+		if ( empty( $tagnames ) ) {
+			return false;
+		}
+
+		! is_array( $tags ) and $tags = [ $tags ];
+
+		return ! empty( array_intersect( $tags, $tagnames ) );
+	}
+
+	/**
+	 * @return array|false
+	 */
+	private function get_tagnames() {
+		if ( ! is_page() ) {
+			return false;
+		}
+
+		global $shortcode_tags;
+		if ( empty( $shortcode_tags ) || ! is_array( $shortcode_tags ) ) {
+			return false;
+		}
+
+		$post    = get_post();
+		$content = $post->post_content;
+		if ( false === strpos( $content, '[' ) ) {
+			return false;
+		}
+
+		// Find all registered tag names in $content.
+		preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
+
+		return array_intersect( array_keys( $shortcode_tags ), $matches[1] );
 	}
 
 	/**

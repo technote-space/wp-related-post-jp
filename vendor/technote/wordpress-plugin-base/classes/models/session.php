@@ -2,7 +2,7 @@
 /**
  * Technote Models Session
  *
- * @version 1.1.29
+ * @version 1.1.37
  * @author technote-space
  * @since 1.1.25
  * @copyright technote All Rights Reserved
@@ -24,14 +24,24 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 
 	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
 
-	/** @var bool $_initialized */
-	private $_initialized = false;
+	/**
+	 * @return bool
+	 */
+	private function is_valid_session() {
+		return $this->app->isset_shared_object( 'is_valid_session', 'all' );
+	}
 
 	/**
 	 * initialize
 	 */
 	protected function initialize() {
-		$this->check_session();
+		if ( ! $this->app->isset_shared_object( 'session_initialized', 'all' ) ) {
+			$this->app->set_shared_object( 'session_initialized', true, 'all' );
+			if ( ! $this->app->isset_shared_object( 'session_user_check_name', 'all' ) ) {
+				$this->app->set_shared_object( 'session_user_check_name', 'user_check', 'all' );
+			}
+			$this->check_session();
+		}
 	}
 
 	/**
@@ -47,7 +57,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return string
 	 */
 	private function get_user_check_name() {
-		return $this->apply_filters( 'user_check_session', 'user_check' );
+		return $this->app->get_shared_object( 'session_user_check_name', 'all' );
 	}
 
 	/**
@@ -57,7 +67,9 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		if ( ! isset( $_SESSION ) ) {
 			@session_start();
 		}
-		$this->_initialized = isset( $_SESSION );
+		if ( isset( $_SESSION ) ) {
+			$this->app->set_shared_object( 'is_valid_session', true, 'all' );
+		}
 		$this->security_process();
 	}
 
@@ -81,8 +93,11 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * regenerate
 	 */
 	public function regenerate() {
-		if ( $this->_initialized ) {
-			session_regenerate_id( true );
+		if ( $this->is_valid_session() ) {
+			if ( ! $this->app->isset_shared_object( 'session_regenerated', 'all' ) ) {
+				session_regenerate_id( true );
+				$this->app->set_shared_object( 'session_regenerated', true, 'all' );
+			}
 		}
 	}
 
@@ -90,11 +105,11 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * destroy
 	 */
 	public function destroy() {
-		if ( $this->_initialized ) {
+		if ( $this->is_valid_session() ) {
 			$_SESSION = [];
 			setcookie( session_name(), '', time() - 1, '/' );
 			session_destroy();
-			$this->_initialized = false;
+			$this->app->delete_shared_object( 'is_valid_session', 'all' );
 		}
 	}
 
@@ -105,7 +120,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @return mixed
 	 */
 	public function get( $key, $default = null ) {
-		if ( ! $this->_initialized ) {
+		if ( ! $this->is_valid_session() ) {
 			return $default;
 		}
 		$key = $this->get_session_key( $key );
@@ -121,7 +136,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @param mixed $value
 	 */
 	public function set( $key, $value ) {
-		if ( ! $this->_initialized ) {
+		if ( ! $this->is_valid_session() ) {
 			return;
 		}
 		$key              = $this->get_session_key( $key );
@@ -132,7 +147,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	 * @param string $key
 	 */
 	public function delete( $key ) {
-		if ( ! $this->_initialized ) {
+		if ( ! $this->is_valid_session() ) {
 			return;
 		}
 		$key = $this->get_session_key( $key );

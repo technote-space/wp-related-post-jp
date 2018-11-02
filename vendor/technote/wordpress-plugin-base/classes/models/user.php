@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.19
+ * @version 1.1.37
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -28,6 +28,8 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * @property string $user_email
  * @property bool $logged_in
  * @property string|false $user_role
+ * @property array $user_roles
+ * @property array $user_caps
  */
 class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall {
 
@@ -51,37 +53,57 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 	public $logged_in;
 	/** @var string|false $user_role */
 	public $user_role;
+	/** @var array $user_roles */
+	public $user_roles;
+	/** @var array $user_caps */
+	public $user_caps;
 
 	/**
 	 * initialize
 	 */
 	protected function initialize() {
-		global $user_ID;
-		$current_user = wp_get_current_user();
+		$cache = $this->app->get_shared_object( 'user_info_cache', 'all' );
+		if ( ! isset( $cache ) ) {
+			global $user_ID;
+			$current_user = wp_get_current_user();
 
-		if ( $user_ID ) {
-			$this->user_data   = get_userdata( $user_ID );
-			$this->user_level  = $this->user_data->user_level;
-			$this->super_admin = is_super_admin( $user_ID );
-		} else {
-			$this->user_data   = $current_user;
-			$this->user_level  = 0;
-			$this->super_admin = false;
+			$cache = [];
+			if ( $user_ID ) {
+				$cache['user_data']   = get_userdata( $user_ID );
+				$cache['user_level']  = $cache['user_data']->user_level;
+				$cache['super_admin'] = is_super_admin( $user_ID );
+			} else {
+				$cache['user_data']   = $current_user;
+				$cache['user_level']  = 0;
+				$cache['super_admin'] = false;
+			}
+			$cache['user_id']      = $cache['user_data']->ID;
+			$cache['user_name']    = $cache['user_data']->user_login;
+			$cache['display_name'] = $cache['user_data']->display_name;
+			$cache['user_email']   = $cache['user_data']->user_email;
+			$cache['logged_in']    = is_user_logged_in();
+			if ( empty( $cache['user_name'] ) ) {
+				$cache['user_name'] = $this->app->input->ip();
+			}
+			if ( $cache['logged_in'] && ! empty( $cache['user_data']->roles ) ) {
+				$roles               = array_values( $cache['user_data']->roles );
+				$cache['user_roles'] = $roles;
+				$cache['user_role']  = $roles[0];
+			} else {
+				$cache['user_roles'] = [];
+				$cache['user_role']  = false;
+			}
+			$cache['user_caps'] = [];
+			foreach ( $cache['user_roles'] as $r ) {
+				$role = get_role( $r );
+				if ( $role ) {
+					$cache['user_caps'] = array_merge( $cache['user_caps'], $role->capabilities );
+				}
+			}
+			$this->app->set_shared_object( 'user_info_cache', $cache, 'all' );
 		}
-
-		$this->user_id      = $this->user_data->ID;
-		$this->user_name    = $this->user_data->user_login;
-		$this->display_name = $this->user_data->display_name;
-		$this->user_email   = $this->user_data->user_email;
-		$this->logged_in    = is_user_logged_in();
-		if ( empty( $this->user_name ) ) {
-			$this->user_name = $this->app->input->ip();
-		}
-		if ( $this->logged_in && ! empty( $this->user_data->roles ) ) {
-			$roles           = array_values( $this->user_data->roles );
-			$this->user_role = $roles[0];
-		} else {
-			$this->user_role = false;
+		foreach ( $cache as $k => $v ) {
+			$this->$k = $v;
 		}
 	}
 
@@ -169,7 +191,16 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 			return true;
 		}
 
-		return current_user_can( $this->apply_filters( 'user_can', $capability ) );
+		return current_user_can( $this->apply_filters( 'user_can', $capability, $capability ) );
+	}
+
+	/**
+	 * @param string $capability
+	 *
+	 * @return bool
+	 */
+	public function has_cap( $capability ) {
+		return ! empty( $this->user_caps[ $capability ] );
 	}
 
 	/**

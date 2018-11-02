@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Admin
  *
- * @version 1.1.22
+ * @version 1.1.34
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -227,7 +227,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function admin_notice() {
-		if ( $this->app->user_can() ) {
+		if ( $this->app->user_can( $this->app->get_config( 'capability', 'admin_notice_capability', 'manage_options' ) ) ) {
 			$this->get_view( 'admin/include/notice', [
 				'messages' => $this->messages,
 			], true );

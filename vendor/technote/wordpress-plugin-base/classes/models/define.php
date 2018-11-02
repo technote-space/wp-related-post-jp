@@ -2,7 +2,7 @@
 /**
  * Technote Models Define
  *
- * @version 1.1.13
+ * @version 1.1.37
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -115,16 +115,25 @@ class Define implements \Technote\Interfaces\Singleton {
 		$this->plugin_dir_name  = basename( $this->plugin_dir );
 		$this->plugin_base_name = plugin_basename( $this->plugin_file );
 
-		$this->lib_name              = TECHNOTE_PLUGIN;
-		$this->lib_namespace         = ucfirst( $this->lib_name );
-		$this->lib_dir               = dirname( TECHNOTE_BOOTSTRAP );
-		$this->lib_assets_dir        = $this->lib_dir . DS . 'assets';
-		$this->lib_classes_dir       = $this->lib_dir . DS . 'classes';
-		$this->lib_configs_dir       = $this->lib_dir . DS . 'configs';
-		$this->lib_views_dir         = $this->lib_dir . DS . 'views';
-		$this->lib_language_dir      = $this->lib_dir . DS . 'languages';
-		$this->lib_language_rel_path = ltrim( str_replace( WP_PLUGIN_DIR, '', $this->lib_language_dir ), DS );
-		$this->lib_vendor_dir        = $this->lib_dir . DS . 'vendor';
+		$cache = $this->app->get_shared_object( 'lib_defines_cache', 'all' );
+		if ( ! isset( $cache ) ) {
+			$cache                          = [];
+			$cache['lib_name']              = TECHNOTE_PLUGIN;
+			$cache['lib_dir']               = dirname( TECHNOTE_BOOTSTRAP );
+			$cache['lib_namespace']         = ucfirst( $cache['lib_name'] );
+			$cache['lib_assets_dir']        = $cache['lib_dir'] . DS . 'assets';
+			$cache['lib_classes_dir']       = $cache['lib_dir'] . DS . 'classes';
+			$cache['lib_configs_dir']       = $cache['lib_dir'] . DS . 'configs';
+			$cache['lib_views_dir']         = $cache['lib_dir'] . DS . 'views';
+			$cache['lib_language_dir']      = $cache['lib_dir'] . DS . 'languages';
+			$cache['lib_language_rel_path'] = ltrim( str_replace( WP_PLUGIN_DIR, '', $this->lib_language_dir ), DS );
+			$cache['lib_vendor_dir']        = $cache['lib_dir'] . DS . 'vendor';
+			$cache['lib_assets_url']        = plugins_url( 'assets', TECHNOTE_BOOTSTRAP );
+			$this->app->set_shared_object( 'lib_defines_cache', $cache, 'all' );
+		}
+		foreach ( $cache as $k => $v ) {
+			$this->$k = $v;
+		}
 
 		$this->plugin_assets_dir         = $this->plugin_dir . DS . 'assets';
 		$this->plugin_classes_dir        = $this->plugin_dir . DS . 'classes';
@@ -134,7 +143,6 @@ class Define implements \Technote\Interfaces\Singleton {
 		$this->plugin_languages_rel_path = ltrim( str_replace( WP_PLUGIN_DIR, '', $this->plugin_languages_dir ), DS );
 		$this->plugin_logs_dir           = $this->plugin_dir . DS . 'logs';
 
-		$this->lib_assets_url    = plugins_url( 'assets', TECHNOTE_BOOTSTRAP );
 		$this->plugin_url        = plugins_url( '', $this->plugin_file );
 		$this->plugin_assets_url = $this->plugin_url . '/assets';
 	}

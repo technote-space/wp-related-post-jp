@@ -2,7 +2,7 @@
 /**
  * Technote Models Db
  *
- * @version 1.1.25
+ * @version 1.1.36
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -453,7 +453,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	private function get_field_data( $k, $columns ) {
 		$table = null;
-		if ( strpos( $k, '.' ) !== false ) {
+		if ( strpos( $k, '.' ) !== false && strpos( $k, '(' ) === false ) {
 			$exploded = explode( '.', $k );
 			$table    = trim( $exploded[0], '`' );
 			$k        = trim( $exploded[1], '`' );

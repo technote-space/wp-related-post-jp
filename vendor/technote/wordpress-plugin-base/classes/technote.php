@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.30
+ * @version 1.1.37
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -135,11 +135,11 @@ class Technote {
 
 		add_action( 'activated_plugin', function ( $plugin ) {
 			if ( ! $this->initialized ) {
-				if ( did_action( 'init' ) ) {
-					$this->initialize();
-				}
 				if ( did_action( 'plugins_loaded' ) ) {
 					$this->load_functions();
+				}
+				if ( did_action( 'init' ) ) {
+					$this->initialize();
 				}
 			}
 			if ( $this->define->plugin_base_name === $plugin ) {
@@ -437,36 +437,46 @@ class Technote {
 	}
 
 	/**
-	 * @param $key
+	 * @param string $key
+	 * @param string|null $target
 	 *
 	 * @return mixed
 	 */
-	public function get_shared_object( $key ) {
-		return isset( self::$shared_object[ $this->plugin_name ][ $key ] ) ? self::$shared_object[ $this->plugin_name ][ $key ] : null;
+	public function get_shared_object( $key, $target = null ) {
+		! isset( $target ) and $target = $this->plugin_name;
+
+		return isset( self::$shared_object[ $target ][ $key ] ) ? self::$shared_object[ $target ][ $key ] : null;
 	}
 
 	/**
 	 * @param string $key
 	 * @param mixed $object
+	 * @param string|null $target
 	 */
-	public function set_shared_object( $key, $object ) {
-		self::$shared_object[ $this->plugin_name ][ $key ] = $object;
+	public function set_shared_object( $key, $object, $target = null ) {
+		! isset( $target ) and $target = $this->plugin_name;
+		self::$shared_object[ $target ][ $key ] = $object;
 	}
 
 	/**
 	 * @param string $key
+	 * @param string|null $target
 	 *
 	 * @return bool
 	 */
-	public function isset_shared_object( $key ) {
-		return isset( self::$shared_object[ $this->plugin_name ] ) && array_key_exists( $key, self::$shared_object[ $this->plugin_name ] );
+	public function isset_shared_object( $key, $target = null ) {
+		! isset( $target ) and $target = $this->plugin_name;
+
+		return isset( self::$shared_object[ $target ] ) && array_key_exists( $key, self::$shared_object[ $target ] );
 	}
 
 	/**
 	 * @param string $key
+	 * @param string|null $target
 	 */
-	public function delete_shared_object( $key ) {
-		unset( self::$shared_object[ $this->plugin_name ][ $key ] );
+	public function delete_shared_object( $key, $target = null ) {
+		! isset( $target ) and $target = $this->plugin_name;
+		unset( self::$shared_object[ $target ][ $key ] );
 	}
 }
 
