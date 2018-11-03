@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.37
+ * @version 1.1.38
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -191,7 +191,7 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 			return true;
 		}
 
-		return current_user_can( $this->apply_filters( 'user_can', $capability, $capability ) );
+		return $this->has_cap( $capability );
 	}
 
 	/**

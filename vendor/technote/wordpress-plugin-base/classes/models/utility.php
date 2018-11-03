@@ -2,7 +2,7 @@
 /**
  * Technote Models Utility
  *
- * @version 1.1.27
+ * @version 1.1.38
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -153,6 +153,20 @@ class Utility {
 
 			return is_array( $d ) && array_key_exists( $key, $d );
 		} ) : $array );
+	}
+
+	/**
+	 * @param array $array
+	 * @param string $key
+	 * @param string $value
+	 *
+	 * @return array
+	 */
+	public static function array_combine( array $array, $key, $value = null ) {
+		$keys   = self::array_pluck( $array, $key );
+		$values = empty( $value ) ? $array : self::array_pluck( $array, $value );
+
+		return array_combine( $keys, $values );
 	}
 
 	/**
