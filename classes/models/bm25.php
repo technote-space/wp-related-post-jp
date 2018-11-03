@@ -177,10 +177,9 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			}
 
 			$nis   = $this->calc_nis( $post_types, $word_ids );
-			$words = $this->app->db->select( 'word', [
+			$words = \Technote\Models\Utility::array_combine( $this->app->db->select( 'word', [
 				'id' => [ 'in', $word_ids ],
-			], [ 'word_id', 'count', 'idf' ] );
-			$words = array_combine( \Technote\Models\Utility::array_pluck( $words, 'word_id' ), $words );
+			], [ 'word_id', 'count', 'idf' ] ), 'word_id' );
 
 			foreach ( $word_ids as $word_id ) {
 				$ni  = \Technote\Models\Utility::array_get( $nis, $word_id, 0 );
@@ -401,13 +400,12 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 	 */
 	private function convert_word_data( $data, $register ) {
 		$words = array_keys( $data );
-		$words = $this->app->db->select( 'word', [
+		$words = \Technote\Models\Utility::array_combine( $this->app->db->select( 'word', [
 			'word' => [ 'in', $words ],
 		], [
 			'id',
 			'word',
-		] );
-		$words = array_combine( \Technote\Models\Utility::array_pluck( $words, 'word' ), $words );
+		] ), 'word' );
 		$ret   = [];
 		$this->app->db->transaction( function () use ( $data, $register, $words, &$ret ) {
 			foreach ( $data as $word => $count ) {
@@ -561,7 +559,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			],
 		], null, null, null, [ 'w.word_id' ] );
 
-		return array_combine( \Technote\Models\Utility::array_pluck( $data, 'word_id' ), \Technote\Models\Utility::array_pluck( $data, 'N' ) );
+		return \Technote\Models\Utility::array_combine( $data, 'word_id', 'N' );
 	}
 
 	/**

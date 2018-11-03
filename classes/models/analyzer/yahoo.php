@@ -121,11 +121,7 @@ class Yahoo extends Api {
 			return isset( $d['surface'], $d['count'] );
 		} );
 
-		return array_combine( array_map( function ( $d ) {
-			return $d['surface'];
-		}, $data ), array_map( function ( $d ) {
-			return $d['count'];
-		}, $data ) );
+		return \Technote\Models\Utility::array_combine( $data, 'surface', 'count' );
 	}
 
 	/**
