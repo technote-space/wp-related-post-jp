@@ -2,7 +2,7 @@
 /**
  * Technote Models Uninstall
  *
- * @version 1.1.13
+ * @version 1.1.39
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -28,9 +28,10 @@ class Uninstall implements \Technote\Interfaces\Singleton {
 	private $uninstall = [];
 
 	/**
-	 * initialize
+	 * register uninstall
 	 */
-	protected function initialize() {
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function register_uninstall() {
 		register_uninstall_hook( $this->app->define->plugin_base_name, [
 			"\Technote",
 			"register_uninstall_" . $this->app->define->plugin_base_name,

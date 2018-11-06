@@ -2,7 +2,7 @@
 /**
  * Technote Models Post
  *
- * @version 1.1.37
+ * @version 1.1.40
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -200,15 +200,10 @@ SQL;
 			return false;
 		}
 
-		$tagnames = $this->app->get_shared_object( 'tagnames_cache', 'all' );
-		if ( ! isset( $tagnames ) ) {
-			$tagnames = $this->get_tagnames();
-			$this->app->set_shared_object( 'tagnames_cache', $tagnames, 'all' );
-		}
+		$tagnames = $this->get_tagnames();
 		if ( empty( $tagnames ) ) {
 			return false;
 		}
-
 		! is_array( $tags ) and $tags = [ $tags ];
 
 		return ! empty( array_intersect( $tags, $tagnames ) );

@@ -2,7 +2,7 @@
 /**
  * Technote Traits Singleton
  *
- * @version 1.1.25
+ * @version 1.1.39
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -94,10 +94,9 @@ trait Singleton {
 			$class = get_class();
 		}
 		try {
-			$reflection = new \ReflectionClass( $class );
-
 			if ( ! isset( self::$instances[ $app->plugin_name ][ $class ] ) ) {
-				$instance = new static( $app, $reflection );
+				$reflection = new \ReflectionClass( $class );
+				$instance   = new static( $app, $reflection );
 				if ( $instance instanceof \Technote\Interfaces\Uninstall && $app->uninstall ) {
 					$app->uninstall->add_uninstall( [ $instance, 'uninstall' ] );
 				}

@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.38
+ * @version 1.1.40
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -64,45 +64,65 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 	protected function initialize() {
 		$cache = $this->app->get_shared_object( 'user_info_cache', 'all' );
 		if ( ! isset( $cache ) ) {
-			global $user_ID;
-			$current_user = wp_get_current_user();
-
-			$cache = [];
-			if ( $user_ID ) {
-				$cache['user_data']   = get_userdata( $user_ID );
-				$cache['user_level']  = $cache['user_data']->user_level;
-				$cache['super_admin'] = is_super_admin( $user_ID );
-			} else {
-				$cache['user_data']   = $current_user;
-				$cache['user_level']  = 0;
-				$cache['super_admin'] = false;
-			}
-			$cache['user_id']      = $cache['user_data']->ID;
-			$cache['user_name']    = $cache['user_data']->user_login;
-			$cache['display_name'] = $cache['user_data']->display_name;
-			$cache['user_email']   = $cache['user_data']->user_email;
-			$cache['logged_in']    = is_user_logged_in();
-			if ( empty( $cache['user_name'] ) ) {
-				$cache['user_name'] = $this->app->input->ip();
-			}
-			if ( $cache['logged_in'] && ! empty( $cache['user_data']->roles ) ) {
-				$roles               = array_values( $cache['user_data']->roles );
-				$cache['user_roles'] = $roles;
-				$cache['user_role']  = $roles[0];
-			} else {
-				$cache['user_roles'] = [];
-				$cache['user_role']  = false;
-			}
-			$cache['user_caps'] = [];
-			foreach ( $cache['user_roles'] as $r ) {
-				$role = get_role( $r );
-				if ( $role ) {
-					$cache['user_caps'] = array_merge( $cache['user_caps'], $role->capabilities );
-				}
-			}
+			$cache = $this->get_user_data();
 			$this->app->set_shared_object( 'user_info_cache', $cache, 'all' );
 		}
 		foreach ( $cache as $k => $v ) {
+			$this->$k = $v;
+		}
+	}
+
+	/**
+	 * @return array
+	 */
+	private function get_user_data() {
+		global $user_ID;
+		$current_user = wp_get_current_user();
+
+		$data = [];
+		if ( $user_ID ) {
+			$data['user_data']   = get_userdata( $user_ID );
+			$data['user_level']  = $data['user_data']->user_level;
+			$data['super_admin'] = is_super_admin( $user_ID );
+		} else {
+			$data['user_data']   = $current_user;
+			$data['user_level']  = 0;
+			$data['super_admin'] = false;
+		}
+		$data['user_id']      = $data['user_data']->ID;
+		$data['user_name']    = $data['user_data']->user_login;
+		$data['display_name'] = $data['user_data']->display_name;
+		$data['user_email']   = $data['user_data']->user_email;
+		$data['logged_in']    = is_user_logged_in();
+		if ( empty( $data['user_name'] ) ) {
+			$data['user_name'] = $this->app->input->ip();
+		}
+		if ( $data['logged_in'] && ! empty( $data['user_data']->roles ) ) {
+			$roles              = array_values( $data['user_data']->roles );
+			$data['user_roles'] = $roles;
+			$data['user_role']  = $roles[0];
+		} else {
+			$data['user_roles'] = [];
+			$data['user_role']  = false;
+		}
+		$data['user_caps'] = [];
+		foreach ( $data['user_roles'] as $r ) {
+			$role = get_role( $r );
+			if ( $role ) {
+				$data['user_caps'] = array_merge( $data['user_caps'], $role->capabilities );
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * reset
+	 */
+	public function reset_user_data() {
+		$data = $this->get_user_data();
+		$this->app->set_shared_object( 'user_info_cache', $data, 'all' );
+		foreach ( $data as $k => $v ) {
 			$this->$k = $v;
 		}
 	}

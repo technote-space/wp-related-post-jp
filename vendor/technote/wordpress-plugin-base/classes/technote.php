@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.37
+ * @version 1.1.39
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -208,7 +208,7 @@ class Technote {
 		if ( ! function_exists( 'get_plugin_data' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
-		$this->plugin_data = get_plugin_data( $this->plugin_file );
+		$this->plugin_data = get_plugin_data( $this->plugin_file, false, false );
 		spl_autoload_register( [ $this, 'load_class' ] );
 
 		if ( $uninstall ) {
@@ -224,11 +224,16 @@ class Technote {
 	private function setup_update() {
 		$update_info_file_url = $this->get_config( 'config', 'update_info_file_url' );
 		if ( ! empty( $update_info_file_url ) ) {
-			\Puc_v4_Factory::buildUpdateChecker(
-				$update_info_file_url,
-				$this->plugin_file,
-				$this->plugin_name
-			);
+			$key   = $this->plugin_name . '-setup_update';
+			$check = get_transient( $key );
+			if ( ! $check ) {
+				\Puc_v4_Factory::buildUpdateChecker(
+					$update_info_file_url,
+					$this->plugin_file,
+					$this->plugin_name
+				);
+				set_transient( $key, true, 15 * 60 );
+			}
 		} else {
 			$this->setting->remove_setting( 'check_update' );
 		}

@@ -2,7 +2,7 @@
 /**
  * Technote Configs Filter
  *
- * @version 1.1.24
+ * @version 1.1.39
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -39,6 +39,12 @@ return [
 	'db' => [
 		'switch_blog' => [
 			'switch_blog' => [],
+		],
+	],
+
+	'uninstall' => [
+		'${prefix}app_activated' => [
+			'register_uninstall' => [],
 		],
 	],
 

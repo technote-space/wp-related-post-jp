@@ -2,7 +2,7 @@
 /**
  * Technote Models Db
  *
- * @version 1.1.36
+ * @version 1.1.39
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -71,6 +71,15 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * load
 	 */
 	private function load_table_defines() {
+		if ( ! $this->need_to_update() ) {
+			$cache = $this->app->get_option( 'table_defines_cache' );
+			if ( ! empty( $cache ) ) {
+				$this->table_defines = $cache;
+
+				return;
+			}
+		}
+
 		$this->table_defines = $this->app->config->load( 'db' );
 		empty( $this->table_defines ) and $this->table_defines = [];
 
@@ -84,6 +93,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$this->table_defines[ $table ]['columns']  = $columns;
 			$this->table_defines[ $table ]['is_added'] = true;
 		}
+		$this->app->option->set( 'table_defines_cache', $this->table_defines );
 	}
 
 	/**
@@ -104,41 +114,59 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 */
 	private function setup_wp_table_defines() {
 		/** @var \wpdb $wpdb */
-		global $wpdb;
-		$tables = [
+		global $wpdb, $wp_version;
+		$tables = $this->apply_filters( 'allowed_wp_tables', [
 			$wpdb->posts    => $wpdb->posts,
 			$wpdb->postmeta => $wpdb->postmeta,
 			$wpdb->users    => $wpdb->users,
 			$wpdb->usermeta => $wpdb->usermeta,
 			$wpdb->options  => $wpdb->options,
-		];
-		foreach ( $this->apply_filters( 'allowed_wp_tables', $tables ) as $table ) {
-			$sql          = "DESCRIBE $table";
-			$columns      = $wpdb->get_results( $sql, ARRAY_A );
-			$table_define = [];
-			foreach ( $columns as $column ) {
-				$name = $column['Field'];
-				$key  = $name;
-				if ( isset( $column['Key'] ) && $column['Key'] === 'PRI' ) {
-					$key                = 'id';
-					$table_define['id'] = $name;
-				}
-				$type     = explode( ' ', $column['Type'] );
-				$unsigned = in_array( 'unsigned', $type );
-				$type     = reset( $type );
-				$null     = $column['Null'] != 'NO';
+		] );
 
-				$table_define['columns'][ $key ] = [
-					'name'     => $name,
-					'type'     => $type,
-					'format'   => $this->type2format( $type ),
-					'unsigned' => $unsigned,
-					'null'     => $null,
-				];
+		$changed       = false;
+		$cache         = $this->app->get_option( 'wp_table_defines_cache', [] );
+		$cache_version = $this->app->get_option( 'wp_table_defines_cache_version' );
+		if ( $cache_version != $wp_version ) {
+			$this->app->option->set( 'wp_table_defines_cache_version', $wp_version );
+			$cache   = [];
+			$changed = true;
+		}
+		foreach ( $tables as $table ) {
+			if ( isset( $cache[ $table ] ) ) {
+				$table_define = $cache[ $table ];
+			} else {
+				$changed      = true;
+				$sql          = "DESCRIBE $table";
+				$columns      = $wpdb->get_results( $sql, ARRAY_A );
+				$table_define = [];
+				foreach ( $columns as $column ) {
+					$name = $column['Field'];
+					$key  = $name;
+					if ( isset( $column['Key'] ) && $column['Key'] === 'PRI' ) {
+						$key                = 'id';
+						$table_define['id'] = $name;
+					}
+					$type     = explode( ' ', $column['Type'] );
+					$unsigned = in_array( 'unsigned', $type );
+					$type     = reset( $type );
+					$null     = $column['Null'] != 'NO';
+
+					$table_define['columns'][ $key ] = [
+						'name'     => $name,
+						'type'     => $type,
+						'format'   => $this->type2format( $type ),
+						'unsigned' => $unsigned,
+						'null'     => $null,
+					];
+				}
+				$table_define['delete']    = 'physical';
+				$table_define['wordpress'] = true;
+				$cache[ $table ]           = $table_define;
 			}
-			$table_define['delete']        = 'physical';
-			$table_define['wordpress']     = true;
 			$this->table_defines[ $table ] = $table_define;
+		}
+		if ( $changed ) {
+			$this->app->option->set( 'wp_table_defines_cache', $cache );
 		}
 	}
 
