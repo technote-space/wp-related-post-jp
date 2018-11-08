@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Api
  *
- * @version 1.1.24
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -147,6 +147,18 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function get_nonce_data() {
+		return [
+			'nonce'         => wp_create_nonce( 'wp_rest' ),
+			'nonce_key'     => $this->get_nonce_key(),
+			'nonce_value'   => $this->create_nonce(),
+			'is_admin_ajax' => $this->use_admin_ajax(),
+		];
+	}
+
+	/**
 	 * @param \Technote\Controllers\Api\Base $api
 	 */
 	private function ajax_action_execute( $api ) {
@@ -157,6 +169,13 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		if ( is_wp_error( $result ) ) {
 			$result = $this->error_to_response( $result );
 		}
+
+		foreach ( $result->headers as $key => $value ) {
+			$value = preg_replace( '/\s+/', ' ', $value );
+			header( sprintf( '%s: %s', $key, $value ) );
+		}
+		status_header( $result->status );
+
 		wp_send_json( $result->data );
 	}
 
@@ -200,19 +219,20 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		if ( ! $this->nonce_check() ) {
 			return new \WP_Error( 'rest_forbidden', 'Forbidden', [ 'status' => 403 ] );
 		}
+		if ( ! $this->app->user_can( $api->get_capability() ) ) {
+			return new \WP_Error( 'rest_forbidden', 'Forbidden', [ 'status' => 403 ] );
+		}
 		if ( strtoupper( $api->get_method() ) !== $this->app->input->method() ) {
 			return new \WP_Error( 'rest_no_route', __( 'No route was found matching the URL and request method' ), [ 'status' => 404 ] );
 		}
 
 		if ( in_array( $this->app->input->method(), [
-			'POST',
-			'PUT',
-			'PATCH',
-			'DELETE',
+			'GET',
+			'HEAD',
 		] ) ) {
-			$params = $this->app->input->post();
-		} else {
 			$params = $this->app->input->get();
+		} else {
+			$params = $this->app->input->post();
 		}
 
 		$args           = $api->get_args_setting();
@@ -264,6 +284,17 @@ class Api implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		}
 
 		return $api->callback( $params );
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function need_nonce_check() {
+		if ( $this->app->input->request( 'action' ) === $this->get_api_namespace() . '_nonce' ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: technote\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2018-10-23 01:50+0900\n"
+"PO-Revision-Date: 2018-11-09 04:09+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -147,3 +147,9 @@ msgstr "閉じる"
 
 msgid "Use admin-ajax.php instead of wp-json."
 msgstr "wp-json の代わりに admin-ajax.php を使用するかどうか。"
+
+msgid "Whether to check referer when get nonce."
+msgstr "nonce更新API実行時にリファラのチェックを行うかどうか。"
+
+msgid "Server host name which used to check referer host name."
+msgstr "リファラのホスト名チェックに使用するサーバホスト名。"

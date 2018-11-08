@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.40
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -209,6 +209,9 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 		}
 		if ( false === $capability ) {
 			return true;
+		}
+		if ( '' === $capability ) {
+			return false;
 		}
 
 		return $this->has_cap( $capability );

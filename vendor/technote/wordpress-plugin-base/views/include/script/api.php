@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Api
  *
- * @version 1.1.32
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -28,46 +28,52 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 <script>
     (function ($) {
         function <?php $instance->h( $api_class );?>() {
-            this.endpoint = '<?php $instance->h( $is_admin_ajax ? $endpoint : $endpoint . $namespace . '/' );?>';
+            this.is_admin_ajax = <?php $instance->h( $is_admin_ajax ? 'true' : 'false' );?>;
+            this.endpoint = '<?php $instance->h( $endpoint );?>';
+            this.namespace = '<?php $instance->h( $namespace );?>';
             this.functions = <?php echo json_encode( $functions );?>;
             this.xhr = {};
+            this.nonce_key = '<?php $instance->h( isset( $nonce_key ) ? $nonce_key : '' );?>';
+            this.nonce_value = '<?php $instance->h( isset( $nonce_value ) ? $nonce_value : '' );?>';
+            this.nonce = '<?php $instance->h( isset( $nonce ) ? $nonce : '' );?>';
 
-            this.ajax = function (func, args, single) {
+            this.ajax = function (func, args, single, nonce_check) {
                 if (args === undefined) args = {};
                 if (single === undefined) single = true;
                 if (this.functions[func]) {
                     const setting = this.functions[func];
-                    let url = this.endpoint<?php if (! $is_admin_ajax):?> + setting.endpoint<?php endif;?>;
-					<?php if ($is_admin_ajax):?>
-                    args.<?php $instance->h( $nonce_key );?> = '<?php $instance->h( $nonce_value );?>';
-                    args.action = '<?php $instance->h( $namespace );?>_' + setting.endpoint;
-					<?php endif;?>
+                    let url = this.endpoint;
+                    if (!this.is_admin_ajax) {
+                        url += this.namespace + '/' + setting.endpoint;
+                    } else {
+                        args[this.nonce_key] = this.nonce_value;
+                        args.action = this.namespace + '_' + setting.endpoint;
+                    }
                     const method = setting.method.toUpperCase();
-                    const config = {
-                        method: method,
-                    };
-                    switch (method) {
-                        case 'POST':
-                        case 'PUSH':
-                            config.data = args;
-                            break;
-                        default:
-                            const query = [];
-                            args._ = (new Date()).getTime();
-                            for (let prop in args) {
-                                if (args.hasOwnProperty(prop)) {
-                                    query.push(prop + '=' + encodeURIComponent(args[prop]));
-                                }
+                    const config = {};
+                    if (method === 'GET' || method === 'HEAD') {
+                        config.method = method;
+                        const query = [];
+                        args._ = (new Date()).getTime();
+                        for (let prop in args) {
+                            if (args.hasOwnProperty(prop)) {
+                                query.push(prop + '=' + encodeURIComponent(args[prop]));
                             }
-                            if (url.indexOf('?') !== -1) {
-                                url += '&' + query.join('&');
-                            } else {
-                                url += '?' + query.join('&');
-                            }
-                            break;
+                        }
+                        if (url.indexOf('?') !== -1) {
+                            url += '&' + query.join('&');
+                        } else {
+                            url += '?' + query.join('&');
+                        }
+                    } else {
+                        config.method = 'POST';
+                        config.data = args;
+                        if (method !== 'POST') {
+                            config.data._method = method;
+                        }
                     }
                     config.url = url;
-                    return this._ajax(config, func, single);
+                    return this._ajax(config, func, args, single, nonce_check);
                 } else {
                     const $defer = $.Deferred();
                     setTimeout(function () {
@@ -136,7 +142,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                 return obj;
             };
 
-            this._ajax = function (config, func, single) {
+            this._ajax = function (config, func, args, single, nonce_check) {
                 const $this = this;
                 if (single) this.abort(func);
                 const $defer = $.Deferred();
@@ -144,9 +150,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 
                 xhr.open(config.method, config.url, true);
                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				<?php if (! $is_admin_ajax):?>
-                xhr.setRequestHeader('X-WP-Nonce', '<?php $instance->h( $nonce );?>');
-				<?php endif;?>
+                if (!this.is_admin_ajax) {
+                    xhr.setRequestHeader('X-WP-Nonce', this.nonce);
+                }
                 xhr.onreadystatechange = function () {
                     if (4 === xhr.readyState) {
                         if (200 === xhr.status) {
@@ -157,7 +163,20 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                                 $defer.reject([xhr.status, e, xhr]);
                             }
                         } else {
-                            $defer.reject([xhr.status, null, xhr]);
+                            if (nonce_check === undefined) {
+                                $this.ajax('get_nonce', {}, false, true).done(function (json) {
+                                    $this._update_nonce(json);
+                                    $this.ajax(func, args, single, false).done(function (json) {
+                                        $defer.resolve(json);
+                                    }).fail(function (err) {
+                                        $defer.reject(err);
+                                    });
+                                }).fail(function () {
+                                    $defer.reject([xhr.status, null, xhr]);
+                                });
+                            } else {
+                                $defer.reject([xhr.status, null, xhr]);
+                            }
                         }
                         $this.xhr[func] = null;
                     }
@@ -169,6 +188,13 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                 }
                 if (single) $this.xhr[func] = xhr;
                 return $defer.promise();
+            };
+
+            this._update_nonce = function (json) {
+                this.is_admin_ajax = json.is_admin_ajax;
+                this.nonce_key = json.nonce_key;
+                this.nonce_value = json.nonce_value;
+                this.nonce = json.nonce;
             };
         }
 

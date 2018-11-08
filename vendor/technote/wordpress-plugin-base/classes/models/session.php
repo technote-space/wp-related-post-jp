@@ -2,7 +2,7 @@
 /**
  * Technote Models Session
  *
- * @version 1.1.37
+ * @version 1.1.41
  * @author technote-space
  * @since 1.1.25
  * @copyright technote All Rights Reserved
@@ -141,6 +141,20 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 		$key              = $this->get_session_key( $key );
 		$_SESSION[ $key ] = $value;
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+	public function exists( $key ) {
+		if ( ! $this->is_valid_session() ) {
+			return false;
+		}
+		$key = $this->get_session_key( $key );
+
+		return array_key_exists( $key, $_SESSION );
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.33
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -252,13 +252,14 @@ trait Presenter {
 	 * @param bool $new_tab
 	 * @param array $args
 	 * @param bool $echo
+	 * @param bool $escape
 	 *
 	 * @return string
 	 */
-	public function url( $url, $contents, $translate = false, $new_tab = false, $args = [], $echo = true ) {
+	public function url( $url, $contents, $translate = false, $new_tab = false, $args = [], $echo = true, $escape = true ) {
 		$overwrite = [
 			'href'     => $url,
-			'contents' => $this->h( $contents, $translate, false ),
+			'contents' => $this->h( $contents, $translate, false, $escape ),
 		];
 		if ( $new_tab ) {
 			$overwrite['target'] = '_blank';

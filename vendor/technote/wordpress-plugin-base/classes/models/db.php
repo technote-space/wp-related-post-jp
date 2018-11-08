@@ -2,7 +2,7 @@
 /**
  * Technote Models Db
  *
- * @version 1.1.39
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -912,11 +912,31 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		if ( isset( $limit ) && $limit == 1 ) {
-			return $wpdb->get_row( $sql, $output );
+		return $wpdb->get_results( $sql, $output );
+	}
+
+	/**
+	 * @param array|string $tables
+	 * @param array $where
+	 * @param null|array|string $fields
+	 * @param null|int $offset
+	 * @param null|array $order_by
+	 * @param null|array $group_by
+	 * @param string $output
+	 * @param bool $for_update
+	 *
+	 * @return array|bool|null
+	 */
+	public function select_row( $tables, $where = [], $fields = null, $offset = null, $order_by = null, $group_by = null, $output = ARRAY_A, $for_update = false ) {
+		$sql = $this->get_select_sql( $tables, $where, $fields, 1, $offset, $order_by, $group_by, $for_update );
+		if ( false === $sql ) {
+			return false;
 		}
 
-		return $wpdb->get_results( $sql, $output );
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
+		return $wpdb->get_row( $sql, $output );
 	}
 
 	/**
@@ -941,9 +961,6 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		], $limit, $offset, $order_by, $group_by, ARRAY_A, $for_update );
 		if ( empty( $result ) ) {
 			return 0;
-		}
-		if ( $limit == 1 ) {
-			return isset( $result['num'] ) ? $result['num'] - 0 : 0;
 		}
 
 		return isset( $result[0]['num'] ) ? $result[0]['num'] - 0 : 0;
@@ -1096,7 +1113,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			$where['deleted_at'] = null;
 		}
 
-		$row = $this->select( $table, $where, 'id', 1 );
+		$row = $this->select_row( $table, $where, 'id' );
 		if ( empty( $row ) ) {
 			$this->insert( $table, $data );
 

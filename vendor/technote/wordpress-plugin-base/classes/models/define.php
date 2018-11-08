@@ -126,7 +126,7 @@ class Define implements \Technote\Interfaces\Singleton {
 			$cache['lib_configs_dir']       = $cache['lib_dir'] . DS . 'configs';
 			$cache['lib_views_dir']         = $cache['lib_dir'] . DS . 'views';
 			$cache['lib_language_dir']      = $cache['lib_dir'] . DS . 'languages';
-			$cache['lib_language_rel_path'] = ltrim( str_replace( WP_PLUGIN_DIR, '', $this->lib_language_dir ), DS );
+			$cache['lib_language_rel_path'] = ltrim( str_replace( WP_PLUGIN_DIR, '', $cache['lib_language_dir'] ), DS );
 			$cache['lib_vendor_dir']        = $cache['lib_dir'] . DS . 'vendor';
 			$cache['lib_assets_url']        = plugins_url( 'assets', TECHNOTE_BOOTSTRAP );
 			$this->app->set_shared_object( 'lib_defines_cache', $cache, 'all' );

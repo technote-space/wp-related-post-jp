@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.39
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -261,7 +261,7 @@ class Technote {
 		if ( ! class_exists( '\WP_REST_Request' ) ) {
 			$this->setting->remove_setting( 'use_admin_ajax' );
 		}
-		if ( $this->loader->api->get_loaded_count() === 0 ) {
+		if ( $this->loader->api->get_loaded_count() <= 1 ) {
 			$this->setting->remove_setting( 'use_admin_ajax' );
 		}
 	}
@@ -323,7 +323,7 @@ class Technote {
 	}
 
 	/**
-	 * @param null|string $capability
+	 * @param null|string|false $capability
 	 *
 	 * @return bool
 	 */

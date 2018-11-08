@@ -2,7 +2,7 @@
 /**
  * Technote Traits Nonce
  *
- * @version 1.1.21
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -61,7 +61,16 @@ trait Nonce {
 	private function nonce_check() {
 		$nonce_key = $this->get_nonce_key();
 
-		return ! $this->is_post() || ( isset( $_POST[ $nonce_key ] ) && wp_verify_nonce( $_POST[ $nonce_key ], $this->get_nonce_action() ) );
+		return ! $this->need_nonce_check( $nonce_key ) || ( isset( $_REQUEST[ $nonce_key ] ) && $this->verify_nonce( $_REQUEST[ $nonce_key ] ) );
+	}
+
+	/**
+	 * @param string $nonce
+	 *
+	 * @return false|int
+	 */
+	public function verify_nonce( $nonce ) {
+		return wp_verify_nonce( $nonce, $this->get_nonce_action() );
 	}
 
 	/**
@@ -71,4 +80,15 @@ trait Nonce {
 		return $this->app->input->is_post();
 	}
 
+	/**
+	 * @param string $nonce_key
+	 *
+	 * @return bool
+	 */
+	protected function need_nonce_check(
+		/** @noinspection PhpUnusedParameterInspection */
+		$nonce_key
+	) {
+		return $this->is_post();
+	}
 }

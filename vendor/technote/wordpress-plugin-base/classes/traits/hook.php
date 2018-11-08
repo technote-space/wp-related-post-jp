@@ -2,7 +2,7 @@
 /**
  * Technote Traits Hook
  *
- * @version 1.1.30
+ * @version 1.1.41
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -111,7 +111,10 @@ trait Hook {
 		if ( ! empty( $this->app->setting ) && $this->app->setting->is_setting( $key ) ) {
 			$setting = $this->app->setting->get_setting( $key );
 			$default = \Technote\Models\Utility::array_get( $setting, 'default', $default );
-			$value   = $this->app->get_option( $args[0], null );
+			if ( is_callable( $default ) ) {
+				$default = $default( $this->app );
+			}
+			$value = $this->app->get_option( $args[0], null );
 			if ( ! isset( $value ) || $value === '' ) {
 				$value = $default;
 			}
