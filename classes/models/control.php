@@ -799,7 +799,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		], $where, $fields, $limit, null, $order_by, $group_by, $output );
 
 		if ( $is_count ) {
-			return \Technote\Models\Utility::array_get( $results, 'num', 0 );
+			return \Technote\Models\Utility::array_get( $results[0], 'num', 0 );
 		}
 
 		return $results;
@@ -849,9 +849,9 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$where['NOT EXISTS'] = $subquery;
 		}
 
-		$count = \Technote\Models\Utility::array_get( $this->app->db->select( [
+		$count = \Technote\Models\Utility::array_get( $this->app->db->select_row( [
 			[ $wpdb->posts, 'p' ],
-		], $where, [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ], 1 ), 'num' );
+		], $where, [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ] ), 'num' );
 
 		// index, ranking
 		$count *= 2;

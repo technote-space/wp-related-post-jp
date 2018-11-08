@@ -48,7 +48,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 
 			/** @var \wpdb $wpdb */
 			global $wpdb;
-			$row = $this->app->db->select( [
+			$row = $this->app->db->select_row( [
 				[ 'document', 'd' ],
 				[
 					[ $wpdb->posts, 'p' ],
@@ -61,7 +61,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				],
 			], [
 				'd.post_id' => $post_id,
-			], [ 'd.document_id' => 'id', 'p.post_type' ], 1 );
+			], [ 'd.document_id' => 'id', 'p.post_type' ] );
 
 			if ( ! empty( $row ) ) {
 				$document_id = $row['id'];
@@ -484,7 +484,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			$where['NOT EXISTS'] = $subquery;
 		}
 
-		return \Technote\Models\Utility::array_get( $this->app->db->select( [
+		return \Technote\Models\Utility::array_get( $this->app->db->select_row( [
 			[ 'rel_document_word', 'w' ],
 			[
 				[ 'document', 'd' ],
@@ -509,7 +509,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 				'COUNT',
 				'N',
 			],
-		], 1, null, null ), 'N' );
+		] ), 'N' );
 	}
 
 	/**
@@ -695,7 +695,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			$where['NOT EXISTS'] = $subquery;
 		}
 
-		return \Technote\Models\Utility::array_get( $this->app->db->select( [
+		return \Technote\Models\Utility::array_get( $this->app->db->select_row( [
 			[ 'document', 'd' ],
 			[
 				[ $wpdb->posts, 'p' ],
@@ -708,7 +708,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 			],
 		], $where, [
 			'd.count' => [ 'AVG', 'cnt' ],
-		], 1 ), 'cnt' );
+		] ), 'cnt' );
 	}
 
 	/**
@@ -824,7 +824,7 @@ class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook 
 		], $where, $field, $count, $offset, $order_by, $group_by );
 
 		if ( $is_count ) {
-			return \Technote\Models\Utility::array_get( $results, 'num', 0 );
+			return \Technote\Models\Utility::array_get( $results[0], 'num', 0 );
 		}
 
 		return $results;
