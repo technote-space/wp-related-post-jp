@@ -2,7 +2,7 @@
 /**
  * Technote Models Session
  *
- * @version 1.1.41
+ * @version 1.1.43
  * @author technote-space
  * @since 1.1.25
  * @copyright technote All Rights Reserved
@@ -114,6 +114,54 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	}
 
 	/**
+	 * @param mixed $data
+	 *
+	 * @return bool
+	 */
+	private function _expired( $data ) {
+		if ( ! isset( $data['expire'] ) ) {
+			return false;
+		}
+
+		return $data['expire'] < time();
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $data
+	 * @param mixed $default
+	 *
+	 * @return mixed
+	 */
+	private function _get( $key, $data, $default ) {
+		if ( ! is_array( $data ) || ! array_key_exists( 'value', $data ) ) {
+			return $default;
+		}
+		if ( $this->_expired( $data ) ) {
+			$this->delete( $key );
+
+			return $default;
+		}
+
+		return $data['value'];
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 * @param int|null $duration
+	 */
+	private function _set( $key, $value, $duration = null ) {
+		$data = [
+			'value' => $value,
+		];
+		if ( isset( $duration ) && $duration > 0 ) {
+			$data['expire'] = time() + $duration;
+		}
+		$_SESSION[ $key ] = $data;
+	}
+
+	/**
 	 * @param string $key
 	 * @param mixed $default
 	 *
@@ -125,7 +173,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 		$key = $this->get_session_key( $key );
 		if ( array_key_exists( $key, $_SESSION ) ) {
-			return $_SESSION[ $key ];
+			return $this->_get( $key, $_SESSION[ $key ], $default );
 		}
 
 		return $default;
@@ -134,13 +182,14 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 	/**
 	 * @param string $key
 	 * @param mixed $value
+	 * @param int|null $duration
 	 */
-	public function set( $key, $value ) {
+	public function set( $key, $value, $duration = null ) {
 		if ( ! $this->is_valid_session() ) {
 			return;
 		}
-		$key              = $this->get_session_key( $key );
-		$_SESSION[ $key ] = $value;
+		$key = $this->get_session_key( $key );
+		$this->_set( $key, $value, $duration );
 	}
 
 	/**
@@ -152,9 +201,13 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		if ( ! $this->is_valid_session() ) {
 			return false;
 		}
-		$key = $this->get_session_key( $key );
 
-		return array_key_exists( $key, $_SESSION );
+		$key = $this->get_session_key( $key );
+		if ( ! array_key_exists( $key, $_SESSION ) ) {
+			return false;
+		}
+
+		return ! $this->_expired( $_SESSION[ $key ] );
 	}
 
 	/**

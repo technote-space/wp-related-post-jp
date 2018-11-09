@@ -2,7 +2,7 @@
 /**
  * Technote Traits Loader
  *
- * @version 1.1.23
+ * @version 1.1.43
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -70,7 +70,7 @@ trait Loader {
 	/**
 	 * @return array
 	 */
-	protected function get_class_list() {
+	public function get_class_list() {
 		if ( ! isset( $this->list ) ) {
 			$this->list = [];
 			/** @var \Technote\Traits\Singleton $class */

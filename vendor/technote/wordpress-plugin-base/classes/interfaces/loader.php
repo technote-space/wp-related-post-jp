@@ -2,7 +2,7 @@
 /**
  * Technote Interfaces Loader
  *
- * @version 1.1.13
+ * @version 1.1.43
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -26,5 +26,15 @@ interface Loader extends Singleton, Hook, Presenter {
 	 * @return string
 	 */
 	public function get_loader_name();
+
+	/**
+	 * @return array
+	 */
+	public function get_class_list();
+
+	/**
+	 * @return int
+	 */
+	public function get_loaded_count();
 
 }

@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.41
+ * @version 1.1.43
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -317,9 +317,10 @@ class Technote {
 	/**
 	 * @param string $key
 	 * @param mixed $value
+	 * @param int|null $duration
 	 */
-	public function set_session( $key, $value ) {
-		$this->session->set( $key, $value );
+	public function set_session( $key, $value, $duration = null ) {
+		$this->session->set( $key, $value, $duration );
 	}
 
 	/**
@@ -485,40 +486,4 @@ class Technote {
 	}
 }
 
-if ( ! class_exists( 'WP_REST_Response' ) ) {
-	// < v4.4
-	class WP_REST_Response {
-		/**
-		 * Response data.
-		 * @var mixed
-		 */
-		public $data;
-
-		/**
-		 * Response headers.
-		 *
-		 * @var array
-		 */
-		public $headers;
-
-		/**
-		 * Response status.
-		 *
-		 * @var int
-		 */
-		public $status;
-
-		/**
-		 * Constructor.
-		 *
-		 * @param mixed $data Response data. Default null.
-		 * @param int $status Optional. HTTP status code. Default 200.
-		 * @param array $headers Optional. HTTP header map. Default empty array.
-		 */
-		public function __construct( $data = null, $status = 200, $headers = [] ) {
-			$this->data    = $data;
-			$this->status  = $status;
-			$this->headers = $headers;
-		}
-	}
-}
+require_once __DIR__ . DS . 'wp-rest-response.php';
