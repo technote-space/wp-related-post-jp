@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.41
+ * @version 1.1.47
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -219,6 +219,15 @@ trait Presenter {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public function translate( $value ) {
+		return $this->app->translate( $value );
 	}
 
 	/**

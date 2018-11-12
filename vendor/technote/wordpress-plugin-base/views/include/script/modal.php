@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Modal
  *
- * @version 1.1.38
+ * @version 1.1.46
  * @author technote
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -23,7 +23,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
         }
 
         function <?php $instance->modal_class();?>() {
-            const target = '<?php if ( is_admin() ): echo '#wpwrap'; else: echo '#container'; endif;?>';
+            const target = '<?php if ( is_admin() ): echo '#wpwrap'; else: echo 'body'; endif;?>';
             const html = '<div id="<?php $instance->id();?>-modal"><div class="<?php $instance->id();?>-loading"></div><div class="<?php $instance->id();?>-loading-message"></div></div><div id="<?php $instance->id();?>-modal-message-wrap"><div id="<?php $instance->id();?>-modal-message"></div></div>';
             $(html).prependTo(target).hide();
             $('#<?php $instance->id();?>-modal-message').click(function (e) {
