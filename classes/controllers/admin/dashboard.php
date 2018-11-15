@@ -21,6 +21,13 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 class Dashboard extends \Technote\Controllers\Admin\Base {
 
 	/**
+	 * @return int
+	 */
+	public function get_load_priority() {
+		return 0;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function get_page_title() {

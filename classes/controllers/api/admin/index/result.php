@@ -54,12 +54,12 @@ class Result extends \Technote\Controllers\Api\Base {
 	public function get_args_setting() {
 		return [
 			'p' => [
-				'required'            => true,
-				'description'         => 'post_id',
-				'validation_callback' => function ( $var ) {
+				'required'          => true,
+				'description'       => 'post_id',
+				'validate_callback' => function ( $var ) {
 					return ! empty( $var );
 				},
-				'sanitize_callback'   => function ( $var ) {
+				'sanitize_callback' => function ( $var ) {
 					return (int) $var;
 				},
 			],
