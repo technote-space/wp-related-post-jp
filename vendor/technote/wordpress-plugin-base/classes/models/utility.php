@@ -2,7 +2,7 @@
 /**
  * Technote Models Utility
  *
- * @version 1.1.38
+ * @version 1.1.48
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -197,11 +197,13 @@ class Utility {
 					'y',
 					'M',
 					'm',
+					'n',
 					'D',
 					'd',
 					'H',
 					'h',
 					'i',
+					'j',
 					's',
 				] as $t
 			) {
@@ -210,6 +212,16 @@ class Utility {
 		}
 
 		return static::replace( $string, self::$time );
+	}
+
+	/**
+	 * @param string $data
+	 * @param string $key
+	 *
+	 * @return false|string
+	 */
+	public static function create_hash( $data, $key ) {
+		return hash_hmac( function_exists( 'hash' ) ? 'sha256' : 'sha1', $data, $key );
 	}
 
 	/**

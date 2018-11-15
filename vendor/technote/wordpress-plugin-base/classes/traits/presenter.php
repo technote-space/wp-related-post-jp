@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.47
+ * @version 1.1.51
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -31,10 +31,11 @@ trait Presenter {
 	 * @param array $args
 	 * @param bool $echo
 	 * @param bool $error
+	 * @param bool $remove_nl
 	 *
 	 * @return string
 	 */
-	public function get_view( $name, $args = [], $echo = false, $error = true ) {
+	public function get_view( $name, $args = [], $echo = false, $error = true, $remove_nl = false ) {
 		$name = trim( $name, '/' . DS );
 		$name = str_replace( '/', DS, $name );
 		$name .= '.php';
@@ -58,6 +59,10 @@ trait Presenter {
 			ob_end_clean();
 		} elseif ( $error ) {
 			$this->app->log( sprintf( 'View file [ %s ] not found.', $name ) );
+		}
+
+		if ( $remove_nl ) {
+			$view = str_replace( [ "\r\n", "\r", "\n" ], ' ', $view );
 		}
 
 		if ( $echo ) {
@@ -274,7 +279,7 @@ trait Presenter {
 			$overwrite['target'] = '_blank';
 		}
 
-		return $this->get_view( 'include/url', array_merge( $args, $overwrite ), $echo );
+		return $this->get_view( 'include/url', array_merge( $args, $overwrite ), $echo, true, true );
 	}
 
 	/**
@@ -401,7 +406,7 @@ trait Presenter {
 	public function assets( $url, $view, $args, $field, $echo = true ) {
 		return $this->get_view( $view, array_merge( $args, [
 			$field => $url,
-		] ), $echo );
+		] ), $echo, true, true );
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * Technote Models Session
  *
- * @version 1.1.43
+ * @version 1.1.48
  * @author technote-space
  * @since 1.1.25
  * @copyright technote All Rights Reserved
@@ -138,7 +138,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return $default;
 		}
 		if ( $this->_expired( $data ) ) {
-			$this->delete( $key );
+			$this->_delete( $key );
 
 			return $default;
 		}
@@ -159,6 +159,30 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$data['expire'] = time() + $duration;
 		}
 		$_SESSION[ $key ] = $data;
+	}
+
+	/**
+	 * @param string $key
+	 */
+	private function _delete( $key ) {
+		unset( $_SESSION[ $key ] );
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+	public function expired( $key ) {
+		if ( ! $this->is_valid_session() ) {
+			return false;
+		}
+		$key = $this->get_session_key( $key );
+		if ( ! array_key_exists( $key, $_SESSION ) ) {
+			return false;
+		}
+
+		return $this->_expired( $_SESSION[ $key ] );
 	}
 
 	/**
@@ -219,7 +243,7 @@ class Session implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		}
 		$key = $this->get_session_key( $key );
 		if ( array_key_exists( $key, $_SESSION ) ) {
-			unset( $_SESSION[ $key ] );
+			$this->_delete( $key );
 		}
 	}
 }

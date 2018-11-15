@@ -2,7 +2,7 @@
 /**
  * Technote Controller Admin Setting
  *
- * @version 1.1.13
+ * @version 1.1.54
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -25,7 +25,7 @@ class Setting extends Base {
 	/**
 	 * @return int
 	 */
-	public function get_priority() {
+	public function get_load_priority() {
 		return $this->apply_filters( 'setting_page_priority', 0 );
 	}
 

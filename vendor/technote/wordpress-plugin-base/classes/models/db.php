@@ -2,7 +2,7 @@
 /**
  * Technote Models Db
  *
- * @version 1.1.45
+ * @version 1.1.50
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -216,40 +216,46 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 		}
 
 		$columns['created_at'] = [
-			'name'   => 'created_at',
-			'type'   => 'datetime',
-			'null'   => false,
-			'format' => '%s',
+			'name'       => 'created_at',
+			'type'       => 'datetime',
+			'null'       => false,
+			'format'     => '%s',
+			'only_admin' => true,
 		];
 		$columns['created_by'] = [
-			'name'   => 'created_by',
-			'type'   => 'varchar(32)',
-			'null'   => false,
-			'format' => '%s',
+			'name'       => 'created_by',
+			'type'       => 'varchar(32)',
+			'null'       => false,
+			'format'     => '%s',
+			'only_admin' => true,
 		];
 		$columns['updated_at'] = [
-			'name'   => 'updated_at',
-			'type'   => 'datetime',
-			'null'   => false,
-			'format' => '%s',
+			'name'       => 'updated_at',
+			'type'       => 'datetime',
+			'null'       => false,
+			'format'     => '%s',
+			'only_admin' => true,
 		];
 		$columns['updated_by'] = [
-			'name'   => 'updated_by',
-			'type'   => 'varchar(32)',
-			'null'   => false,
-			'format' => '%s',
+			'name'       => 'updated_by',
+			'type'       => 'varchar(32)',
+			'null'       => false,
+			'format'     => '%s',
+			'only_admin' => true,
 		];
 
 		if ( $this->is_logical( $define ) ) {
 			$columns['deleted_at'] = [
-				'name'   => 'deleted_at',
-				'type'   => 'datetime',
-				'format' => '%s',
+				'name'       => 'deleted_at',
+				'type'       => 'datetime',
+				'format'     => '%s',
+				'only_admin' => true,
 			];
 			$columns['deleted_by'] = [
-				'name'   => 'deleted_by',
-				'type'   => 'varchar(32)',
-				'format' => '%s',
+				'name'       => 'deleted_by',
+				'type'       => 'varchar(32)',
+				'format'     => '%s',
+				'only_admin' => true,
 			];
 		}
 
@@ -567,7 +573,11 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 				if ( $key === '*' ) {
 					if ( ! is_array( $option ) ) {
 						unset ( $fields[ $k ] );
+						$is_admin = is_admin() && ! wp_doing_ajax();
 						foreach ( $columns as $key => $column ) {
+							if ( ! $is_admin && ! empty( $column['only_admin'] ) ) {
+								continue;
+							}
 							$name     = Utility::array_get( $column, 'name' );
 							$fields[] = $name === $key ? $name : $name . ' AS ' . $key;
 						}
@@ -600,8 +610,12 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 			}
 		}
 		if ( empty( $fields ) || ! is_array( $fields ) ) {
-			$fields = [];
+			$fields   = [];
+			$is_admin = is_admin() && ! wp_doing_ajax();
 			foreach ( $columns as $key => $column ) {
+				if ( ! $is_admin && ! empty( $column['only_admin'] ) ) {
+					continue;
+				}
 				$name     = Utility::array_get( $column, 'name' );
 				$fields[] = $name === $key ? $name : $name . ' AS ' . $key;
 			}

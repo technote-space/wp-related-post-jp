@@ -2,7 +2,7 @@
 /**
  * Technote Traits Loader
  *
- * @version 1.1.43
+ * @version 1.1.54
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -73,14 +73,32 @@ trait Loader {
 	public function get_class_list() {
 		if ( ! isset( $this->list ) ) {
 			$this->list = [];
+			$sort       = [];
 			/** @var \Technote\Traits\Singleton $class */
 			foreach ( $this->get_namespaces() as $namespace ) {
 				foreach ( $this->get_classes( $this->namespace_to_dir( $namespace ), $this->get_instanceof() ) as $class ) {
 					$slug = $class->class_name;
 					if ( ! isset( $this->list[ $slug ] ) ) {
 						$this->list[ $slug ] = $class;
+						if ( method_exists( $class, 'get_load_priority' ) ) {
+							$sort[ $slug ] = $class->get_load_priority();
+							if ( $sort[ $slug ] < 0 ) {
+								unset( $this->list[ $slug ] );
+								unset( $sort[ $slug ] );
+							}
+						}
 					}
 				}
+			}
+			if ( ! empty( $sort ) ) {
+				uasort( $this->list, function ( $a, $b ) use ( $sort ) {
+					/** @var \Technote\Traits\Singleton $a */
+					/** @var \Technote\Traits\Singleton $b */
+					$pa = isset( $sort[ $a->class_name ] ) ? $sort[ $a->class_name ] : 10;
+					$pb = isset( $sort[ $b->class_name ] ) ? $sort[ $b->class_name ] : 10;
+
+					return $pa == $pb ? 0 : ( $pa < $pb ? - 1 : 1 );
+				} );
 			}
 		}
 

@@ -2,7 +2,7 @@
 /**
  * Technote Controller Test
  *
- * @version 1.1.13
+ * @version 1.1.54
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -25,7 +25,7 @@ class Test extends Base {
 	/**
 	 * @return int
 	 */
-	public function get_priority() {
+	public function get_load_priority() {
 		return $this->app->loader->test->is_valid() ? $this->apply_filters( 'test_page_priority', defined( 'WP_DEBUG' ) && WP_DEBUG ? 900 : - 1 ) : - 1;
 	}
 

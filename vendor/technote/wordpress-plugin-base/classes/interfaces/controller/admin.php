@@ -2,7 +2,7 @@
 /**
  * Technote Interfaces Controller Admin
  *
- * @version 1.1.13
+ * @version 1.1.54
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -21,11 +21,6 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * @package Technote\Interfaces\Controller
  */
 interface Admin extends \Technote\Interfaces\Controller, \Technote\Interfaces\Nonce {
-
-	/**
-	 * @return int
-	 */
-	public function get_priority();
 
 	/**
 	 * @return string

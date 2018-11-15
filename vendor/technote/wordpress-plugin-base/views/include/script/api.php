@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Api
  *
- * @version 1.1.41
+ * @version 1.1.49
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -150,33 +150,39 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 
                 xhr.open(config.method, config.url, true);
                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                if (!this.is_admin_ajax) {
+                if (!this.is_admin_ajax && !nonce_check) {
                     xhr.setRequestHeader('X-WP-Nonce', this.nonce);
                 }
                 xhr.onreadystatechange = function () {
                     if (4 === xhr.readyState) {
+                        let json;
+                        try {
+                            json = JSON.parse(xhr.responseText);
+                        } catch (e) {
+                            json = undefined;
+                        }
                         if (200 === xhr.status) {
-                            try {
-                                const json = JSON.parse(xhr.responseText);
-                                $defer.resolve(json);
-                            } catch (e) {
-                                $defer.reject([xhr.status, e, xhr]);
-                            }
-                        } else {
-                            if (nonce_check === undefined) {
-                                $this.ajax('get_nonce', {}, false, true).done(function (json) {
-                                    $this._update_nonce(json);
-                                    $this.ajax(func, args, single, false).done(function (json) {
-                                        $defer.resolve(json);
-                                    }).fail(function (err) {
-                                        $defer.reject(err);
-                                    });
-                                }).fail(function () {
-                                    $defer.reject([xhr.status, null, xhr]);
-                                });
+                            if (undefined === json) {
+                                $defer.reject([xhr.status, e, xhr, json]);
                             } else {
-                                $defer.reject([xhr.status, null, xhr]);
+                                if (json.nonce_data) {
+                                    $this._update_nonce(json.nonce_data);
+                                }
+                                $defer.resolve(json);
                             }
+                        } else if (403 === xhr.status && nonce_check === undefined) {
+                            $this.ajax('get_nonce', {}, false, true).done(function (json) {
+                                $this._update_nonce(json);
+                                $this.ajax(func, args, single, false).done(function (json) {
+                                    $defer.resolve(json);
+                                }).fail(function (err) {
+                                    $defer.reject(err);
+                                });
+                            }).fail(function () {
+                                $defer.reject([xhr.status, null, xhr, json]);
+                            });
+                        } else {
+                            $defer.reject([xhr.status, null, xhr, json]);
                         }
                         $this.xhr[func] = null;
                     }

@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.43
+ * @version 1.1.52
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -486,4 +486,5 @@ class Technote {
 	}
 }
 
+require_once __DIR__ . DS . 'wp-rest-request.php';
 require_once __DIR__ . DS . 'wp-rest-response.php';
