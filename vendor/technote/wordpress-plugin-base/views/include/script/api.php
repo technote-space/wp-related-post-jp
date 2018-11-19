@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Api
  *
- * @version 1.1.49
+ * @version 1.1.55
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -155,15 +155,16 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
                 }
                 xhr.onreadystatechange = function () {
                     if (4 === xhr.readyState) {
-                        let json;
+                        let json, err = null;
                         try {
                             json = JSON.parse(xhr.responseText);
                         } catch (e) {
                             json = undefined;
+                            err = e;
                         }
                         if (200 === xhr.status) {
                             if (undefined === json) {
-                                $defer.reject([xhr.status, e, xhr, json]);
+                                $defer.reject([xhr.status, err, xhr, json]);
                             } else {
                                 if (json.nonce_data) {
                                     $this._update_nonce(json.nonce_data);

@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.43
+ * @version 1.1.57
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -282,7 +282,7 @@ SQL;
 			return false;
 		}
 
-		return $this->has_cap( $capability );
+		return $this->has_cap( $capability ) || in_array( $capability, $this->user_roles );
 	}
 
 	/**

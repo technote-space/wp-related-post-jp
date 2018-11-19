@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Modal
  *
- * @version 1.1.46
+ * @version 1.1.56
  * @author technote
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -78,10 +78,10 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             };
 
             this.show_message = function (message) {
+                this._message_wrap().show();
                 if (message) {
                     this.set_message(message);
                 }
-                this._message_wrap().show();
                 const $this = this;
                 let check_resize = function () {
                     if ($this.timer) {

@@ -2,7 +2,7 @@
 /**
  * Technote Traits Controller Api
  *
- * @version 1.1.50
+ * @version 1.1.56
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -122,7 +122,7 @@ trait Api {
 	 * @return bool|\WP_Error
 	 */
 	protected function validate_number( $var, $min = null, $max = null ) {
-		if ( empty( $var ) ) {
+		if ( ! is_string( $var ) && empty( $var ) ) {
 			return new \WP_Error( 400, $this->app->translate( 'Value is required.' ) );
 		}
 		if ( ! is_int( $var ) && ( ! is_string( $var ) || ! ctype_digit( str_replace( '-', '', $var ) ) ) ) {
@@ -241,6 +241,24 @@ trait Api {
 		}
 
 		return new \WP_Error( 400, $this->app->translate( 'Invalid format.' ) );
+	}
+
+	/**
+	 * @param mixed $var
+	 *
+	 * @return bool|\WP_Error
+	 */
+	protected function validate_date( $var ) {
+		return $this->validate_regex( $var, '#^\d{4}(-|/)\d{2}(-|/)\d{2}$#' );
+	}
+
+	/**
+	 * @param mixed $var
+	 *
+	 * @return bool|\WP_Error
+	 */
+	protected function validate_time( $var ) {
+		return $this->validate_regex( $var, '#^\d{2}:\d{2}$#' );
 	}
 
 	/**
