@@ -2,7 +2,7 @@
 /**
  * Technote Views Include Script Modal
  *
- * @version 1.1.56
+ * @version 1.1.60
  * @author technote
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -56,15 +56,15 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             };
 
             this.show = function (loading, click, message) {
-                this._modal().fadeIn();
+                this._modal().stop(true, true).fadeIn();
                 if (loading) {
-                    this._loading().fadeIn();
-                    this._loading_message().fadeIn();
+                    this._loading().stop(true, true).fadeIn();
+                    this._loading_message().stop(true, true).fadeIn();
                     if (message) {
                         this._loading_message().html(message);
                     }
                 }
-                this._message_wrap().fadeOut();
+                this._message_wrap().stop(true, true).fadeOut();
                 if (click) {
                     this._modal_and_message_wrap().unbind('click').click(function () {
                         click();
@@ -74,11 +74,11 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             };
 
             this.show_loading = function () {
-                this._loading().fadeIn();
+                this._loading().stop(true, true).fadeIn();
             };
 
             this.show_message = function (message) {
-                this._message_wrap().show();
+                this._message_wrap().stop(true, true).show();
                 if (message) {
                     this.set_message(message);
                 }
@@ -97,18 +97,18 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
             };
 
             this.hide = function () {
-                this._modal().fadeOut();
+                this._modal().stop(true, true).fadeOut();
                 this.hide_loading();
                 this.hide_message();
             };
 
             this.hide_loading = function () {
-                this._loading().fadeOut();
-                this._loading_message().fadeOut();
+                this._loading().stop(true, true).fadeOut();
+                this._loading_message().stop(true, true).fadeOut();
             };
 
             this.hide_message = function () {
-                this._message_wrap().fadeOut();
+                this._message_wrap().stop(true, true).fadeOut();
             };
 
             this.set_message = function (message) {

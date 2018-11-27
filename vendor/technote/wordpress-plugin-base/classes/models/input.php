@@ -2,7 +2,7 @@
 /**
  * Technote Models Input
  *
- * @version 1.1.41
+ * @version 1.1.58
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -150,10 +150,17 @@ class Input implements \Technote\Interfaces\Singleton {
 	}
 
 	/**
+	 * @param array $args
+	 *
 	 * @return string
 	 */
-	public function get_current_url() {
-		return $this->get_current_host() . $this->get_current_path();
+	public function get_current_url( $args = [] ) {
+		$url = $this->get_current_host() . $this->get_current_path();
+		if ( ! empty( $args ) ) {
+			$url = add_query_arg( $args, $url );
+		}
+
+		return $url;
 	}
 
 	/**

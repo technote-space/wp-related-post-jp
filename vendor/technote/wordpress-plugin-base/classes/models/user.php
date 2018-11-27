@@ -2,7 +2,7 @@
 /**
  * Technote Models User
  *
- * @version 1.1.57
+ * @version 1.1.63
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -218,8 +218,26 @@ class User implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 	}
 
 	/**
-	 * @param $key
-	 * @param $value
+	 * @param string $key
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
+	public function delete_matched( $key, $value ) {
+		$user_ids = $this->find( $key, $value );
+		if ( empty( $user_ids ) ) {
+			return true;
+		}
+		foreach ( $user_ids as $user_id ) {
+			$this->delete( $key, $user_id );
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
 	 *
 	 * @return array
 	 */
@@ -236,8 +254,8 @@ SQL;
 	}
 
 	/**
-	 * @param $key
-	 * @param $value
+	 * @param string $key
+	 * @param string $value
 	 *
 	 * @return false|int
 	 */
@@ -299,7 +317,7 @@ SQL;
 	 */
 	public function uninstall() {
 		global $wpdb;
-		$query = $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE meta_key LIKE %s%%", $this->get_user_prefix() );
+		$query = $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE meta_key LIKE %s", $this->get_user_prefix() . '%' );
 		$wpdb->query( $query );
 	}
 }

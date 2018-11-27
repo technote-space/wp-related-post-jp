@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Admin
  *
- * @version 1.1.54
+ * @version 1.1.64
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -42,7 +42,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 	 * @return string
 	 */
 	private function get_menu_slug() {
-		return $this->get_page_prefix() . $this->apply_filters( 'get_menu_slug', $this->get_setting_slug() );
+		return $this->get_page_prefix() . $this->apply_filters( 'get_setting_menu_slug', $this->get_setting_slug() );
 	}
 
 	/**

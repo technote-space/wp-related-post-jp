@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.51
+ * @version 1.1.62
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -208,12 +208,16 @@ trait Presenter {
 	 * @param bool $translate
 	 * @param bool $echo
 	 * @param bool $escape
+	 * @param array $args
 	 *
 	 * @return string
 	 */
-	public function h( $value, $translate = false, $echo = true, $escape = true ) {
+	public function h( $value, $translate = false, $echo = true, $escape = true, ...$args ) {
 		if ( $translate ) {
 			$value = $this->app->translate( $value );
+		}
+		if ( ! empty( $args ) ) {
+			$value = sprintf( $value, ...$args );
 		}
 		if ( $escape ) {
 			$value = esc_html( $value );
@@ -224,6 +228,16 @@ trait Presenter {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * @param mixed $value
+	 * @param bool $echo
+	 *
+	 * @return string
+	 */
+	public function json( $value, $echo = true ) {
+		return $this->h( json_encode( $value ), false, $echo, false );
 	}
 
 	/**
@@ -241,7 +255,7 @@ trait Presenter {
 	 * @return string
 	 */
 	public function id( $echo = true ) {
-		return $this->h( $this->app->plugin_name, false, $echo );
+		return $this->h( $this->app->slug_name, false, $echo );
 	}
 
 	/**

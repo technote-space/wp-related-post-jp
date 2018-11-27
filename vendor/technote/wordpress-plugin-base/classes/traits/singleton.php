@@ -2,7 +2,7 @@
 /**
  * Technote Traits Singleton
  *
- * @version 1.1.39
+ * @version 1.1.62
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -120,7 +120,7 @@ trait Singleton {
 	public function get_slug( $config_name, $suffix = '-' ) {
 
 		if ( ! isset( self::$slugs[ $this->app->plugin_name ][ $config_name ] ) ) {
-			$default = $this->app->plugin_name . $suffix;
+			$default = $this->app->slug_name . $suffix;
 			$slug    = $this->app->get_config( 'slug', $config_name, $default );
 			if ( empty( $slug ) ) {
 				$slug = $default;

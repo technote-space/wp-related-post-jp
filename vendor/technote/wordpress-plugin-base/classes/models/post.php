@@ -2,7 +2,7 @@
 /**
  * Technote Models Post
  *
- * @version 1.1.44
+ * @version 1.1.63
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -142,8 +142,26 @@ class Post implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook,
 	}
 
 	/**
-	 * @param $key
-	 * @param $value
+	 * @param string $key
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
+	public function delete_matched( $key, $value ) {
+		$post_ids = $this->find( $key, $value );
+		if ( empty( $post_ids ) ) {
+			return true;
+		}
+		foreach ( $post_ids as $post_id ) {
+			$this->delete( $key, $post_id );
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
 	 *
 	 * @return array
 	 */
@@ -160,8 +178,8 @@ SQL;
 	}
 
 	/**
-	 * @param $key
-	 * @param $value
+	 * @param string $key
+	 * @param string $value
 	 *
 	 * @return false|int
 	 */
@@ -239,7 +257,7 @@ SQL;
 	 */
 	public function uninstall() {
 		global $wpdb;
-		$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE %s%%", $this->get_post_prefix() );
+		$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE %s", $this->get_post_prefix() . '%' );
 		$wpdb->query( $query );
 	}
 }

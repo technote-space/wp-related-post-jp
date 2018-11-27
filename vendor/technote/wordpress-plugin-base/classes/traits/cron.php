@@ -2,7 +2,7 @@
 /**
  * Technote Traits Cron
  *
- * @version 1.1.13
+ * @version 1.1.62
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -93,7 +93,7 @@ trait Cron {
 	 * @return string
 	 */
 	protected function get_hook_prefix() {
-		return $this->app->define->plugin_name . '-';
+		return $this->app->slug_name . '-';
 	}
 
 	/**

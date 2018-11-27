@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.52
+ * @version 1.1.62
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -19,6 +19,7 @@ define( 'TECHNOTE_IS_MOCK', false );
  * Class Technote
  * @property string $original_plugin_name
  * @property string $plugin_name
+ * @property string $slug_name
  * @property string $plugin_file
  * @property array $plugin_data
  * @property \Technote\Models\Define $define
@@ -115,8 +116,9 @@ class Technote {
 	 *
 	 * @param string $plugin_name
 	 * @param string $plugin_file
+	 * @param string|null $slug_name
 	 */
-	private function __construct( $plugin_name, $plugin_file ) {
+	private function __construct( $plugin_name, $plugin_file, $slug_name ) {
 		require_once __DIR__ . DS . 'traits' . DS . 'singleton.php';
 		require_once __DIR__ . DS . 'interfaces' . DS . 'singleton.php';
 		require_once __DIR__ . DS . 'models' . DS . 'define.php';
@@ -124,6 +126,7 @@ class Technote {
 		$this->original_plugin_name = $plugin_name;
 		$this->plugin_file          = $plugin_file;
 		$this->plugin_name          = strtolower( $this->original_plugin_name );
+		$this->slug_name            = ! empty( $slug_name ) ? strtolower( $slug_name ) : $this->plugin_name;
 
 		add_action( 'init', function () {
 			$this->initialize();
@@ -157,12 +160,13 @@ class Technote {
 	/**
 	 * @param string $plugin_name
 	 * @param string $plugin_file
+	 * @param string|null $slug_name
 	 *
 	 * @return Technote
 	 */
-	public static function get_instance( $plugin_name, $plugin_file ) {
+	public static function get_instance( $plugin_name, $plugin_file, $slug_name = null ) {
 		if ( ! isset( self::$instances[ $plugin_name ] ) ) {
-			self::$instances[ $plugin_name ] = new static( $plugin_name, $plugin_file );
+			self::$instances[ $plugin_name ] = new static( $plugin_name, $plugin_file, $slug_name );
 		}
 
 		return self::$instances[ $plugin_name ];
