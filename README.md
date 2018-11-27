@@ -1,9 +1,13 @@
 # wp-related-post-jp
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![WordPress: >=3.9.3](https://img.shields.io/badge/WordPress-%3E%3D3.9.3-brightgreen.svg)
+![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)
+
 投稿同士の類似度の計算を行うWordpressのプラグインです。  
 関連記事の提供や全文検索を可能にします。
 
-# スクリーンショット
+## スクリーンショット
 - 設定画面
 
 ![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-1.png)
@@ -22,11 +26,11 @@
 
 ![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-4.png)
 
-# 要件
+## 要件
 - PHP 5.6 以上
 - WordPress 3.9.3 以上
 
-# 導入手順
+## 導入手順
 1. ZIPダウンロード  
 2. wp-content/plugins に展開  
 3. 管理画面から有効化  
@@ -35,7 +39,7 @@
 投稿データのインデックス化が終わるまではキーワード検索に使用されません。  
 インデックスの進捗は管理画面から確認できます。
 
-# 特徴
+## 特徴
 #### ElasticsearchのようなAnalyzer
 - char filter  
   - shortcode
@@ -65,7 +69,7 @@
 https://en.wikipedia.org/wiki/Okapi_BM25  
 https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
 
-# 主な設定
+## 主な設定
 - キーワード検索でも使用するかどうか
   - 投稿記事同士の類似度計算のためのプラグインですが、計算結果はキーワード検索でも利用することが可能です。  
   - キーワード検索でも有効にするにはこの設定をtrueにします。
@@ -80,7 +84,7 @@ https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
     Igoという形態素解析器を使用します。  
     ローカルで動作させるため利用制限等はありませんが処理速度等はサーバに依存します。
 
-# 関連記事を表示
+## 関連記事を表示
 関連記事を取得するクエリを生成する前に以下のアクションを発行します。
 <pre>
 do_action( 'related_post-on_related_post' );
@@ -100,7 +104,7 @@ add_action( 'get_template_part_related-list', function () {
 このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 用のコードが記述されているため、
 Cocoonを使用している方は別途設定は必要ありません。
 
-# インデックス対象を変更
+## インデックス対象を変更
 デフォルトでは記事のタイトルと本文がインデックスの対象になっています。タイトルに重みづけがされています。
 <pre>
 str_repeat( $post->post_title . ' ', 10 ) . $post->post_content;
