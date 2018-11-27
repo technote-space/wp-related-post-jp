@@ -1,8 +1,8 @@
 # wp-related-post-jp
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![WordPress: >=3.9.3](https://img.shields.io/badge/WordPress-%3E%3D3.9.3-brightgreen.svg)
-![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)
+[![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)](http://php.net/)
+[![WordPress: >=3.9.3](https://img.shields.io/badge/WordPress-%3E%3D3.9.3-brightgreen.svg)](https://wordpress.org/)
 
 投稿同士の類似度の計算を行うWordpressのプラグインです。  
 関連記事の提供や全文検索を可能にします。
