@@ -38,17 +38,19 @@ add_filter( 'related_post-setting_page_priority', function () {
 	return 100;
 } );
 
-add_filter( 'related_post-get_menu_slug', function () {
+add_filter( 'related_post-get_setting_menu_slug', function () {
 	return 'dashboard';
 } );
 
 // ヘルプ
 add_filter( 'related_post-get_help_contents', function ( $contents, $slug ) {
-	if ( 'setting' === $slug ) {
+	if ( 'dashboard' === $slug ) {
 		return [
 			'title' => 'カスタマイズ',
-			'view'  => 'setting',
+			'view'  => 'dashboard',
 		];
+	} elseif ( 'setting' === $slug ) {
+		return [];
 	}
 
 	return $contents;
