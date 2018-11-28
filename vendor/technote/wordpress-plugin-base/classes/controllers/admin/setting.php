@@ -2,7 +2,7 @@
 /**
  * Technote Controller Admin Setting
  *
- * @version 1.1.54
+ * @version 1.1.66
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -81,6 +81,15 @@ class Setting extends Base {
 				'title' => 'サイドバーの変更手順',
 				'view'  => 'setting3',
 			],
+		];
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_help_content_params() {
+		return [
+			'prefix' => $this->get_filter_prefix(),
 		];
 	}
 

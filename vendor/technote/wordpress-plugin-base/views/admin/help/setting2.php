@@ -2,7 +2,7 @@
 /**
  * Technote Views Admin Help Setting
  *
- * @version 1.1.13
+ * @version 1.1.66
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -14,28 +14,21 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
 /** @var \Technote\Controllers\Admin\Base $instance */
+/** @var string $prefix */
 ?>
 
 <ol>
     <li>
-        <h4>プラグインのslugを確認</h4>
-        プラグインライブラリに指定した名前からslugが決まります。
-        <pre>
-Technote::get_instance( 'Sample_Plugin', __FILE__ );</pre>
-        の場合は「sample_plugin」になります。
-    </li>
-    <li>
         <h4>ヘルプ表示設定</h4>
         $slug が setting の時に 空を返すようにします。
-        functions.php に以下のようなコードを追加します。
+        functions.php に以下のコードを追加します。
         <pre>
-add_filter( 'sample_plugin-get_help_contents', function ( $contents, $slug ) {
+add_filter( '<?php $instance->h( $prefix ); ?>get_help_contents', function ( $contents, $slug ) {
 	if ( 'setting' === $slug ) {
 		return [];
 	}
 
 	return $contents;
 }, 10, 2 );</pre>
-        「sample_plugin」は適宜変更します。
     </li>
 </ol>

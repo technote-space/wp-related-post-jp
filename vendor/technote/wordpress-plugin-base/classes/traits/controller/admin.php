@@ -2,7 +2,7 @@
 /**
  * Technote Traits Controller Admin
  *
- * @version 1.1.54
+ * @version 1.1.66
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -129,7 +129,14 @@ trait Admin {
 			return '';
 		}
 
-		return $this->get_view( 'admin/help/' . $slug, [], false, false );
+		return $this->get_view( 'admin/help/' . $slug, $this->get_help_content_params(), false, false );
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_help_content_params() {
+		return [];
 	}
 
 	/**
@@ -142,7 +149,14 @@ trait Admin {
 			return '';
 		}
 
-		return $this->get_view( 'admin/sidebar/' . $slug, [], false, false );
+		return $this->get_view( 'admin/sidebar/' . $slug, $this->get_sidebar_content_params(), false, false );
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_sidebar_content_params() {
+		return [];
 	}
 
 	/**

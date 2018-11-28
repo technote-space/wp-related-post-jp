@@ -2,7 +2,7 @@
 /**
  * Technote Models Loader Controller Admin
  *
- * @version 1.1.64
+ * @version 1.1.65
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -52,7 +52,7 @@ class Admin implements \Technote\Interfaces\Loader, \Technote\Interfaces\Nonce {
 		$plugin_title = $this->app->get_config( 'config', 'plugin_title' );
 		empty( $plugin_title ) and $plugin_title = $this->app->original_plugin_name;
 
-		return $this->apply_filters( 'get_plugin_title', $plugin_title );
+		return $this->apply_filters( 'get_plugin_title', $this->app->translate( $plugin_title ) );
 	}
 
 	/**

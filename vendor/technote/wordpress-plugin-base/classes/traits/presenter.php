@@ -2,7 +2,7 @@
 /**
  * Technote Traits Presenter
  *
- * @version 1.1.62
+ * @version 1.1.65
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -494,9 +494,10 @@ trait Presenter {
 	 * @param array $depends
 	 * @param string|bool|null $ver
 	 * @param string $media
+	 * @param string $dir
 	 */
-	public function enqueue_style( $handle, $file, $depends = [], $ver = false, $media = 'all' ) {
-		wp_enqueue_style( $handle, $this->app->define->plugin_assets_url . '/css/' . $file, $depends, $ver, $media );
+	public function enqueue_style( $handle, $file, $depends = [], $ver = false, $media = 'all', $dir = 'css' ) {
+		wp_enqueue_style( $handle, $this->app->define->plugin_assets_url . '/' . $dir . '/' . $file, $depends, $ver, $media );
 	}
 
 	/**
@@ -505,9 +506,10 @@ trait Presenter {
 	 * @param array $depends
 	 * @param string|bool|null $ver
 	 * @param bool $in_footer
+	 * @param string $dir
 	 */
-	public function enqueue_script( $handle, $file, $depends = [], $ver = false, $in_footer = true ) {
-		wp_enqueue_script( $handle, $this->app->define->plugin_assets_url . '/js/' . $file, $depends, $ver, $in_footer );
+	public function enqueue_script( $handle, $file, $depends = [], $ver = false, $in_footer = true, $dir = 'js' ) {
+		wp_enqueue_script( $handle, $this->app->define->plugin_assets_url . '/' . $dir . '/' . $file, $depends, $ver, $in_footer );
 	}
 
 	/**
