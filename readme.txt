@@ -24,10 +24,10 @@ This plugin needs PHP5.6 or higher.
 
 == Screenshots ==
 
-1. Settings.
-2. Progress.
-3. Before.
-4. After.
+1. Settings
+2. Progress
+3. Before
+4. After
 
 == Changelog ==
 
