@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 1.1.62
+ * @version 1.1.67
  * @author technote-space
  * @since 1.0.0
  * @copyright technote All Rights Reserved
@@ -267,6 +267,8 @@ class Technote {
 		}
 		if ( $this->loader->api->get_loaded_count() <= 1 ) {
 			$this->setting->remove_setting( 'use_admin_ajax' );
+			$this->setting->remove_setting( 'get_nonce_check_referer' );
+			$this->setting->remove_setting( 'check_referer_host' );
 		}
 	}
 

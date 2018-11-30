@@ -168,17 +168,17 @@
     },
     {
         "name": "technote/wordpress-plugin-base",
-        "version": "1.1.66",
-        "version_normalized": "1.1.66.0",
+        "version": "1.1.67",
+        "version_normalized": "1.1.67.0",
         "source": {
             "type": "git",
             "url": "https://github.com/technote-space/wordpress-plugin-base.git",
-            "reference": "19354107adc4f26b6878fe34d9f8a1cc470e218b"
+            "reference": "efe3a4e8da6f1afa85e686f29919d37be49c0bf8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/technote-space/wordpress-plugin-base/zipball/19354107adc4f26b6878fe34d9f8a1cc470e218b",
-            "reference": "19354107adc4f26b6878fe34d9f8a1cc470e218b",
+            "url": "https://api.github.com/repos/technote-space/wordpress-plugin-base/zipball/efe3a4e8da6f1afa85e686f29919d37be49c0bf8",
+            "reference": "efe3a4e8da6f1afa85e686f29919d37be49c0bf8",
             "shasum": ""
         },
         "require": {
@@ -191,7 +191,7 @@
             "phake/phake": "2.*",
             "phpunit/phpunit": "4.*"
         },
-        "time": "2018-11-28T14:33:35+00:00",
+        "time": "2018-11-28T16:11:06+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
