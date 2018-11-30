@@ -34,7 +34,7 @@ class Dashboard extends \Technote\Controllers\Admin\Base {
 		return 'Dashboard';
 	}
 
-	public function post_action() {
+	protected function post_action() {
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'ranking_number' );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'related_posts_title' );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'auto_insert_related_post', 0 );
