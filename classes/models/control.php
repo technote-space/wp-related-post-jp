@@ -500,7 +500,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		} else {
 			$seconds = 15;
 		}
-		$expire = $this->apply_filters( 'posts_index_expire', $seconds );
+		$expire = $this->apply_filters( 'posts_index_expire', $seconds, $running, $process, $seconds );
 		set_site_transient( $this->get_transient_key(), time() + $expire, $expire );
 		$uuid = \Technote\Models\Utility::uuid();
 		set_site_transient( $this->get_executing_transient_key(), $uuid, $expire );
