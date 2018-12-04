@@ -11,7 +11,7 @@
 if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
-/** @var \Technote\Controllers\Admin\Base $instance */
+/** @var \Technote\Interfaces\Presenter $instance */
 /** @var array $args */
 /** @var string $admin_page_url */
 /** @var array $related_posts_title */
