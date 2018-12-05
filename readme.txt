@@ -1,6 +1,6 @@
 === WP Related Post JP ===
-Contributors: technote-space
-Tags: related posts, recommend, recommendation
+Contributors: technote0space
+Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Tested up to: 4.9.8
 Stable tag: 1.1.1
