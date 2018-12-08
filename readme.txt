@@ -3,7 +3,7 @@ Contributors: technote0space
 Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Tested up to: 4.9.8
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ This plugin needs PHP5.6 or higher.
 
 == Changelog ==
 
-= 1.1.3 =
+= 1.1.4 =
 
 * First release
 
