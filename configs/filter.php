@@ -14,7 +14,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 
 return [
 
-	'\Related_Post\Models\Control' => [
+	'\Related_Post\Classes\Models\Control' => [
 		'transition_post_status' => [
 			'transition_post_status' => [],
 		],
