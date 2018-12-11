@@ -35,7 +35,4 @@ return [
 	// update
 	'update_info_file_url' => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/update.json',
 
-	// text domain
-	'text_domain'          => 'wrpj',
-
 ];
