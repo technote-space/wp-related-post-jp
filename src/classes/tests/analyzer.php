@@ -28,11 +28,27 @@ class Analyzer extends \Technote\Classes\Tests\Base {
 		$this->analyzer = \Related_Post\Classes\Models\Analyzer::get_instance( $this->app );
 	}
 
-	public function test_parse() {
-		$posts = get_posts( 'numberposts=1&orderby=rand' );
-		if ( ! empty( $posts ) ) {
-			$post = reset( $posts );
-			$this->dump( $this->analyzer->parse( $post ) );
-		}
+	/**
+	 * @dataProvider _test_parse_provider
+	 *
+	 * @param string $text
+	 * @param array $expected
+	 */
+	public function test_text( $text, $expected ) {
+		$this->assertEquals( $expected, $this->analyzer->parse_text( $text ) );
+	}
+
+	/**
+	 * @return array
+	 */
+	public function _test_parse_provider() {
+		$test = file_get_contents( __DIR__ . DS . 'test.txt' );
+
+		return [
+			[ 'テスト', [ 'てすと' => 1 ] ],
+			[ 'test <pre>Hello world! </pre> テスト', [ 'test' => 1, 'てすと' => 1 ] ],
+			[ "test \n<pre class='php'> Hello world! </pre> \r\n テスト \n テスト", [ 'test' => 1, 'てすと' => 2 ] ],
+			[ $test, [ 'こーど' => 1, '除去' => 1, 'てすと' => 1 ] ],
+		];
 	}
 }
