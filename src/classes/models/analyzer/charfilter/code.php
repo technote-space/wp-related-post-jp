@@ -27,7 +27,7 @@ class Code extends \Related_Post\Classes\Models\Analyzer\Charfilter {
 	 * @return string
 	 */
 	public function filter( $text ) {
-		return preg_replace( '#<pre>.+?</pre>#s', '', $text );
+		return preg_replace( '#<pre[\s>].+?</pre>#s', '', $text );
 	}
 
 }

@@ -42,7 +42,7 @@ class Wakati extends \Related_Post\Classes\Models\Analyzer\Tokenfilter {
 			}
 			$word         = mb_convert_kana( $word, 'c' );
 			$word         = mb_strtolower( $word, "utf-8" );
-			$ret[ $word ] = $count;
+			$ret[ $word ] = ( isset( $ret[ $word ] ) ? $ret[ $word ] : 0 ) + $count;
 		}
 
 		return $ret;
