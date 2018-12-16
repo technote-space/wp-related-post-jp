@@ -107,7 +107,7 @@ Cocoonを使用している方は別途設定は必要ありません。
 ## インデックス対象を変更
 デフォルトでは記事のタイトルと本文がインデックスの対象になっています。タイトルに重みづけがされています。
 <pre>
-str_repeat( $post->post_title . ' ', 10 ) . $post->post_content;
+str_repeat( $post->post_title . ' ', 3 ) . $post->post_content;
 </pre>
 あらかじめ「本文のみ」「タイトルのみ」「タイトルと本文とタグ」を対象とする設定が別途用意されており、以下のようなプログラムを functions.php などに記述することで変更することが可能です。
 <pre>

@@ -28,7 +28,7 @@ class Title_content_tags extends \Related_Post\Classes\Models\Analyzer\Extractor
 	 * @return string
 	 */
 	public function extract( $post ) {
-		return str_repeat( $post->post_title . ' ', 10 ) . ' ' . str_repeat( implode( ' ', wp_get_post_tags( $post->ID, [ 'fields' => 'names' ] ) ), 15 ) . $post->post_content;
+		return str_repeat( $post->post_title . ' ', 3 ) . ' ' . str_repeat( implode( ' ', wp_get_post_tags( $post->ID, [ 'fields' => 'names' ] ) ), 5 ) . $post->post_content;
 	}
 
 }

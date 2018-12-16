@@ -27,7 +27,7 @@ class Title_content extends \Related_Post\Classes\Models\Analyzer\Extractor {
 	 * @return string
 	 */
 	public function extract( $post ) {
-		return str_repeat( $post->post_title . ' ', 10 ) . $post->post_content;
+		return str_repeat( $post->post_title . ' ', 3 ) . $post->post_content;
 	}
 
 }
