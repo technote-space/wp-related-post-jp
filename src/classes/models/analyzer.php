@@ -29,7 +29,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 * @return array ( word => count )
 	 */
 	public function parse( $post ) {
-		return $this->parse_text( $this->get_length_filtered_extracted_result( $post ) );
+		return $this->parse_text( $this->get_extracted_result( $post ), true );
 	}
 
 	/**
@@ -37,23 +37,24 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 	 *
 	 * @return mixed
 	 */
-	private function get_length_filtered_extracted_result( $post ) {
-		$result     = $this->apply_filters( 'extractor_result', $this->extractor( $post ), $post );
-		$max_length = $this->apply_filters( 'max_index_target_length' );
-		if ( $max_length > 0 ) {
-			$result = mb_substr( $result, 0, $max_length );
-		}
-
-		return $result;
+	private function get_extracted_result( $post ) {
+		return $this->apply_filters( 'extractor_result', $this->extractor( $post ), $post );
 	}
 
 	/**
 	 * @param string $text
+	 * @param bool $limit_length
 	 *
 	 * @return array ( word => count )
 	 */
-	public function parse_text( $text ) {
+	public function parse_text( $text, $limit_length = false ) {
 		$text = $this->apply_filters( 'char_filter_result', $this->char_filter( $text ), $text );
+		if ( $limit_length ) {
+			$max_length = $this->apply_filters( 'max_index_target_length' );
+			if ( $max_length > 0 ) {
+				$text = mb_substr( $text, 0, $max_length );
+			}
+		}
 		list( $terms, $tokenizer ) = $this->apply_filters( 'tokenizer_result', $this->tokenizer( $text ), $text );
 
 		return $this->apply_filters( 'token_filter_result', $this->token_filter( $terms, $tokenizer ), $terms );
