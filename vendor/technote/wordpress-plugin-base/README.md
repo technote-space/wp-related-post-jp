@@ -26,6 +26,9 @@ composer を使用してインストールします。
 
 ```composer require technote/wordpress-plugin-base```
 
+　  
+複数のプラグインでこのライブラリを使用する場合、最新のものが自動的に使用されます。
+
 ## このライブラリの使用
 
 作成したプラグインファイルにライブラリを使用する記述を追記します。  
@@ -38,7 +41,7 @@ Plugin Name: example
 Plugin URI:
 Description: Plugin Description
 Author: example
-Version: 0.0.0.0
+Version: 0.0.0
 Author URI: http://example.com/
 */
 
@@ -51,25 +54,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 Technote::get_instance( 'Example', __FILE__ );
 ```
 
+このプラグインファイルと同じフォルダに「functions.php」を作成すると、いろいろな準備ができた後に自動的に読み込まれます。  
+プラグインの構成は以下のようなものになります。
+
 ```
-example - example.php
+example
+    |
+    - example.php
+    |
+    - functions.php
     |
     - src
     |  |
         - classes
-    |        |
-    |        - controllers
-    |        |      |
-    |        |      - admin
-    |        |      - api 
-    |        |
-    |        - models
-    |        |
-    |        - tests
-    |
-    - views
-    |   |
-    |   - admin
+    |  |     |
+    |  |     - controllers
+    |  |     |      |
+    |  |     |      - admin
+    |  |     |      |
+    |  |     |      - api 
+    |  |     |
+    |  |     - models
+    |  |     |
+    |  |     - tests
+    |  |
+    |  - views 
+    |      |
+    |      - admin
+    |          |
+    |          - help
     |
     - configs
 ```
@@ -80,10 +93,13 @@ example - example.php
 
 |設定値|説明|
 |---|---|
+|plugin_title|管理画面のメニュー名になります|
 |db_version|DBの設定を変更したら更新します|
-|twitter|ツイッターのアカウントを指定します（空で未使用）|
-|github|Githubのアカウントを指定します（空で未使用）|
-|contact_url|プラグインのお問い合わせ用のページのURLを指定します|
+|twitter|ツイッターのアカウントを指定します（ダッシュボードでヘルプに表示されます。空で未使用）|
+|github|Githubのアカウントを指定します（ダッシュボードでヘルプに表示されます。空で未使用）|
+|contact_url|プラグインのお問い合わせ用のページのURLを指定します（ダッシュボードでヘルプに表示されます）|
+|menu_image|管理画面のメニューアイコンを指定します|
+|update_info_file_url|開発バージョンチェック情報用のURLを指定します|
 
 - configs/db.php
 
@@ -287,7 +303,7 @@ class Test extends \Technote\Classes\Controllers\Admin\Base {
 
 POST の時に行う動作は事前にnonce checkが行われます。
 
-- views/admin に PHP ファイル (例：test.php) を追加
+- src/views/admin に PHP ファイル (例：test.php) を追加
 ```
 <?php
 
@@ -319,7 +335,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	- img
 
 - ヘルプの追加
-	- classes/controllers/admin に追加した上記 PHP ファイル に以下を追記
+	- src/classes/controllers/admin に追加した上記 PHP ファイル に以下を追記
 ```
 protected function get_help_contents() {
     return array(
@@ -332,7 +348,7 @@ protected function get_help_contents() {
 ```
 
 -
-	- views/admin/help に PHP ファイル (例：test.php) を追加
+	- src/views/admin/help に PHP ファイル (例：test.php) を追加
 ```
 <?php
 
@@ -393,7 +409,7 @@ class Sample extends \Technote\Classes\Tests\Base {
 
 ## サンプルプラグイン
 [関連記事提供用プラグイン](https://github.com/technote-space/wp-related-post-jp)  
-[Contact Form 7 拡張用プラグイン](https://github.com/technote-space/contact-form-7-huge-file-upload) 
+[Contact Form 7 拡張用プラグイン](https://github.com/technote-space/contact-form-7-huge-file-upload)  
 [Marker Animation プラグイン](https://github.com/technote-space/marker-animation) 
 
 # Author

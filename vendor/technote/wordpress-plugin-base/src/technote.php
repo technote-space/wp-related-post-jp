@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 2.1.0
+ * @version 2.4.1
  * @author technote-space
  * @since 1.0.0
  * @since 2.0.0 Added: Feature to load library of latest version
@@ -13,6 +13,12 @@
  * @since 2.1.0 Changed: load textdomain from plugin data
  * @since 2.1.0 Added: check develop version
  * @since 2.1.0 Changed: set default value of check_update when the plugin is registered as official
+ * @since 2.1.1 Fixed: check develop version
+ * @since 2.3.0 Changed: property access exception type
+ * @since 2.3.0 Added: get_plugin_version method
+ * @since 2.3.1 Changed: not load test and uninstall if not required
+ * @since 2.4.0 Added: upgrade feature
+ * @since 2.4.1 Added: show plugin upgrade notices feature
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -46,6 +52,8 @@ define( 'TECHNOTE_IS_MOCK', false );
  * @property \Technote\Classes\Models\Lib\Uninstall $uninstall
  * @property \Technote\Classes\Models\Lib\Session $session
  * @property \Technote\Classes\Models\Lib\Utility $utility
+ * @property \Technote\Classes\Models\Lib\Test $test
+ * @property \Technote\Classes\Models\Lib\Upgrade $upgrade
  */
 class Technote {
 
@@ -121,6 +129,8 @@ class Technote {
 		'uninstall' => '\Technote\Classes\Models\Lib\Uninstall',
 		'session'   => '\Technote\Classes\Models\Lib\Session',
 		'utility'   => '\Technote\Classes\Models\Lib\Utility',
+		'test'      => '\Technote\Classes\Models\Lib\Test',
+		'upgrade'   => '\Technote\Classes\Models\Lib\Upgrade',
 	];
 
 	/** @var array $property_instances */
@@ -130,7 +140,7 @@ class Technote {
 	 * @param string $name
 	 *
 	 * @return \Technote\Interfaces\Singleton
-	 * @throws \Exception
+	 * @throws \OutOfRangeException
 	 */
 	public function __get( $name ) {
 		if ( isset( $this->properties[ $name ] ) ) {
@@ -142,7 +152,7 @@ class Technote {
 
 			return $this->property_instances[ $name ];
 		}
-		throw new \Exception( $name . ' is undefined.' );
+		throw new \OutOfRangeException( $name . ' is undefined.' );
 	}
 
 	/**
@@ -322,6 +332,14 @@ class Technote {
 	}
 
 	/**
+	 * @since
+	 * @return string
+	 */
+	public function get_plugin_version() {
+		return $this->plugin_data['Version'];
+	}
+
+	/**
 	 * @param bool $uninstall
 	 */
 	private function setup_property( $uninstall ) {
@@ -329,32 +347,31 @@ class Technote {
 			foreach ( $this->properties as $name => $class ) {
 				$this->$name;
 			}
-			$this->loader->uninstall->get_class_list();
+			$this->uninstall->get_class_list();
 		}
 	}
 
 	/**
 	 * setup update checker
 	 * @since 2.1.0 Added: check develop version
+	 * @since 2.1.1 Fixed: check develop version
+	 * @since 2.4.1 Added: plugin upgrade notices feature
 	 */
 	private function setup_update() {
 		$update_info_file_url = $this->get_config( 'config', 'update_info_file_url' );
 		if ( ! empty( $update_info_file_url ) ) {
 			if ( $this->filter->apply_filters( 'check_update' ) ) {
-				$key   = $this->plugin_name . '-setup_update';
-				$check = get_transient( $key );
-				if ( ! $check ) {
-					\Puc_v4_Factory::buildUpdateChecker(
-						$update_info_file_url,
-						$this->plugin_file,
-						$this->plugin_name
-					);
-					set_transient( $key, true, 15 * 60 );
-				}
+				\Puc_v4_Factory::buildUpdateChecker(
+					$update_info_file_url,
+					$this->plugin_file,
+					$this->plugin_name
+				);
 			}
 		} else {
 			$this->setting->remove_setting( 'check_update' );
 		}
+
+		$this->upgrade->show_plugin_update_notices();
 	}
 
 	/**
