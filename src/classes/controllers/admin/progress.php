@@ -27,4 +27,11 @@ class Progress extends \Technote\Classes\Controllers\Admin\Base {
 	public function get_page_title() {
 		return 'Progress';
 	}
+
+	/**
+	 * common
+	 */
+	protected function common_action() {
+		$this->app->loader->api->set_use_all_api_flag( true );
+	}
 }

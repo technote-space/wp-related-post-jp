@@ -992,6 +992,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return;
 		}
 
+		$this->app->loader->api->add_use_api_name( 'wrpj_index_result' );
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
