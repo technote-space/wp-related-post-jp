@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.2.3
+ * @version 1.2.6
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.2.3 Updated: setup to use api
+ * @since 1.2.6 Added: upgrade method
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -20,9 +21,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Control
  * @package Related_Post\Classes\Models
  */
-class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall {
+class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall, \Technote\Interfaces\Upgrade {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall;
+	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall, \Technote\Traits\Upgrade;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -1046,6 +1047,21 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			'words'         => $words,
 			'indexed'       => $indexed,
 			'setup_ranking' => $setup_ranking,
+		];
+	}
+
+	/**
+	 * @since 1.2.6
+	 * @return array
+	 */
+	public function get_upgrade_methods() {
+		return [
+			[
+				'version'  => '1.2.6',
+				'callback' => function () {
+					$this->init_posts_index();
+				},
+			],
 		];
 	}
 }

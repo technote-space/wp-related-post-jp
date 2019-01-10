@@ -46,6 +46,8 @@
     - WordPressのショートコードを展開
   - code
     - プログラムコードを除外
+  - comment
+    - HTMLコメントを除外
   - html
     - HTMLタグを除外
   - kana
