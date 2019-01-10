@@ -33,6 +33,6 @@ return [
 	'menu_image'           => '',
 
 	// update
-	'update_info_file_url' => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/update.json',
+	'update_info_file_url' => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/develop/update.json',
 
 ];
