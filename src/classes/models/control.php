@@ -20,9 +20,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Control
  * @package Related_Post\Classes\Models
  */
-class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall {
+class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall, \Technote\Interfaces\Upgrade {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall;
+	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall, \Technote\Traits\Upgrade;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -1046,6 +1046,21 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			'words'         => $words,
 			'indexed'       => $indexed,
 			'setup_ranking' => $setup_ranking,
+		];
+	}
+
+	/**
+	 * @since 1.2.6
+	 * @return array
+	 */
+	public function get_upgrade_methods() {
+		return [
+			[
+				'version'  => '1.2.6',
+				'callback' => function () {
+					$this->init_posts_index();
+				},
+			],
 		];
 	}
 }
