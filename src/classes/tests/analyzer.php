@@ -43,13 +43,13 @@ class Analyzer extends \Technote\Classes\Tests\Base {
 	 * @return array
 	 */
 	public function _test_parse_provider() {
-		$test = file_get_contents( __DIR__ . DS . 'test.txt' );
-
 		return [
 			[ 'テスト', [ 'てすと' => 1 ] ],
 			[ 'test <pre>Hello world! </pre> テスト', [ 'test' => 1, 'てすと' => 1 ] ],
 			[ "test \n<pre class='php'> Hello world! </pre> \r\n テスト \n テスト", [ 'test' => 1, 'てすと' => 2 ] ],
-			[ $test, [ 'こーど' => 1, '除去' => 1, 'てすと' => 1 ] ],
+			[ file_get_contents( __DIR__ . DS . 'test1.txt' ), [ 'こーど' => 1, '除去' => 1, 'てすと' => 1 ] ],
+			[ 'test <!-- comment コメント　こめんと　　　 !"#$%&\'()=~|\^-[]:@`*}{\/_?:;.,><+ -->', [ 'test' => 1 ] ],
+			[ file_get_contents( __DIR__ . DS . 'test2.txt' ), [ 'こめんと' => 1, '除去' => 3, 'てすと' => 4, 'test' => 3 ] ],
 		];
 	}
 }

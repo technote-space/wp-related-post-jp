@@ -26,6 +26,7 @@ return [
 	'char_filters'  => [
 		'shortcode',
 		'code',
+		'comment',
 		'html',
 		'kana',
 	],
