@@ -29,33 +29,6 @@ if ( strpos( wp_get_theme()->get_template(), 'cocoon' ) !== false ) {
 	} );
 }
 
-// 設定変更
-add_filter( 'related_post-setting_page_title', function () {
-	return 'Detail Settings';
-} );
-
-add_filter( 'related_post-setting_page_priority', function () {
-	return 100;
-} );
-
-add_filter( 'related_post-get_setting_menu_slug', function () {
-	return 'dashboard';
-} );
-
-// ヘルプ
-add_filter( 'related_post-get_help_contents', function ( $contents, $slug ) {
-	if ( 'dashboard' === $slug ) {
-		return [
-			'title' => 'カスタマイズ',
-			'view'  => 'dashboard',
-		];
-	} elseif ( 'setting' === $slug ) {
-		return [];
-	}
-
-	return $contents;
-}, 10, 2 );
-
 // allowed wp tables
 add_filter( 'related_post-allowed_wp_tables', function ( $tables ) {
 	/** @var \wpdb $wpdb */

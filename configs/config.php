@@ -16,24 +16,36 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 return [
 
 	// plugin title
-	'plugin_title'         => 'Related Post',
+	'plugin_title'                   => 'Related Post',
 
 	// db version
-	'db_version'           => '0.0.1',
+	'db_version'                     => '0.0.1',
 
 	// twitter
-	'twitter'              => 'technote15',
+	'twitter'                        => 'technote15',
 
 	// github
-	'github'               => 'technote-space',
+	'github'                         => 'technote-space',
 
 	// contact url
-	'contact_url'          => 'https://technote.space/contact/',
+	'contact_url'                    => 'https://technote.space/contact/',
 
 	// menu image url
-	'menu_image'           => '',
+	'menu_image'                     => '',
 
 	// update
-	'update_info_file_url' => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/develop/update.json',
+	'update_info_file_url'           => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/develop/update.json',
+
+	// suppress setting help contents
+	'suppress_setting_help_contents' => true,
+
+	// setting page title
+	'setting_page_title'             => 'Detail Settings',
+
+	// setting page priority
+	'setting_page_priority'          => 100,
+
+	// setting page slug
+	'setting_page_slug'              => 'dashboard',
 
 ];

@@ -84,4 +84,14 @@ class Dashboard extends \Technote\Classes\Controllers\Admin\Base {
 
 		return $ret;
 	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_help_contents() {
+		return [
+			'title' => 'Customize',
+			'view'  => 'dashboard',
+		];
+	}
 }
