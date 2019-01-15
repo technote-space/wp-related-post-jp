@@ -2,7 +2,7 @@
 /**
  * Technote Classes Models Lib Db
  *
- * @version 2.9.8
+ * @version 2.9.14
  * @author technote-space
  * @since 1.0.0
  * @since 2.0.0 Added: Feature to cache result of conversion type format
@@ -19,6 +19,7 @@
  * @since 2.8.3 Added: length define
  * @since 2.9.0 Added: method to get last error
  * @since 2.9.8 Fixed: upgrade message
+ * @since 2.9.14 Fixed: prevent cache
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -577,6 +578,7 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 
 	/**
 	 * @since 2.0.0 Changed: return $data
+	 * @since 2.9.14 Fixed: prevent cache
 	 *
 	 * @param array $data
 	 * @param bool $create
@@ -586,8 +588,8 @@ class Db implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \
 	 * @return array
 	 */
 	private function set_update_params( $data, $create, $update, $delete ) {
-		$now  = $this->apply_filters( 'set_update_params_date', date_i18n( 'Y-m-d H:i:s' ) );
-		$user = $this->apply_filters( 'set_update_params_user', substr( $this->app->user->user_name, 0, 32 ) );
+		$now  = $this->apply_filters( 'set_update_params_date', date_i18n( 'Y-m-d H:i:s' ), $data, $create, $update, $delete );
+		$user = $this->apply_filters( 'set_update_params_user', substr( $this->app->user->user_name, 0, 32 ), $data, $create, $update, $delete );
 
 		if ( $create ) {
 			$data['created_at'] = $now;

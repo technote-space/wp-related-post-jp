@@ -606,12 +606,16 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return;
 		}
 
+		$this->app->log( 'start index posts process' );
+
 		set_time_limit( 0 );
 		$uuid = $this->lock_process();
 
 		$uuid = $this->index_process( $uuid );
 
 		if ( $uuid != $this->get_executing_uuid() ) {
+			$this->app->log( 'interrupted index posts process' );
+
 			return;
 		}
 
@@ -619,6 +623,8 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$uuid = $this->ranking_process( $uuid );
 
 			if ( $uuid != $this->get_executing_uuid() ) {
+				$this->app->log( 'interrupted index posts process' );
+
 				return;
 			}
 
@@ -630,6 +636,8 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 
 		$this->lock_interval_process();
 		$this->unlock_process();
+
+		$this->app->log( 'finished index posts process' );
 	}
 
 	/**
