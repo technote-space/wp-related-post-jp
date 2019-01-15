@@ -2,12 +2,13 @@
 /**
  * Technote Configs Setting
  *
- * @version 2.7.1
+ * @version 2.9.13
  * @author technote-space
  * @since 1.0.0
  * @since 2.0.3 Changed: default assets_version
  * @since 2.7.0 Added: log settings
  * @since 2.7.1 Fixed: for under WordPress v4.4
+ * @since 2.9.13 Added: log settings
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -91,6 +92,28 @@ return [
 					'label'   => 'Delete log interval',
 					'default' => DAY_IN_SECONDS,
 					'min'     => MINUTE_IN_SECONDS,
+				],
+				/**
+				 * @since 2.9.13
+				 */
+				'is_valid_log'            => [
+					'label'   => 'Whether log is valid or not.',
+					'type'    => 'bool',
+					'default' => function ( $app ) {
+						/** @var \Technote $app */
+						return ! empty( $app->utility->definedv( 'WP_DEBUG' ) );
+					},
+				],
+				/**
+				 * @since 2.9.13
+				 */
+				'capture_shutdown_error'  => [
+					'label'   => 'Whether to capture shutdown error.',
+					'type'    => 'bool',
+					'default' => function ( $app ) {
+						/** @var \Technote $app */
+						return ! empty( $app->get_config( 'config', 'capture_shutdown_error' ) );
+					},
 				],
 			],
 		],
