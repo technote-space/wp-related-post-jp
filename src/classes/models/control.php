@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.2.6
+ * @version 1.2.8
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.2.3 Updated: setup to use api
  * @since 1.2.6 Added: upgrade method
+ * @since 1.2.8 Added: index process log
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -594,6 +595,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 
 	/**
 	 * index posts
+	 * @since 1.2.8 Added: index process log
 	 */
 	private function index_posts() {
 		if ( $this->app->get_option( 'posts_indexed' ) || $this->is_process_running() ) {
@@ -606,7 +608,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return;
 		}
 
-		$this->app->log( 'start index posts process' );
+		$this->app->log( 'start index process' );
 
 		set_time_limit( 0 );
 		$uuid = $this->lock_process();
@@ -614,7 +616,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$uuid = $this->index_process( $uuid );
 
 		if ( $uuid != $this->get_executing_uuid() ) {
-			$this->app->log( 'interrupted index posts process' );
+			$this->app->log( 'interrupted index process' );
 
 			return;
 		}
@@ -623,7 +625,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			$uuid = $this->ranking_process( $uuid );
 
 			if ( $uuid != $this->get_executing_uuid() ) {
-				$this->app->log( 'interrupted index posts process' );
+				$this->app->log( 'interrupted index process' );
 
 				return;
 			}
@@ -637,7 +639,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$this->lock_interval_process();
 		$this->unlock_process();
 
-		$this->app->log( 'finished index posts process' );
+		$this->app->log( 'finished index process' );
 	}
 
 	/**
