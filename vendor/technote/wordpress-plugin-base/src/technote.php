@@ -2,7 +2,7 @@
 /**
  * Technote
  *
- * @version 2.9.12
+ * @version 2.9.13
  * @author technote-space
  * @since 1.0.0
  * @since 2.0.0 Added: Feature to load library of latest version
@@ -29,6 +29,8 @@
  * @since 2.9.0 Added: mail
  * @since 2.9.0 Improved: log
  * @since 2.9.12 Improved: shutdown log
+ * @since 2.9.13 Changed: log settings
+ * @since 2.9.13 Changed: moved shutdown function to log
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -293,11 +295,6 @@ class Technote {
 
 		spl_autoload_register( [ $this, 'load_class' ] );
 
-		if ( $this->get_config( 'config', 'capture_shutdown_error' ) ) {
-			add_action( 'shutdown', function () {
-				$this->shutdown();
-			}, 0 );
-		}
 		$this->load_functions();
 	}
 
@@ -424,27 +421,9 @@ class Technote {
 			$this->setting->remove_setting( 'save___log_term' );
 			$this->setting->remove_setting( 'delete___log_interval' );
 		}
-	}
-
-	/**
-	 * shutdown
-	 * @since 2.8.5
-	 * @since 2.9.0 Changed: capture error target
-	 */
-	private function shutdown() {
-		$error = error_get_last();
-		if ( $error === null ) {
-			return;
-		}
-
-		if ( $error['type'] & $this->get_config( 'config', 'target_shutdown_error' ) ) {
-			$suppress = $this->get_config( 'config', 'suppress_log_messages' );
-			$message  = str_replace( [ "\r\n", "\r", "\n" ], "\n", $error['message'] );
-			$messages = explode( "\n", $message );
-			$message  = reset( $messages );
-			if ( empty( $suppress ) || ( is_array( $suppress ) && ! in_array( $message, $suppress ) ) ) {
-				$this->log( $message, $error, 'error' );
-			}
+		if ( $this->get_config( 'config', 'prevent_use_log' ) ) {
+			$this->setting->remove_setting( 'is_valid_log' );
+			$this->setting->remove_setting( 'capture_shutdown_error' );
 		}
 	}
 

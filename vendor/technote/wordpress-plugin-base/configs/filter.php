@@ -11,6 +11,7 @@
  * @since 2.8.2 Changed: filter priority of admin_menu
  * @since 2.9.0 Added: filters for mail
  * @since 2.9.9 Changed: call upgrade from init filter
+ * @since 2.9.13 Added: filter for shutdown
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -42,9 +43,18 @@ return [
 		],
 	],
 
-	'db'   => [
+	'db' => [
 		'switch_blog' => [
 			'switch_blog' => [],
+		],
+	],
+
+	/**
+	 * @since 2.9.13
+	 */
+	'log'  => [
+		'${prefix}app_initialize' => [
+			'setup_shutdown' => [],
 		],
 	],
 
