@@ -13,14 +13,14 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 }
 /** @var \Technote\Interfaces\Presenter $instance */
 /** @var string $api_class */
-$instance->js( 'progressbar.min.js' );
+$instance->js( 'mprogress.min.js' );
 ?>
 
 <script>
     (function ($) {
-        const progressbar = $('#<?php $instance->id(); ?>-progressbar-wrap');
-        progressbar.progressbar({
-            value: 0
+        const mprogress = new Mprogress({
+            template: 2,
+            parent: '#related_post-progressbar-wrap .progressbar'
         });
 
         let is_valid_button = true;
@@ -69,6 +69,7 @@ $instance->js( 'progressbar.min.js' );
 
         const check_progress = function (repeat) {
             window.<?php $instance->h( $api_class );?>.ajax('progress').done(function (json) {
+                /** @var {{posts_indexed: boolean, is_valid_posts_index: boolean, processed_rate: number}} json */
                 if (json.posts_indexed) {
                     // すでに初期化済み
                     $('#<?php $instance->id(); ?>-switch-buttons').hide();
@@ -87,7 +88,7 @@ $instance->js( 'progressbar.min.js' );
                     }
                     $('#<?php $instance->id(); ?>-progressbar-wrap').show();
                     $('#<?php $instance->id(); ?>-info-wrap .loading').text(json.processed + ' / ' + json.total);
-                    progressbar.progressbar('value', json.processed_rate);
+                    mprogress.set(json.processed_rate / 100);
                     $('#<?php $instance->id(); ?>-info-wrap').show();
                     $('#<?php $instance->id(); ?>-info-wrap .next').text(json.next);
                     $('#<?php $instance->id(); ?>-finished-wrap').hide();
