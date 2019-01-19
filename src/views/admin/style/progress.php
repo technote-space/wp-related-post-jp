@@ -12,7 +12,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
 /** @var \Technote\Interfaces\Presenter $instance */
-$instance->css( 'jquery-ui.min.css' );
+$instance->css( 'mprogress.min.css' );
 ?>
 
 <style>
@@ -38,5 +38,11 @@ $instance->css( 'jquery-ui.min.css' );
     #<?php $instance->id(); ?>-finished-wrap .message {
         margin: 5px;
         font-size: 1.4em;
+    }
+
+    #<?php $instance->id(); ?>-progressbar-wrap .progressbar {
+        margin: 10px 0;
+        width: 100%;
+        height: 10px;
     }
 </style>
