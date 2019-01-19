@@ -2,13 +2,14 @@
 /**
  * Technote Configs Setting
  *
- * @version 2.9.13
+ * @version 2.10.0
  * @author technote-space
  * @since 1.0.0
  * @since 2.0.3 Changed: default assets_version
  * @since 2.7.0 Added: log settings
  * @since 2.7.1 Fixed: for under WordPress v4.4
  * @since 2.9.13 Added: log settings
+ * @since 2.10.0 Changed: trivial change
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -56,7 +57,7 @@ return [
 					'type'    => 'string',
 					'default' => function ( $app ) {
 						/** @var \Technote $app */
-						return $app->utility->array_get( $app->plugin_data, 'Version' );
+						return $app->get_plugin_version();
 					},
 				],
 				'use_admin_ajax'          => [
