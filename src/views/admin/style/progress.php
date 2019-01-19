@@ -1,8 +1,9 @@
 <?php
 /**
- * @version 1.1.1
+ * @version 1.2.8.1
  * @author technote-space
  * @since 1.0.0.0
+ * @since 1.2.8.1 Changed: use mprogress.js instead of jquery-ui-progressbar
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
