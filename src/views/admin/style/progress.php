@@ -1,8 +1,9 @@
 <?php
 /**
- * @version 1.1.1
+ * @version 1.2.8.1
  * @author technote-space
  * @since 1.0.0.0
+ * @since 1.2.8.1 Changed: use mprogress.js instead of jquery-ui-progressbar
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -12,7 +13,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
 	return;
 }
 /** @var \Technote\Interfaces\Presenter $instance */
-$instance->css( 'jquery-ui.min.css' );
+$instance->css( 'mprogress.min.css' );
 ?>
 
 <style>
@@ -38,5 +39,11 @@ $instance->css( 'jquery-ui.min.css' );
     #<?php $instance->id(); ?>-finished-wrap .message {
         margin: 5px;
         font-size: 1.4em;
+    }
+
+    #<?php $instance->id(); ?>-progressbar-wrap .progressbar {
+        margin: 10px 0;
+        width: 100%;
+        height: 10px;
     }
 </style>

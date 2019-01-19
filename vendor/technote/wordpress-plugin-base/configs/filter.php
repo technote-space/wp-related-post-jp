@@ -32,18 +32,20 @@ return [
 		],
 		'admin_footer'               => [
 			'output_css' => [ 999 ],
+			'end_footer' => [ 999 ],
 		],
 
 		'wp_print_footer_scripts' => [
 			'output_js'  => [ 999 ],
 			'output_css' => [ 998 ],
+			'end_footer' => [ 999 ],
 		],
 		'wp_print_styles'         => [
 			'output_css' => [ 999 ],
 		],
 	],
 
-	'db' => [
+	'db'   => [
 		'switch_blog' => [
 			'switch_blog' => [],
 		],
@@ -99,7 +101,8 @@ return [
 
 	'loader->admin' => [
 		'admin_menu'    => [
-			'add_menu' => [ 9 ],
+			'add_menu'  => [ 9 ],
+			'sort_menu' => [ 11 ],
 		],
 		'admin_notices' => [
 			'admin_notice' => [],
