@@ -29,6 +29,7 @@ return [
 		'code',
 		'comment',
 		'html',
+		'reference',
 		'kana',
 	],
 
