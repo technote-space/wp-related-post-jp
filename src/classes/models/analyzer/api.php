@@ -105,7 +105,7 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 				throw new \RuntimeException( $error, $errno );
 			}
 			if ( false === $result ) {
-				throw new \Exception( $this->app->translate( 'Invalid API Response.' ) );
+				throw new \Exception( $this->translate( 'Invalid API Response.' ) );
 			}
 
 			return $this->parse_response( $result );

@@ -1004,7 +1004,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return;
 		}
 
-		$this->app->loader->api->add_use_api_name( 'wrpj_index_result' );
+		$this->app->api->add_use_api_name( 'wrpj_index_result' );
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {

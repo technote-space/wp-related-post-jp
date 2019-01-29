@@ -79,12 +79,12 @@ class Progress extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 			list( $next, $process ) = $control->get_interval_lock_process();
 			if ( $next <= 0 ) {
 				if ( ! empty( $process ) ) {
-					$next = sprintf( $this->app->translate( 'Running %s...' ), $this->app->translate( $process ) );
+					$next = sprintf( $this->translate( 'Running %s...' ), $this->translate( $process ) );
 				} else {
-					$next = $this->app->translate( 'Waiting...' );
+					$next = $this->translate( 'Waiting...' );
 				}
 			} else {
-				$next = sprintf( $this->app->translate( 'Next execute: %s sec later' ), $next );
+				$next = sprintf( $this->translate( 'Next execute: %s sec later' ), $next );
 			}
 		}
 

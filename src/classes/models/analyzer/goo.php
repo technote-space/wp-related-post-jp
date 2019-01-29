@@ -94,7 +94,7 @@ class Goo extends Api {
 	protected function parse_response( $res ) {
 		$array = json_decode( $res, true );
 		if ( ! isset( $array['word_list'] ) ) {
-			throw new \Exception( $this->app->translate( 'Invalid API Response.' ) );
+			throw new \Exception( $this->translate( 'Invalid API Response.' ) );
 		}
 
 		return $array['word_list'];

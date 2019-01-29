@@ -106,7 +106,7 @@ class Yahoo extends Api {
 		$json  = json_encode( $xml );
 		$array = json_decode( $json, true );
 		if ( ! isset( $array['uniq_result']['word_list']['word'] ) ) {
-			throw new \Exception( $this->app->translate( 'Invalid API Response.' ) );
+			throw new \Exception( $this->translate( 'Invalid API Response.' ) );
 		}
 
 		return $array['uniq_result']['word_list']['word'];
