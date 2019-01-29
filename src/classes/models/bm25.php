@@ -11,7 +11,7 @@
 
 namespace Related_Post\Classes\Models;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -19,9 +19,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Bm25
  * @package Related_Post\Classes\Models
  */
-class Bm25 implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
+class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
 
 	/** @var Control $control */
 	private $control;

@@ -13,7 +13,7 @@
 
 namespace Related_Post\Classes\Tests;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -21,7 +21,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Analyzer
  * @package Related_Post\Classes\Tests
  */
-class Analyzer extends \Technote\Classes\Tests\Base {
+class Analyzer extends \WP_Framework_Test\Classes\Tests\Base {
 
 	/** @var \Related_Post\Classes\Models\Analyzer */
 	private $analyzer;

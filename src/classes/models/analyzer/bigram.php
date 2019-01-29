@@ -11,7 +11,7 @@
 
 namespace Related_Post\Classes\Models\Analyzer;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -19,9 +19,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Bigram
  * @package Related_Post\Classes\Models\Analyzer
  */
-class Bigram implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
+class Bigram implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
 
 	/**
 	 * @param string $text

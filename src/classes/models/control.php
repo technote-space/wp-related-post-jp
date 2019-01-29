@@ -14,7 +14,7 @@
 
 namespace Related_Post\Classes\Models;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -22,9 +22,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Control
  * @package Related_Post\Classes\Models
  */
-class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall, \Technote\Interfaces\Upgrade {
+class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook, \WP_Framework_Presenter\Interfaces\Presenter, \WP_Framework_Common\Interfaces\Uninstall, \WP_Framework_Upgrade\Interfaces\Upgrade {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall, \Technote\Traits\Upgrade;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Presenter\Traits\Presenter, \WP_Framework_Common\Traits\Uninstall, \WP_Framework_Upgrade\Traits\Upgrade, \WP_Framework_Common\Traits\Package;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -1008,7 +1008,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
-			$columns['wrpj_show_related_post'] = $this->app->translate( 'Recommendation' );
+			$columns['wrpj_show_related_post'] = $this->translate( 'Recommendation' );
 
 			return $columns;
 		} );
@@ -1034,7 +1034,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$post = get_post( $post_id );
 		if ( empty( $post ) ) {
 			return [
-				'message' => $this->app->translate( 'Post not found.' ),
+				'message' => $this->translate( 'Post not found.' ),
 				'posts'   => [],
 				'words'   => [],
 			];

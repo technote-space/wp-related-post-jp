@@ -12,7 +12,7 @@
 
 namespace Related_Post\Classes\Controllers\Admin;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -20,7 +20,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Progress
  * @package Related_Post\Classes\Controllers\Admin
  */
-class Progress extends \Technote\Classes\Controllers\Admin\Base {
+class Progress extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 
 	/**
 	 * @return string
@@ -33,6 +33,6 @@ class Progress extends \Technote\Classes\Controllers\Admin\Base {
 	 * common
 	 */
 	protected function common_action() {
-		$this->app->loader->api->set_use_all_api_flag( true );
+		$this->app->api->set_use_all_api_flag( true );
 	}
 }

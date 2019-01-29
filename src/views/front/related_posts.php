@@ -8,10 +8,10 @@
  * @link https://technote.space
  */
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \Technote\Traits\Presenter $instance */
+/** @var \WP_Framework_Presenter\Traits\Presenter $instance */
 /** @var string $title */
 /** @var WP_Post $post */
 /** @var WP_Post[] $related_posts */

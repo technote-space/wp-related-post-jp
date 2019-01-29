@@ -9,29 +9,17 @@
  * @link https://technote.space
  */
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
 return [
 
-	// plugin title
-	'plugin_title'                   => 'Related Post',
+	// main menu title
+	'main_menu_title'                => 'WP Related Post JP',
 
 	// db version
 	'db_version'                     => '0.0.1',
-
-	// twitter
-	'twitter'                        => 'technote15',
-
-	// github
-	'github'                         => 'technote-space',
-
-	// contact url
-	'contact_url'                    => 'https://technote.space/contact/',
-
-	// menu image url
-	'menu_image'                     => '',
 
 	// update
 	'update_info_file_url'           => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/develop/update.json',

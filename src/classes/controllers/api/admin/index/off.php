@@ -11,7 +11,7 @@
 
 namespace Related_Post\Classes\Controllers\Api\Admin\Index;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -19,7 +19,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Off
  * @package Related_Post\Classes\Controllers\Api\Admin
  */
-class Off extends \Technote\Classes\Controllers\Api\Base {
+class Off extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 
 	/**
 	 * @return string
