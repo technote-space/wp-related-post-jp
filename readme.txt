@@ -20,7 +20,7 @@ This plugin needs PHP5.6 or higher.
 
 1. Upload the `wp-related-post-jp` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to [Related Post] >> [Progress], then click [On index posts] button.
+3. Go to [WP Related Post JP] >> [Progress], then click [On index posts] button.
 
 == Screenshots ==
 

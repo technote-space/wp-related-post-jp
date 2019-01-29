@@ -8,7 +8,7 @@
  * @link https://technote.space
  */
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
 
@@ -22,15 +22,15 @@ if ( strpos( wp_get_theme()->get_template(), 'cocoon' ) !== false ) {
 		remove_action( 'after_setup_theme', 'code_minify_buffer_start', 99999999 );
 	} );
 
-	add_filter( 'related_post-initialize_setting', function ( $data ) {
-		$data[8]['Index'][10]['auto_insert_related_post']['default'] = false;
-
-		return $data;
+	add_action( 'related_post/app_initialize', function ( $app ) {
+		/** @var \WP_Framework $app */
+		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
+		$app->setting->remove_setting( 'assets_version' );
 	} );
 }
 
 // allowed wp tables
-add_filter( 'related_post-allowed_wp_tables', function ( $tables ) {
+add_filter( 'related_post/allowed_wp_tables', function ( $tables ) {
 	/** @var \wpdb $wpdb */
 	global $wpdb;
 	$tables[ $wpdb->term_relationships ] = $wpdb->term_relationships;

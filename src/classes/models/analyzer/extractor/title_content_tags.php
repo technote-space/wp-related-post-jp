@@ -13,7 +13,7 @@
 
 namespace Related_Post\Classes\Models\Analyzer\Extractor;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
