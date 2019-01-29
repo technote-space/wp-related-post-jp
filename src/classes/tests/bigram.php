@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.1.3
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
+ * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -11,7 +12,7 @@
 
 namespace Related_Post\Classes\Tests;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -19,7 +20,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Bigram
  * @package Related_Post\Classes\Tests
  */
-class Bigram extends \Technote\Classes\Tests\Base {
+class Bigram extends \WP_Framework_Test\Classes\Tests\Base {
 
 	/** @var \Related_Post\Classes\Models\Analyzer\Bigram */
 	private $bigram;

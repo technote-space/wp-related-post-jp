@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.1.3
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
+ * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -11,7 +12,7 @@
 
 namespace Related_Post\Classes\Models\Analyzer;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -106,7 +107,7 @@ class Yahoo extends Api {
 		$json  = json_encode( $xml );
 		$array = json_decode( $json, true );
 		if ( ! isset( $array['uniq_result']['word_list']['word'] ) ) {
-			throw new \Exception( $this->app->translate( 'Invalid API Response.' ) );
+			throw new \Exception( $this->translate( 'Invalid API Response.' ) );
 		}
 
 		return $array['uniq_result']['word_list']['word'];
