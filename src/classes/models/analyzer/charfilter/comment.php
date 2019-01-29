@@ -26,7 +26,7 @@ class Comment extends \Related_Post\Classes\Models\Analyzer\Charfilter {
 	 * @return string
 	 */
 	public function filter( $text ) {
-		return preg_replace( '#<!--[\s\S]*?-->#', '', $text );
+		return preg_replace( '#<!--[\s\S]*?-->#', ' ', $text );
 	}
 
 }
