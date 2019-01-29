@@ -400,24 +400,36 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function the_content( $content ) {
-		global $post;
-		if ( ! is_object( $post ) || empty( $content ) || $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
-			return $content;
-		}
 		if ( ! ( is_single() && $this->apply_filters( 'auto_insert_related_post' ) ) ) {
 			return $content;
 		}
 
-		$related_posts = $this->get_related_posts( $post->ID );
+		return $content . $this->get_related_posts_content();
+	}
+
+	/**
+	 * @param null|\WP_Post $_post
+	 *
+	 * @return string
+	 */
+	public function get_related_posts_content( $_post = null ) {
+		if ( ! isset( $_post ) ) {
+			global $post;
+			$_post = $post;
+		}
+		if ( ! is_object( $_post ) || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) ) {
+			return '';
+		}
+		$related_posts = $this->get_related_posts( $_post->ID );
 		if ( empty( $related_posts ) ) {
-			return $content;
+			return '';
 		}
 
-		return $content . $this->get_view( 'front/related_posts', [
-				'title'         => $this->apply_filters( 'related_posts_title' ),
-				'post'          => $post,
-				'related_posts' => $related_posts,
-			] );
+		return $this->get_view( 'front/related_posts', [
+			'title'         => $this->apply_filters( 'related_posts_title' ),
+			'post'          => $_post,
+			'related_posts' => $related_posts,
+		] );
 	}
 
 
