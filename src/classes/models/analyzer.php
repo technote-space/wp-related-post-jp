@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.2.1
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.2.1 Changed: timing to limit sentence length
+ * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -12,7 +13,7 @@
 
 namespace Related_Post\Classes\Models;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -20,9 +21,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Analyzer
  * @package Related_Post\Classes\Models
  */
-class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
+class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
 
 	/**
 	 * @param \WP_Post $post
@@ -78,7 +79,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 		foreach ( $filters as $filter ) {
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Extractor\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Extractor' ) ) {
-				/** @var \Technote\Interfaces\Singleton $filter */
+				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
 				/** @var \Related_Post\Classes\Models\Analyzer\Extractor $instance */
 				try {
 					$instance = $filter::get_instance( $this->app );
@@ -109,7 +110,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 		foreach ( $filters as $filter ) {
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Charfilter\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Charfilter' ) ) {
-				/** @var \Technote\Interfaces\Singleton $filter */
+				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
 				/** @var \Related_Post\Classes\Models\Analyzer\Charfilter $instance */
 				$instance = $filter::get_instance( $this->app );
 				$text     = $instance->filter( $text );
@@ -137,7 +138,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 			$tokenizer = $filter;
 			$filter    = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Tokenizer\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Tokenizer' ) ) {
-				/** @var \Technote\Interfaces\Singleton $filter */
+				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
 				/** @var \Related_Post\Classes\Models\Analyzer\Tokenizer $instance */
 				try {
 					$instance = $filter::get_instance( $this->app );
@@ -195,7 +196,7 @@ class Analyzer implements \Technote\Interfaces\Singleton, \Technote\Interfaces\H
 			}
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Tokenfilter\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Tokenfilter' ) ) {
-				/** @var \Technote\Interfaces\Singleton $filter */
+				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
 				/** @var \Related_Post\Classes\Models\Analyzer\Tokenfilter $instance */
 				$instance = $filter::get_instance( $this->app );
 				$terms    = $instance->filter( $terms );

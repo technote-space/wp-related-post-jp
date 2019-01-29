@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.1.3
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
+ * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -11,7 +12,7 @@
 
 namespace Related_Post\Classes\Models\Analyzer;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -19,9 +20,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Api
  * @package Related_Post\Classes\Models\Analyzer
  */
-abstract class Api implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook {
+abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
 
 	/**
 	 * @return string
@@ -105,7 +106,7 @@ abstract class Api implements \Technote\Interfaces\Singleton, \Technote\Interfac
 				throw new \RuntimeException( $error, $errno );
 			}
 			if ( false === $result ) {
-				throw new \Exception( $this->app->translate( 'Invalid API Response.' ) );
+				throw new \Exception( $this->translate( 'Invalid API Response.' ) );
 			}
 
 			return $this->parse_response( $result );

@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.2.3
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.2.3 Updated: setup to use api
+ * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -12,7 +13,7 @@
 
 namespace Related_Post\Classes\Controllers\Admin;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -20,7 +21,7 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Progress
  * @package Related_Post\Classes\Controllers\Admin
  */
-class Progress extends \Technote\Classes\Controllers\Admin\Base {
+class Progress extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 
 	/**
 	 * @return string
@@ -33,6 +34,6 @@ class Progress extends \Technote\Classes\Controllers\Admin\Base {
 	 * common
 	 */
 	protected function common_action() {
-		$this->app->loader->api->set_use_all_api_flag( true );
+		$this->app->api->set_use_all_api_flag( true );
 	}
 }

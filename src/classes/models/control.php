@@ -1,12 +1,13 @@
 <?php
 /**
- * @version 1.2.8
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.2.3 Updated: setup to use api
  * @since 1.2.6 Added: upgrade method
  * @since 1.2.8 Added: index process log
+ * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -14,7 +15,7 @@
 
 namespace Related_Post\Classes\Models;
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
@@ -22,9 +23,9 @@ if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
  * Class Control
  * @package Related_Post\Classes\Models
  */
-class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Hook, \Technote\Interfaces\Uninstall, \Technote\Interfaces\Upgrade {
+class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook, \WP_Framework_Presenter\Interfaces\Presenter, \WP_Framework_Common\Interfaces\Uninstall, \WP_Framework_Upgrade\Interfaces\Upgrade {
 
-	use \Technote\Traits\Singleton, \Technote\Traits\Hook, \Technote\Traits\Presenter, \Technote\Traits\Uninstall, \Technote\Traits\Upgrade;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Presenter\Traits\Presenter, \WP_Framework_Common\Traits\Uninstall, \WP_Framework_Upgrade\Traits\Upgrade, \WP_Framework_Common\Traits\Package;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -1004,11 +1005,11 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 			return;
 		}
 
-		$this->app->loader->api->add_use_api_name( 'wrpj_index_result' );
+		$this->app->api->add_use_api_name( 'wrpj_index_result' );
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
-			$columns['wrpj_show_related_post'] = $this->app->translate( 'Recommendation' );
+			$columns['wrpj_show_related_post'] = $this->translate( 'Recommendation' );
 
 			return $columns;
 		} );
@@ -1034,7 +1035,7 @@ class Control implements \Technote\Interfaces\Singleton, \Technote\Interfaces\Ho
 		$post = get_post( $post_id );
 		if ( empty( $post ) ) {
 			return [
-				'message' => $this->app->translate( 'Post not found.' ),
+				'message' => $this->translate( 'Post not found.' ),
 				'posts'   => [],
 				'words'   => [],
 			];

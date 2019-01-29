@@ -1,17 +1,18 @@
 <?php
 /**
- * @version 1.0.2.4
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.1.9
+ * @since 1.3.0 Changed: trivial change
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
 
-if ( ! defined( 'TECHNOTE_PLUGIN' ) ) {
+if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \Technote\Traits\Presenter $instance */
+/** @var \WP_Framework_Presenter\Traits\Presenter $instance */
 /** @var WP_Post $post */
 /** @var WP_Post[] $posts */
 /** @var array $words */

@@ -3,7 +3,7 @@ Contributors: technote0space
 Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Tested up to: 5.0.3
-Stable tag: 1.2.8.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ This plugin needs PHP5.6 or higher.
 
 1. Upload the `wp-related-post-jp` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to [Related Post] >> [Progress], then click [On index posts] button.
+3. Go to [WP Related Post JP] >> [Progress], then click [On index posts] button.
 
 == Screenshots ==
 
@@ -33,7 +33,7 @@ This plugin needs PHP5.6 or higher.
 
 == Changelog ==
 
-= 1.2.8.1 =
+= 1.3.0 =
 
 * First release
 
