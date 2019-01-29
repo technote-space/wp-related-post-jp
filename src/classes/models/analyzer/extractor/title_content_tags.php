@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.2.0
+ * @version 1.3.0
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.1.4 Fixed: tag's priority
  * @since 1.2.0 Changed: weighting
+ * @since 1.3.0 Changed: タグと本文の間に空白追加 (#30)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
