@@ -16,7 +16,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 // cocoon用
 if ( strpos( wp_get_theme()->get_template(), 'cocoon' ) !== false ) {
 	add_action( 'get_template_part_tmp/related-list', function () {
-		do_action( 'related_post-on_related_post' );
+		do_action( 'related_post/on_related_post' );
 	} );
 
 	add_action( 'after_setup_theme', function () {
