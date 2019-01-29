@@ -283,7 +283,7 @@ class Api implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Present
 		$args           = $api->get_args_setting();
 		$required       = [];
 		$invalid_params = [];
-		$request        = new \WP_REST_Request( $_SERVER['REQUEST_METHOD'] );
+		$request        = new \WP_REST_Request( $this->app->input->method() );
 		$request->set_query_params( wp_unslash( $this->app->input->get() ) );
 		$request->set_body_params( wp_unslash( $this->app->input->post() ) );
 		foreach ( $args as $name => $setting ) {
