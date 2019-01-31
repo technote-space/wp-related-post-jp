@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.2
  * @author technote-space
  * @since 1.0.1.9
  * @since 1.3.0 Changed: trivial change
+ * @since 1.3.2 Added: 除外ワード (#22)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -38,7 +39,7 @@ include 'style/index_result.php';
             </tr>
 			<?php if ( count( $posts ) <= 0 ): ?>
                 <tr>
-                    <td colspan="3"><?php $instance->h( 'Item not found.', true ); ?></td>
+                    <td colspan="4"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>
 			<?php else: ?>
 				<?php $n = 1; ?>
@@ -69,10 +70,11 @@ include 'style/index_result.php';
                 <th><?php $instance->h( 'tf', true ); ?></th>
                 <th><?php $instance->h( 'idf', true ); ?></th>
                 <th><?php $instance->h( 'tf-idf', true ); ?></th>
+                <th><?php $instance->h( 'Exclude', true ); ?> </th>
             </tr>
 			<?php if ( count( $words ) <= 0 ): ?>
                 <tr>
-                    <td colspan="3"><?php $instance->h( 'Item not found.', true ); ?></td>
+                    <td colspan="5"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>
 			<?php else: ?>
 				<?php foreach ( $words as $w ): ?>
@@ -81,6 +83,22 @@ include 'style/index_result.php';
                         <td><?php echo $w['tf']; ?></td>
                         <td><?php echo $w['idf']; ?></td>
                         <td><?php echo round( $w['tfidf'], 4 ); ?></td>
+                        <td class="exclude-word-buttons-wrap">
+							<?php $instance->form( 'input/button', $args, [
+								'value'      => 'Exclude',
+								'class'      => 'on-exclude-word word-exclude-button button-primary',
+								'attributes' => [
+									'data-word' => $w['word'],
+								],
+							] ); ?>
+							<?php $instance->form( 'input/button', $args, [
+								'value'      => 'Cancel',
+								'class'      => 'off-exclude-word word-exclude-button button-primary',
+								'attributes' => [
+									'data-word' => $w['word'],
+								],
+							] ); ?>
+                        </td>
                     </tr>
 				<?php endforeach; ?>
 			<?php endif; ?>
