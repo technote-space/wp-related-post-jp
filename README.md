@@ -1,4 +1,4 @@
-# wp-related-post-jp
+# WP Related Post JP
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)](http://php.net/)
@@ -11,6 +11,8 @@
 - 設定画面
 
 ![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-1.png)
+
+![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-7.png)
 
 - 処理中
 
@@ -25,6 +27,16 @@
   - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能です。
 
 ![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-4.png)
+
+- 関連記事の確認
+  - 投稿一覧から選択した記事の関連記事及び類似度のスコアを確認できます。
+  
+![関連記事](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-5.png)
+
+- 重要語の確認
+ - 投稿一覧から選択した記事の重要語を確認できます。
+ 
+![重要語](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-6.png)
 
 ## 要件
 - PHP 5.6 以上
