@@ -27,8 +27,22 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
             $('#<?php $instance->id(); ?>-dashboard .<?php $instance->id(); ?>-tab-content').removeClass('active');
             $(this).addClass('nav-tab-active');
             $('.<?php $instance->id(); ?>-tab-content[data-tab="' + $(this).data('target') + '"]').addClass('active');
+            location.hash = $(this).data('target');
+            const action = $(this).closest('form').attr('action').replace(/#\w+$/, '') + '#' + $(this).data('target');
+            $(this).closest('form').attr('action', action);
             return false;
-        }).eq(0).trigger('click');
+        });
+
+        const hash = location.hash;
+        let tab;
+        if (hash) {
+            tab = $('[data-target="' + location.hash.replace(/^#/, '') + '"]').eq(0);
+            if (tab.length <= 0) tab = null;
+        }
+        if (!tab) {
+            tab = $('#<?php $instance->id(); ?>-dashboard .nav-tab').eq(0);
+        }
+        tab.trigger('click');
 
         const check_changed = function () {
             let result = false;

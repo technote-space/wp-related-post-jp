@@ -98,14 +98,16 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$post_types        = $this->get_valid_post_types();
 			$target_taxonomies = [];
 			foreach ( $wp_taxonomies as $taxonomy => $taxonomy_object ) {
-				if ( ! empty( array_intersect( $taxonomy_object->object_type, $post_types ) ) ) {
-					$is_category = strpos( $taxonomy, 'categor' ) !== false;
-					if ( $this->apply_filters( 'is_category_taxonomy', $is_category, $taxonomy, $taxonomy_object ) ) {
-						$target_taxonomies[ $taxonomy ] = $taxonomy;
+				/** @var \WP_Taxonomy $taxonomy_object */
+				if ( $taxonomy_object->hierarchical && ! empty( array_intersect( $taxonomy_object->object_type, $post_types ) ) ) {
+					if ( $this->apply_filters( 'is_category_taxonomy', true, $taxonomy, $taxonomy_object ) ) {
+						foreach ( $taxonomy_object->object_type as $post_type ) {
+							$target_taxonomies[ $taxonomy ][ $post_type ] = true;
+						}
 					}
 				}
 			}
-			$this->target_taxonomies = $this->apply_filters( 'get_target_taxonomies', array_values( $target_taxonomies ), $post_types );
+			$this->target_taxonomies = $this->apply_filters( 'get_target_taxonomies', $target_taxonomies, $post_types );
 		}
 
 		return $this->target_taxonomies;
@@ -114,13 +116,12 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/**
 	 * @return array
 	 */
-	public function get_exclude_category() {
+	private function get_exclude_category() {
 		if ( ! isset( $this->exclude_categories ) ) {
 			$raw_exclude_categories = $this->apply_filters( 'exclude_categories' );
 			$exclude_categories     = [];
 			$target_taxonomies      = $this->get_target_taxonomies();
 			if ( ! empty( $target_taxonomies ) ) {
-				$target_taxonomies  = array_values( $target_taxonomies );
 				$exclude_categories = array_filter( array_map( function ( $category ) use ( $target_taxonomies ) {
 					$category = trim( $category );
 					if ( empty( $category ) ) {
@@ -129,7 +130,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 					$terms = get_terms( [
 						'get'                    => 'all',
 						'number'                 => 1,
-						'taxonomy'               => $target_taxonomies,
+						'taxonomy'               => array_keys( $target_taxonomies ),
 						'update_term_meta_cache' => false,
 						'orderby'                => 'none',
 						'suppress_filter'        => true,
@@ -140,10 +141,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 					}
 					$term = array_shift( $terms );
 
-					return $term->term_taxonomy_id;
-				}, explode( ',', $raw_exclude_categories ) ), function ( $term ) {
-					return ! empty( $term );
-				} );
+					return $term;
+				}, explode( ',', $raw_exclude_categories ) ) );
 			}
 			$this->exclude_categories = $this->apply_filters( 'get_exclude_category', $exclude_categories, $raw_exclude_categories, $target_taxonomies );
 		}
@@ -151,6 +150,48 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		return $this->exclude_categories;
 	}
 
+	/**
+	 * @return array
+	 */
+	private function get_exclude_category_id() {
+		return $this->app->utility->array_pluck( $this->get_exclude_category(), 'term_taxonomy_id' );
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_category_data() {
+		$exclude_category_ids = $this->get_exclude_category_id();
+		$target_taxonomies    = $this->get_target_taxonomies();
+		$terms                = get_terms( [
+			'get'                    => 'all',
+			'taxonomy'               => array_keys( $target_taxonomies ),
+			'update_term_meta_cache' => false,
+			'orderby'                => 'none',
+			'suppress_filter'        => true,
+		] );
+
+		$data = [];
+		foreach ( $terms as $term ) {
+			/** @var \WP_Term $term */
+			$data[ $term->slug ] = [
+				'name'       => $term->name,
+				'id'         => $term->term_taxonomy_id,
+				'taxonomy'   => $term->taxonomy,
+				'post_types' => $this->app->utility->array_map( array_keys( $this->app->utility->array_get( $target_taxonomies, $term->taxonomy ) ), function ( $post_type ) {
+					$post_type = get_post_type_object( $post_type );
+
+					return [
+						'name'  => $post_type->name,
+						'label' => $post_type->label,
+					];
+				} ),
+				'excluded'   => in_array( $term->term_taxonomy_id, $exclude_category_ids ),
+			];
+		}
+
+		return $data;
+	}
 
 	/**
 	 * @return Bm25
@@ -185,9 +226,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return bool
 	 */
 	private function is_invalid_category( $post_id ) {
-		if ( ( $exclude_category = $this->get_exclude_category() ) && ! empty( $this->target_taxonomies ) ) {
-			$terms = wp_get_post_terms( $post_id, $this->target_taxonomies, [ 'fields' => 'tt_ids' ] );
-			if ( ! empty( array_intersect( $terms, $exclude_category ) ) ) {
+		if ( ( $exclude_category = $this->get_exclude_category_id() ) && ! empty( $this->target_taxonomies ) ) {
+			$terms = wp_get_post_terms( $post_id, array_keys( $this->target_taxonomies ), [ 'fields' => 'tt_ids' ] );
+			if ( is_array( $terms ) && ! empty( array_intersect( $terms, $exclude_category ) ) ) {
 				return true;
 			}
 		}
@@ -746,7 +787,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return false|string
 	 */
 	public function get_taxonomy_subquery( $term_taxonomy_ids = null, $post_table = 'p', $post_id_column = 'ID', $term_relationships_table = 'tr' ) {
-		! isset( $term_taxonomy_ids ) and $term_taxonomy_ids = $this->get_exclude_category();
+		! isset( $term_taxonomy_ids ) and $term_taxonomy_ids = $this->get_exclude_category_id();
 		if ( empty( $term_taxonomy_ids ) ) {
 			return false;
 		}
@@ -928,8 +969,6 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$this->get_filter_prefix() . 'target_post_types',
 			$this->get_filter_prefix() . 'ranking_number',
 			$this->get_filter_prefix() . 'exclude_categories',
-			$this->get_filter_prefix() . 'exclude_threshold_days',
-			$this->get_filter_prefix() . 'exclude_threshold_days_field',
 		] ) ) {
 			$this->init_posts_rankings();
 		} elseif ( in_array( $key, [

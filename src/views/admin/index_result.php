@@ -38,7 +38,7 @@ include 'style/index_result.php';
             </tr>
 			<?php if ( count( $posts ) <= 0 ): ?>
                 <tr>
-                    <td colspan="3"><?php $instance->h( 'Item not found.', true ); ?></td>
+                    <td colspan="4"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>
 			<?php else: ?>
 				<?php $n = 1; ?>
@@ -72,7 +72,7 @@ include 'style/index_result.php';
             </tr>
 			<?php if ( count( $words ) <= 0 ): ?>
                 <tr>
-                    <td colspan="3"><?php $instance->h( 'Item not found.', true ); ?></td>
+                    <td colspan="4"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>
 			<?php else: ?>
 				<?php foreach ( $words as $w ): ?>
