@@ -69,10 +69,11 @@ include 'style/index_result.php';
                 <th><?php $instance->h( 'tf', true ); ?></th>
                 <th><?php $instance->h( 'idf', true ); ?></th>
                 <th><?php $instance->h( 'tf-idf', true ); ?></th>
+                <th><?php $instance->h( 'Exclude' ); ?> </th>
             </tr>
 			<?php if ( count( $words ) <= 0 ): ?>
                 <tr>
-                    <td colspan="4"><?php $instance->h( 'Item not found.', true ); ?></td>
+                    <td colspan="5"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>
 			<?php else: ?>
 				<?php foreach ( $words as $w ): ?>
@@ -81,6 +82,22 @@ include 'style/index_result.php';
                         <td><?php echo $w['tf']; ?></td>
                         <td><?php echo $w['idf']; ?></td>
                         <td><?php echo round( $w['tfidf'], 4 ); ?></td>
+                        <td class="exclude-word-buttons-wrap">
+							<?php $instance->form( 'input/button', $args, [
+								'value'      => 'Exclude',
+								'class'      => 'on-exclude-word word-exclude-button button-primary',
+								'attributes' => [
+									'data-word' => $w['word'],
+								],
+							] ); ?>
+							<?php $instance->form( 'input/button', $args, [
+								'value'      => 'Cancel',
+								'class'      => 'off-exclude-word word-exclude-button button-primary',
+								'attributes' => [
+									'data-word' => $w['word'],
+								],
+							] ); ?>
+                        </td>
                     </tr>
 				<?php endforeach; ?>
 			<?php endif; ?>

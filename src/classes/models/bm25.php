@@ -30,6 +30,9 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	/** @var Analyzer $analyzer */
 	private $analyzer;
 
+	/** @var array $_excluded */
+	private $_excluded;
+
 	/**
 	 * initialize
 	 */
@@ -279,14 +282,14 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			}
 
 			$word_ids = $this->app->utility->array_pluck( $this->app->db->select( [
-				[ 'rel_document_word', 'w' ],
+				[ 'rel_document_word', 'rw' ],
 				[
 					[ 'document', 'd' ],
 					'INNER JOIN',
 					[
 						'd.document_id',
 						'=',
-						'w.document_id',
+						'rw.document_id',
 					],
 				],
 				[
@@ -302,7 +305,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				'd.post_id'     => [ 'in', $post_ids ],
 				'p.post_status' => 'publish',
 			], [
-				'DISTINCT w.word_id' => 'word_id',
+				'DISTINCT rw.word_id' => 'word_id',
 			] ), 'word_id' );
 
 			foreach ( $post_ids as $post_id ) {
@@ -428,6 +431,9 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @return int
 	 */
 	private function word_to_id( $word, $row, $register ) {
+		if ( $this->is_excluded( $word ) ) {
+			return 0;
+		}
 		if ( empty( $row ) ) {
 			if ( $register ) {
 				$this->app->db->insert( 'word', [
@@ -442,6 +448,19 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		}
 
 		return $word_id;
+	}
+
+	/**
+	 * @param string $word
+	 *
+	 * @return bool
+	 */
+	public function is_excluded( $word ) {
+		if ( ! isset( $this->_excluded ) ) {
+			$this->_excluded = $this->app->utility->array_combine( $this->app->db->select( 'exclude_word' ), 'word', 'word' );
+		}
+
+		return isset( $this->_excluded[ $word ] );
 	}
 
 	/**
@@ -487,14 +506,14 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		}
 
 		return $this->app->utility->array_get( $this->app->db->select_row( [
-			[ 'rel_document_word', 'w' ],
+			[ 'rel_document_word', 'rw' ],
 			[
 				[ 'document', 'd' ],
 				'INNER JOIN',
 				[
 					'd.document_id',
 					'=',
-					'w.document_id',
+					'rw.document_id',
 				],
 			],
 			[
@@ -528,20 +547,20 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
 		];
 		if ( isset( $word_ids ) ) {
-			$where['w.word_id'] = [ 'in', $word_ids ];
+			$where['rw.word_id'] = [ 'in', $word_ids ];
 		}
 		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
 			$where['NOT EXISTS'] = $subquery;
 		}
 		$data = $this->app->db->select( [
-			[ 'rel_document_word', 'w' ],
+			[ 'rel_document_word', 'rw' ],
 			[
 				[ 'document', 'd' ],
 				'INNER JOIN',
 				[
 					'd.document_id',
 					'=',
-					'w.document_id',
+					'rw.document_id',
 				],
 			],
 			[
@@ -553,13 +572,22 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 					'p.ID',
 				],
 			],
+			[
+				[ 'word', 'w' ],
+				'INNER JOIN',
+				[
+					'rw.word_id',
+					'=',
+					'w.word_id',
+				],
+			],
 		], $where, [
-			'w.word_id',
+			'rw.word_id',
 			'DISTINCT d.document_id' => [
 				'COUNT',
 				'N',
 			],
-		], null, null, null, [ 'w.word_id' ] );
+		], null, null, null, [ 'rw.word_id' ] );
 
 		return $this->app->utility->array_combine( $data, 'word_id', 'N' );
 	}
@@ -593,21 +621,21 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		$where = [
 			'p.post_status' => 'publish',
 			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'w.word_id'     => [ 'in', $word_ids ],
+			'rw.word_id'    => [ 'in', $word_ids ],
 		];
 		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
 			$where['NOT EXISTS'] = $subquery;
 		}
 
 		return $this->app->utility->array_pluck( $this->app->db->select( [
-			[ 'rel_document_word', 'w' ],
+			[ 'rel_document_word', 'rw' ],
 			[
 				[ 'document', 'd' ],
 				'INNER JOIN',
 				[
 					'd.document_id',
 					'=',
-					'w.document_id',
+					'rw.document_id',
 				],
 			],
 			[
@@ -631,34 +659,34 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	public function get_important_words( $post_id ) {
 		return $this->app->db->select( [
-			[ 'rel_document_word', 'w' ],
+			[ 'rel_document_word', 'rw' ],
 			[
 				[ 'document', 'd' ],
 				'INNER JOIN',
 				[
-					'w.document_id',
+					'rw.document_id',
 					'=',
 					'd.document_id',
 				],
 			],
 			[
-				[ 'word', 'word' ],
+				[ 'word', 'w' ],
 				'INNER JOIN',
 				[
-					'w.word_id',
+					'rw.word_id',
 					'=',
-					'word.word_id',
+					'w.word_id',
 				],
 			],
 		], [
 			'd.post_id' => $post_id,
 		], [
-			'w.word_id',
-			'w.tf * word.idf' => 'tfidf',
-			'w.count',
-			'w.tf',
-			'word.word',
-			'word.idf',
+			'rw.word_id',
+			'rw.tf * w.idf' => 'tfidf',
+			'rw.count',
+			'rw.tf',
+			'w.word',
+			'w.idf',
 		], $this->control->get_important_words_count(), null, [
 			'tfidf' => 'desc',
 		] );
@@ -761,7 +789,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			$b        = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
 			$avgdl    = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
 			$field    = [
-				"word.idf * t.n * ( w.tf * ( $k1 + 1 ) ) / ( w.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => [
+				"w.idf * t.n * ( rw.tf * ( $k1 + 1 ) ) / ( rw.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => [
 					'SUM',
 					'score',
 				],
@@ -786,12 +814,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 		$results = $this->app->db->select( [
-			[ 'rel_document_word', 'w' ],
+			[ 'rel_document_word', 'rw' ],
 			[
 				[ 'document', 'd' ],
 				'INNER JOIN',
 				[
-					'w.document_id',
+					'rw.document_id',
 					'=',
 					'd.document_id',
 				],
@@ -806,12 +834,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				],
 			],
 			[
-				[ 'word', 'word' ],
+				[ 'word', 'w' ],
 				'INNER JOIN',
 				[
-					'w.word_id',
+					'rw.word_id',
 					'=',
-					'word.word_id',
+					'w.word_id',
 				],
 			],
 			[
@@ -820,7 +848,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				[
 					't.word_id',
 					'=',
-					'w.word_id',
+					'rw.word_id',
 				],
 			],
 		], $where, $field, $count, $offset, $order_by, $group_by );

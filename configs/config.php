@@ -20,7 +20,7 @@ return [
 	'main_menu_title'                => 'WP Related Post JP',
 
 	// db version
-	'db_version'                     => '0.0.1',
+	'db_version'                     => '0.0.2',
 
 	// update
 	'update_info_file_url'           => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/develop/update.json',

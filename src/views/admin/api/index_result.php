@@ -27,7 +27,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
             is_loading = true;
 
             const post_id = $(this).data('id');
-            window.<?php $instance->h( $api_class );?>.ajax('wrpj_index_result', {p: post_id}).done(function (json) {
+            window.<?php $instance->h( $api_class );?>.ajax('index_result', {p: post_id}).done(function (json) {
                 window.<?php $instance->modal_class();?>.hide_loading();
                 window.<?php $instance->modal_class();?>.show_message(json.message);
                 $('#<?php $instance->id(); ?>-modal-message-wrap').animate({scrollTop: 0});
@@ -39,7 +39,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
             });
 
             window.<?php $instance->modal_class();?>.show(true, function () {
-                window.<?php $instance->h( $api_class );?>.abort('wrpj_index_result');
+                window.<?php $instance->h( $api_class );?>.abort('index_result');
                 window.<?php $instance->modal_class();?>.hide();
             }, loading_message);
             return false;

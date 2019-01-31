@@ -36,4 +36,16 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
         margin: 8px;
         font-size: 1.1em;
     }
+
+    #<?php $instance->id(); ?>-modal-message .off-exclude-word {
+        display: none;
+        background: #ea6666;
+        border-color: #ff2929;
+        box-shadow: 0 1px 0 #ff2929;
+        text-shadow: 0 -1px 1px #ff2929, 1px 0 1px #ff2929, 0 1px 1px #ff2929, -1px 0 1px #ff2929;
+    }
+
+    #<?php $instance->id(); ?>-modal-message .off-exclude-word:hover {
+        background: #ff7777;
+    }
 </style>

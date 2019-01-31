@@ -121,5 +121,19 @@ return [
 		],
 	],
 
+	'exclude_word' => [
+		'columns' => [
+			'word' => [
+				'type' => 'VARCHAR(24)',
+				'null' => false,
+			],
+		],
+		'index'   => [
+			'unique' => [
+				'word' => [ 'word' ],
+			],
+		],
+	],
+
 ];
 
