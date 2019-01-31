@@ -18,7 +18,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 <table class="form-table">
     <tr>
         <th>
-            <label for="exclude-category"><?php $instance->h( 'Exclude categories', true ); ?></label>
+			<?php $instance->h( 'Exclude categories', true ); ?>
         </th>
         <td>
 			<?php foreach ( $category_data as $slug => $data ): ?>
@@ -31,6 +31,43 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					] ); ?>
                 </div>
 			<?php endforeach; ?>
+        </td>
+    </tr>
+    <tr>
+        <th>
+			<?php $instance->h( 'Excluded words', true ); ?>
+        </th>
+        <td id="exclude-word-wrap">
+            <div id="excluded-words"></div>
+            <div id="exclude-word-buttons-template">
+                <span class="exclude-word-buttons-wrap">
+					<?php $instance->form( 'input/button', $args, [
+						'value'      => '',
+						'class'      => 'on-exclude-word word-exclude-button button-primary left',
+					] ); ?>
+					<?php $instance->form( 'input/button', $args, [
+						'value'      => '',
+						'class'      => 'off-exclude-word word-exclude-button button-primary left',
+					] ); ?>
+                </span>
+            </div>
+            <div id="exclude-buttons">
+				<?php $instance->form( 'input/button', $args, [
+					'value' => 'Prev',
+					'class' => 'button-primary left',
+					'id'    => 'excluded-words-prev',
+				] ); ?>
+				<?php $instance->form( 'input/button', $args, [
+					'value' => 'Next',
+					'class' => 'button-primary left',
+					'id'    => 'excluded-words-next',
+				] ); ?>
+				<?php $instance->form( 'input/button', $args, [
+					'value' => 'Reload',
+					'class' => 'button-primary left',
+					'id'    => 'excluded-words-reload',
+				] ); ?>
+            </div>
         </td>
     </tr>
 </table>

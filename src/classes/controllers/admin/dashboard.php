@@ -36,6 +36,9 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 		return 'Dashboard';
 	}
 
+	/**
+	 * post
+	 */
 	protected function post_action() {
 		$exclude_categories = $this->app->input->post( 'exclude_categories' );
 		! is_array( $exclude_categories ) and $exclude_categories = [];
@@ -45,6 +48,15 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'auto_insert_related_post', 0 );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'exclude_categories' );
 		$this->app->add_message( 'Settings updated.', 'setting' );
+	}
+
+	/**
+	 * common
+	 */
+	protected function common_action() {
+		$this->app->api->add_use_api_name( 'word_get' );
+		$this->app->api->add_use_api_name( 'word_on' );
+		$this->app->api->add_use_api_name( 'word_off' );
 	}
 
 	/**

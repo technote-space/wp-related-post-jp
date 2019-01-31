@@ -584,8 +584,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 	/**
 	 * unlock
+	 *
+	 * @param null|int $interval
 	 */
-	private function unlock_process() {
+	private function unlock_process( $interval = null ) {
+		$this->lock_interval_process( $interval );
 		delete_site_transient( $this->get_executing_transient_key() );
 		delete_site_transient( $this->get_executing_process_transient_key() );
 		delete_site_transient( $this->get_transient_key() );
@@ -593,9 +596,12 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 	/**
 	 * interval lock
+	 *
+	 * @param null|int $interval
 	 */
-	private function lock_interval_process() {
-		set_site_transient( $this->get_interval_transient_key(), time() + $this->apply_filters( 'index_interval' ), $this->apply_filters( 'index_interval' ) );
+	private function lock_interval_process( $interval = null ) {
+		! isset( $interval ) and $interval = $this->apply_filters( 'index_interval' );
+		set_site_transient( $this->get_interval_transient_key(), time() + $interval, $interval );
 	}
 
 	/**
@@ -667,6 +673,21 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		set_time_limit( 0 );
 		$uuid = $this->lock_process();
 
+		if ( $this->app->get_option( 'db_truncate_required' ) ) {
+			$this->app->option->delete( 'db_truncate_required' );
+			$this->app->post->delete_all( 'indexed' );
+			$this->app->post->delete_all( 'setup_ranking' );
+			$this->app->db->truncate( 'post_document' );
+			$this->app->db->truncate( 'ranking' );
+			$this->app->db->truncate( 'rel_document_word' );
+			$this->app->db->truncate( 'word' );
+			delete_site_transient( $this->get_total_posts_count_transient_key() );
+			delete_site_transient( $this->get_update_posts_count_transient_key() );
+			$this->unlock_process( 1 );
+
+			return;
+		}
+
 		$uuid = $this->index_process( $uuid );
 
 		if ( $uuid != $this->get_executing_uuid() ) {
@@ -690,9 +711,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			}
 		}
 
-		$this->lock_interval_process();
 		$this->unlock_process();
-
 		$this->app->log( 'finished index process' );
 	}
 
@@ -932,6 +951,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return int
 	 */
 	public function get_update_posts_count() {
+		if ( $this->app->get_option( 'db_truncate_required' ) ) {
+			return $this->get_total_posts_count();
+		}
 		$count = get_site_transient( $this->get_update_posts_count_transient_key() );
 		if ( false !== $count ) {
 			return $count;
@@ -994,18 +1016,13 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * init posts index
 	 */
 	public function init_posts_index() {
+		$this->app->option->set( 'db_truncate_required', true );
 		$this->app->option->delete( 'posts_indexed' );
 		$this->app->option->delete( 'is_valid_posts_search' );
 		$this->app->option->delete( 'word_updated' );
-		$this->app->post->delete_all( 'indexed' );
-		$this->app->post->delete_all( 'setup_ranking' );
-		$this->app->db->truncate( 'post_document' );
-		$this->app->db->truncate( 'ranking' );
-		$this->app->db->truncate( 'rel_document_word' );
-		$this->app->db->truncate( 'word' );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
-		$this->unlock_process();
+		$this->unlock_process( 30 );
 	}
 
 	/**
@@ -1042,6 +1059,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$this->clear_event();
 		$this->unlock_process();
 		$this->unlock_interval_process();
+		$this->app->option->delete( 'db_truncate_required' );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
 	}
@@ -1056,7 +1074,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return;
 		}
 
-		$this->app->api->add_use_api_name( 'wrpj_index_result' );
+		$this->app->api->add_use_api_name( 'index_result' );
+		$this->app->api->add_use_api_name( 'word_on' );
+		$this->app->api->add_use_api_name( 'word_off' );
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
@@ -1095,7 +1115,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$indexed       = $this->app->post->get( 'indexed', $post_id );
 		$setup_ranking = $this->app->post->get( 'setup_ranking', $post_id );
 		$posts         = $this->get_related_posts( $post_id );
-		$words         = $this->get_bm25()->get_important_words( $post_id );
+		$words         = array_filter( $this->get_bm25()->get_important_words( $post_id ), function ( $d ) {
+			return ! $this->get_bm25()->is_excluded( $d['word'] );
+		} );
 
 		return [
 			'message'       => $this->get_view( 'admin/index_result', [
@@ -1110,6 +1132,50 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			'indexed'       => $indexed,
 			'setup_ranking' => $setup_ranking,
 		];
+	}
+
+	/**
+	 * @param int $page
+	 * @param int $per_page
+	 *
+	 * @return array
+	 */
+	public function get_excluded_words( $page, $per_page ) {
+		$offset   = $per_page * ( $page - 1 );
+		$rows     = $this->app->db->select( 'exclude_word', null, null, $per_page + 1, $offset, [ 'updated_at' => 'desc', 'id' => 'desc' ] );
+		$has_next = count( $rows ) > $per_page;
+
+		return [ array_slice( $rows, 0, $per_page ), $has_next ];
+	}
+
+	/**
+	 * @param string $word
+	 *
+	 * @return bool
+	 */
+	public function on_exclude_word( $word ) {
+		$this->app->db->insert_or_update( 'exclude_word', [
+			'word' => $word,
+		], [
+			'word' => $word,
+		] );
+		$this->init_posts_index();
+
+		return true;
+	}
+
+	/**
+	 * @param string $word
+	 *
+	 * @return bool
+	 */
+	public function off_exclude_word( $word ) {
+		$this->app->db->delete( 'exclude_word', [
+			'word' => $word,
+		] );
+		$this->init_posts_index();
+
+		return true;
 	}
 
 	/**

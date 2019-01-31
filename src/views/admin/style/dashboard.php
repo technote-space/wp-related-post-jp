@@ -30,4 +30,20 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
     .<?php $instance->id(); ?>-tab-content.active {
         display: block;
     }
+
+    .<?php $instance->id(); ?>-tab-content.active .on-exclude-word {
+        display: none;
+        background: #ea6666;
+        border-color: #ff2929;
+        box-shadow: 0 1px 0 #ff2929;
+        text-shadow: 0 -1px 1px #ff2929, 1px 0 1px #ff2929, 0 1px 1px #ff2929, -1px 0 1px #ff2929;
+    }
+
+    .<?php $instance->id(); ?>-tab-content.active .on-exclude-word:hover {
+        background: #ff7777;
+    }
+
+    .<?php $instance->id(); ?>-tab-content.active #exclude-word-buttons-template {
+        display: none;
+    }
 </style>

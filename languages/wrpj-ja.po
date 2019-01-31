@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wrpj\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2019-01-31 14:17+0900\n"
+"PO-Revision-Date: 2019-01-31 23:03+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -205,3 +205,21 @@ msgstr "インデックス処理を終了"
 
 msgid "Exclude categories"
 msgstr "除外カテゴリ"
+
+msgid "Excluded words"
+msgstr "除外ワード"
+
+msgid "Exclude"
+msgstr "除外"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Prev"
+msgstr "前へ"
+
+msgid "Next"
+msgstr "次へ"
+
+msgid "Reload"
+msgstr "リロード"

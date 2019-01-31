@@ -18,7 +18,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 /**
  * Class On
- * @package Related_Post\Classes\Controllers\Api\Admin
+ * @package Related_Post\Classes\Controllers\Api\Admin\Index
  */
 class On extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 
