@@ -64,14 +64,6 @@ return [
 					'label'   => "Exclude category slugs (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
 					'default' => '',
 				],
-				'exclude_threshold_days'            => [
-					'label'   => "Exclude threshold days of old post date (set empty to invalidate)\nIf change this, it's necessary to run posts index ranking again.",
-					'default' => '',
-				],
-				'exclude_threshold_days_field'      => [
-					'label'   => "Column name of post to use exclude check\nIf change this, it's necessary to run posts index ranking again.",
-					'default' => 'post_modified',
-				],
 				'max_index_target_length'           => [
 					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
 					'default' => 1000,

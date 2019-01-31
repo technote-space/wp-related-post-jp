@@ -37,9 +37,13 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 	}
 
 	protected function post_action() {
+		$exclude_categories = $this->app->input->post( 'exclude_categories' );
+		! is_array( $exclude_categories ) and $exclude_categories = [];
+		$this->app->input->set_post( $this->get_filter_prefix() . 'exclude_categories', implode( ',', $exclude_categories ) );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'ranking_number' );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'related_posts_title' );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'auto_insert_related_post', 0 );
+		$this->app->option->set_post_value( $this->get_filter_prefix() . 'exclude_categories' );
 		$this->app->add_message( 'Settings updated.', 'setting' );
 	}
 
@@ -47,11 +51,20 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 	 * @return array
 	 */
 	protected function get_view_args() {
+		/** @var \Related_Post\Classes\Models\Control $control */
+		$control = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+
 		return [
+			'tabs'                     => [
+				'basic'   => 'Basic Settings',
+				'exclude' => 'Exclude Settings',
+				'insert'  => 'Auto Insert Settings',
+			],
 			'admin_page_url'           => admin_url( 'admin.php?page=' ),
 			'ranking_number'           => $this->get_setting( 'ranking_number' ),
 			'related_posts_title'      => $this->get_setting( 'related_posts_title' ),
 			'auto_insert_related_post' => $this->get_setting( 'auto_insert_related_post', true ),
+			'category_data'            => $control->get_category_data(),
 		];
 	}
 
