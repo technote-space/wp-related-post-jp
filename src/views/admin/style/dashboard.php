@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.2
  * @author technote-space
  * @since 1.0.2.3
  * @since 1.2.8.1 Changed: trivial change
  * @since 1.3.0 Changed: trivial change
+ * @since 1.3.2 Added: 除外ワード (#22)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

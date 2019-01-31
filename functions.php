@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.2
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
+ * @since 1.3.2 Added: wp_related_posts メソッドの追加 (#40)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -39,6 +40,9 @@ add_filter( 'related_post/allowed_wp_tables', function ( $tables ) {
 	return $tables;
 } );
 
+/**
+ * @since 1.3.2
+ */
 if ( ! function_exists( 'wp_related_posts' ) ) {
 	function wp_related_posts() {
 		/** @var \Related_Post\Classes\Models\Control $control */

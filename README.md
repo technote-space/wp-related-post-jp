@@ -101,6 +101,7 @@ https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
     ローカルで動作させるため利用制限等はありませんが処理速度等はサーバに依存します。
 
 ## 関連記事を表示
+### テーマの用意している仕組みを利用する場合
 関連記事を取得するクエリを生成する前に以下のアクションを発行します。
 <pre>
 do_action( 'related_post-on_related_post' );
@@ -119,6 +120,12 @@ add_action( 'get_template_part_related-list', function () {
 </pre>
 このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 用のコードが記述されているため、
 Cocoonを使用している方は別途設定は必要ありません。
+
+### 直接出力する場合
+以下のコードを貼り付けると関連記事が表示されます。
+```
+<?php wp_related_posts()?>
+```
 
 ## インデックス対象を変更
 デフォルトでは記事のタイトルと本文がインデックスの対象になっています。タイトルに重みづけがされています。
