@@ -69,7 +69,7 @@ include 'style/index_result.php';
                 <th><?php $instance->h( 'tf', true ); ?></th>
                 <th><?php $instance->h( 'idf', true ); ?></th>
                 <th><?php $instance->h( 'tf-idf', true ); ?></th>
-                <th><?php $instance->h( 'Exclude' ); ?> </th>
+                <th><?php $instance->h( 'Exclude', true ); ?> </th>
             </tr>
 			<?php if ( count( $words ) <= 0 ): ?>
                 <tr>
