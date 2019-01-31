@@ -38,3 +38,11 @@ add_filter( 'related_post/allowed_wp_tables', function ( $tables ) {
 
 	return $tables;
 } );
+
+if ( ! function_exists( 'wp_related_posts' ) ) {
+	function wp_related_posts() {
+		/** @var \Related_Post\Classes\Models\Control $control */
+		$control = \Related_Post\Classes\Models\Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
+		echo $control->get_related_posts_content();
+	}
+}
