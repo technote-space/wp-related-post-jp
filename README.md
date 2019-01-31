@@ -1,4 +1,4 @@
-# wp-related-post-jp
+# WP Related Post JP
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)](http://php.net/)
@@ -11,6 +11,8 @@
 - 設定画面
 
 ![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-1.png)
+
+![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-7.png)
 
 - 処理中
 
@@ -25,6 +27,16 @@
   - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能です。
 
 ![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-4.png)
+
+- 関連記事の確認
+  - 投稿一覧から選択した記事の関連記事及び類似度のスコアを確認できます。
+  
+![関連記事](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-5.png)
+
+- 重要語の確認
+ - 投稿一覧から選択した記事の重要語を確認できます。
+ 
+![重要語](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-6.png)
 
 ## 要件
 - PHP 5.6 以上
@@ -89,6 +101,7 @@ https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
     ローカルで動作させるため利用制限等はありませんが処理速度等はサーバに依存します。
 
 ## 関連記事を表示
+### テーマの用意している仕組みを利用する場合
 関連記事を取得するクエリを生成する前に以下のアクションを発行します。
 <pre>
 do_action( 'related_post-on_related_post' );
@@ -107,6 +120,12 @@ add_action( 'get_template_part_related-list', function () {
 </pre>
 このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 用のコードが記述されているため、
 Cocoonを使用している方は別途設定は必要ありません。
+
+### 直接出力する場合
+以下のコードを貼り付けると関連記事が表示されます。
+```
+<?php wp_related_posts()?>
+```
 
 ## インデックス対象を変更
 デフォルトでは記事のタイトルと本文がインデックスの対象になっています。タイトルに重みづけがされています。

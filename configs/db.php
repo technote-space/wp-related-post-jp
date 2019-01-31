@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.2
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.3.0 Changed: trivial change
+ * @since 1.3.2 Added: exclude_word table (#22)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -117,6 +118,23 @@ return [
 			],
 			'unique' => [
 				'uk_post_id_rank_post_id' => [ 'post_id', 'rank_post_id' ],
+			],
+		],
+	],
+
+	/**
+	 * @since 1.3.2
+	 */
+	'exclude_word' => [
+		'columns' => [
+			'word' => [
+				'type' => 'VARCHAR(24)',
+				'null' => false,
+			],
+		],
+		'index'   => [
+			'unique' => [
+				'word' => [ 'word' ],
 			],
 		],
 	],

@@ -2,39 +2,36 @@
 /**
  * @version 1.3.2
  * @author technote-space
- * @since 1.0.1.9
- * @since 1.1.3
- * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @since 1.3.2 Changed: trivial change
+ * @since 1.3.2
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
 
-namespace Related_Post\Classes\Controllers\Api\Admin\Index;
+namespace Related_Post\Classes\Controllers\Api\Admin\Word;
 
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
 
 /**
- * Class Result
- * @package Related_Post\Classes\Controllers\Api\Admin\Index
+ * Class Get
+ * @package Related_Post\Classes\Controllers\Api\Admin\Word
  */
-class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
+class Get extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 
 	/**
 	 * @return string
 	 */
 	public function get_endpoint() {
-		return 'index_result';
+		return 'word_get';
 	}
 
 	/**
 	 * @return string
 	 */
 	public function get_call_function_name() {
-		return 'index_result';
+		return 'word_get';
 	}
 
 	/**
@@ -56,11 +53,23 @@ class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	 */
 	public function get_args_setting() {
 		return [
-			'p' => [
-				'required'          => true,
-				'description'       => 'post_id',
+			'per_page' => [
+				'required'          => false,
+				'description'       => 'per page number',
+				'default'           => 50,
 				'validate_callback' => function ( $var ) {
-					return ! empty( $var );
+					return $this->validate_int( $var );
+				},
+				'sanitize_callback' => function ( $var ) {
+					return (int) $var;
+				},
+			],
+			'page'     => [
+				'required'          => false,
+				'description'       => 'page',
+				'default'           => 1,
+				'validate_callback' => function ( $var ) {
+					return $this->validate_positive_int( $var );
 				},
 				'sanitize_callback' => function ( $var ) {
 					return (int) $var;
@@ -77,13 +86,6 @@ class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	}
 
 	/**
-	 * @return string
-	 */
-	public function admin_script() {
-		return $this->get_view( 'admin/api/index_result' );
-	}
-
-	/**
 	 * @param \WP_REST_Request|array $params
 	 *
 	 * @return int|\WP_Error|\WP_REST_Response
@@ -91,7 +93,11 @@ class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	public function callback( $params ) {
 		/** @var \Related_Post\Classes\Models\Control $control */
 		$control = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+		list( $words, $has_next ) = $control->get_excluded_words( $params['page'], $params['per_page'] );
 
-		return new \WP_REST_Response( $control->get_index_result_response( $params['p'] ) );
+		return new \WP_REST_Response( [
+			'words'    => $words,
+			'has_next' => $has_next,
+		] );
 	}
 }

@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.2
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
+ * @since 1.3.2 Changed: trivial change
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -18,7 +19,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 /**
  * Class Off
- * @package Related_Post\Classes\Controllers\Api\Admin
+ * @package Related_Post\Classes\Controllers\Api\Admin\Index
  */
 class Off extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 

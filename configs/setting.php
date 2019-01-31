@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.2
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.3.0 Changed: trivial change
+ * @since 1.3.2 Deleted: unused settings
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -63,14 +64,6 @@ return [
 				'exclude_categories'                => [
 					'label'   => "Exclude category slugs (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
 					'default' => '',
-				],
-				'exclude_threshold_days'            => [
-					'label'   => "Exclude threshold days of old post date (set empty to invalidate)\nIf change this, it's necessary to run posts index ranking again.",
-					'default' => '',
-				],
-				'exclude_threshold_days_field'      => [
-					'label'   => "Column name of post to use exclude check\nIf change this, it's necessary to run posts index ranking again.",
-					'default' => 'post_modified',
 				],
 				'max_index_target_length'           => [
 					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
