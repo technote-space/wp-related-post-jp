@@ -15,7 +15,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 /** @var \WP_Framework_Presenter\Traits\Presenter $instance */
 /** @var WP_Post $post */
-/** @var WP_Post[] $posts */
+/** @var WP_Post[]|false $posts */
 /** @var array $words */
 /** @var bool $indexed */
 /** @var bool $setup_ranking */
@@ -37,7 +37,7 @@ include 'style/index_result.php';
                 <th><?php $instance->h( 'Post Title', true ); ?></th>
                 <th><?php $instance->h( 'Score', true ); ?></th>
             </tr>
-			<?php if ( count( $posts ) <= 0 ): ?>
+			<?php if ( empty( $posts ) || count( $posts ) <= 0 ): ?>
                 <tr>
                     <td colspan="4"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>
