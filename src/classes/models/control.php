@@ -42,6 +42,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/** @var array $target_taxonomies */
 	private $target_taxonomies;
 
+	/** @var bool $is_related_post */
+	private $is_related_post = false;
+
 	/**
 	 * @return int
 	 */
@@ -271,22 +274,28 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @param int $post_id
+	 * @param int|\WP_Post|null $_post
 	 *
-	 * @return array|bool
+	 * @return \WP_Post[]|false
 	 */
-	public function get_related_posts( $post_id ) {
-		if ( ! $this->app->post->get( 'setup_ranking', $post_id ) ) {
+	public function get_related_posts( $_post = null ) {
+		if ( ! isset( $_post ) ) {
+			global $post;
+			$_post = $post;
+		} else {
+			$_post = get_post( $_post );
+		}
+		if ( empty( $_post ) || ! $_post instanceof \WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) ) {
+			return false;
+		}
+		if ( ! $this->app->post->get( 'setup_ranking', $_post->ID ) ) {
 			if ( $this->app->get_option( 'word_updated', false ) ) {
-				$post = get_post( $post_id );
-				if ( $post ) {
-					$this->get_bm25()->update_ranking( $post_id, $this->get_post_types( $post->post_type ), true );
-				}
+				$this->get_bm25()->update_ranking( $_post->ID, $this->get_post_types( $_post->post_type ), true );
 			} else {
 				return false;
 			}
 		}
-		if ( $this->app->post->get( 'setup_ranking', $post_id ) ) {
+		if ( $this->app->post->get( 'setup_ranking', $_post->ID ) ) {
 			return array_filter( array_map( function ( $d ) {
 				$post_id = $d['rank_post_id'];
 				$score   = $d['score'];
@@ -298,7 +307,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 				return $post;
 			}, $this->app->db->select( 'ranking', [
-				'post_id' => $post_id,
+				'post_id' => $_post->ID,
 			], [ 'rank_post_id', 'score' ], null, null, [ 'score' => 'DESC' ] ) ), function ( $p ) {
 				return false !== $p;
 			} );
@@ -306,10 +315,6 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 		return false;
 	}
-
-
-	/** @var bool $is_related_post */
-	private $is_related_post = false;
 
 	/**
 	 * related post
@@ -420,7 +425,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	private function related_post( $query ) {
 		global $post;
 		if ( $post ) {
-			$related_posts = $this->get_related_posts( $post->ID );
+			$related_posts = $this->get_related_posts( $post );
 			if ( ! empty( $related_posts ) ) {
 				$query->set( 'category__in', null );
 				$query->set( 'tag__in', null );
@@ -457,14 +462,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return string
 	 */
 	public function get_related_posts_content( $_post = null ) {
-		if ( ! isset( $_post ) ) {
-			global $post;
-			$_post = $post;
-		}
-		if ( ! is_object( $_post ) || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) ) {
-			return '';
-		}
-		$related_posts = $this->get_related_posts( $_post->ID );
+		$related_posts = $this->get_related_posts( $_post );
 		if ( empty( $related_posts ) ) {
 			return '';
 		}
