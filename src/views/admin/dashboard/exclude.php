@@ -42,27 +42,32 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
             <div id="exclude-word-buttons-template">
                 <span class="exclude-word-buttons-wrap">
 					<?php $instance->form( 'input/button', $args, [
-						'value'      => '',
-						'class'      => 'on-exclude-word word-exclude-button button-primary left',
+						'value' => '',
+						'name'  => '',
+						'class' => 'on-exclude-word word-exclude-button button-primary left',
 					] ); ?>
 					<?php $instance->form( 'input/button', $args, [
-						'value'      => '',
-						'class'      => 'off-exclude-word word-exclude-button button-primary left',
+						'value' => '',
+						'name'  => '',
+						'class' => 'off-exclude-word word-exclude-button button-primary left',
 					] ); ?>
                 </span>
             </div>
             <div id="exclude-buttons">
 				<?php $instance->form( 'input/button', $args, [
+					'name'  => 'prev',
 					'value' => 'Prev',
 					'class' => 'button-primary left',
 					'id'    => 'excluded-words-prev',
 				] ); ?>
 				<?php $instance->form( 'input/button', $args, [
+					'name'  => 'next',
 					'value' => 'Next',
 					'class' => 'button-primary left',
 					'id'    => 'excluded-words-next',
 				] ); ?>
 				<?php $instance->form( 'input/button', $args, [
+					'name'  => 'reload',
 					'value' => 'Reload',
 					'class' => 'button-primary left',
 					'id'    => 'excluded-words-reload',
