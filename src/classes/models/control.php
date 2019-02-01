@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.3
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
@@ -11,6 +11,7 @@
  * @since 1.3.2 Improved: performance
  * @since 1.3.2 Added: 除外カテゴリ (#12)
  * @since 1.3.2 Added: 除外ワード (#22)
+ * @since 1.3.3 Improved: refactoring
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
