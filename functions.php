@@ -50,3 +50,20 @@ if ( ! function_exists( 'wp_related_posts' ) ) {
 		echo $control->get_related_posts_content();
 	}
 }
+
+/**
+ * @since 1.3.3
+ */
+if ( ! function_exists( 'get_related_posts' ) ) {
+	/**
+	 * @param null|\WP_Post $_post
+	 *
+	 * @return WP_Post[]|false
+	 */
+	function get_related_posts( $_post = null ) {
+		/** @var \Related_Post\Classes\Models\Control $control */
+		$control = \Related_Post\Classes\Models\Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
+
+		return $control->get_related_posts( $_post->ID );
+	}
+}
