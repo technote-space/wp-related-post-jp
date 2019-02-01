@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.3
  * @author technote-space
  * @since 1.0.1.9
  * @since 1.3.0 Changed: trivial change
  * @since 1.3.2 Added: 除外ワード (#22)
+ * @since 1.3.3 Changed: trivial change
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -15,7 +16,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 /** @var \WP_Framework_Presenter\Traits\Presenter $instance */
 /** @var WP_Post $post */
-/** @var WP_Post[] $posts */
+/** @var WP_Post[]|false $posts */
 /** @var array $words */
 /** @var bool $indexed */
 /** @var bool $setup_ranking */
@@ -37,7 +38,7 @@ include 'style/index_result.php';
                 <th><?php $instance->h( 'Post Title', true ); ?></th>
                 <th><?php $instance->h( 'Score', true ); ?></th>
             </tr>
-			<?php if ( count( $posts ) <= 0 ): ?>
+			<?php if ( empty( $posts ) || count( $posts ) <= 0 ): ?>
                 <tr>
                     <td colspan="4"><?php $instance->h( 'Item not found.', true ); ?></td>
                 </tr>

@@ -5,6 +5,7 @@
  * @since 1.0.0.0
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Added: wp_related_posts メソッドの追加 (#40)
+ * @since 1.3.3 Added: 関連記事取得関数の追加 (#46)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -48,5 +49,22 @@ if ( ! function_exists( 'wp_related_posts' ) ) {
 		/** @var \Related_Post\Classes\Models\Control $control */
 		$control = \Related_Post\Classes\Models\Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
 		echo $control->get_related_posts_content();
+	}
+}
+
+/**
+ * @since 1.3.3
+ */
+if ( ! function_exists( 'get_related_posts' ) ) {
+	/**
+	 * @param null|\WP_Post $_post
+	 *
+	 * @return WP_Post[]|false
+	 */
+	function get_related_posts( $_post = null ) {
+		/** @var \Related_Post\Classes\Models\Control $control */
+		$control = \Related_Post\Classes\Models\Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
+
+		return $control->get_related_posts( $_post->ID );
 	}
 }

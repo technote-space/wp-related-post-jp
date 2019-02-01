@@ -34,7 +34,7 @@
 ![関連記事](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-5.png)
 
 - 重要語の確認
- - 投稿一覧から選択した記事の重要語を確認できます。
+  - 投稿一覧から選択した記事の重要語を確認できます。
  
 ![重要語](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-6.png)
 
