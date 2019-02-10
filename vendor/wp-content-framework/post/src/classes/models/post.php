@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Post Classes Models Post
  *
- * @version 0.0.1
+ * @version 0.0.5
  * @author technote-space
  * @copyright technote-space All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -205,71 +205,6 @@ SQL;
 		$results = $wpdb->get_results( $wpdb->prepare( $query, $this->get_meta_key( $key ) ) );
 
 		return $this->apply_filters( 'get_meta_post_ids', $this->app->utility->array_pluck( $results, 'post_id' ), $key );
-	}
-
-	/**
-	 * @param array|string $tags
-	 *
-	 * @return bool
-	 */
-	public function has_shortcode( $tags ) {
-		if ( empty( $tags ) ) {
-			return false;
-		}
-
-		$tagnames = $this->get_tagnames();
-		if ( empty( $tagnames ) ) {
-			return false;
-		}
-		! is_array( $tags ) and $tags = [ $tags ];
-
-		return ! empty( array_intersect( $tags, $tagnames ) );
-	}
-
-	/**
-	 * @return array|false
-	 */
-	private function get_tagnames() {
-		if ( ! is_singular() ) {
-			return false;
-		}
-
-		global $shortcode_tags;
-		if ( empty( $shortcode_tags ) || ! is_array( $shortcode_tags ) ) {
-			return false;
-		}
-
-		$post    = get_post();
-		$content = $post->post_content;
-		if ( false === strpos( $content, '[' ) ) {
-			return false;
-		}
-
-		// Find all registered tag names in $content.
-		preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
-
-		return array_intersect( array_keys( $shortcode_tags ), $matches[1] );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function is_valid_tinymce_color_picker() {
-		global $wp_version;
-
-		return version_compare( $wp_version, '4.0', '>=' );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function is_block_editor() {
-		if ( ! is_admin() ) {
-			return false;
-		}
-		$current_screen = get_current_screen();
-
-		return ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) || ( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() );
 	}
 
 	/**
