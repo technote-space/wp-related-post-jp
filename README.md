@@ -150,3 +150,10 @@ add_filter( 'related_post-extractor_result', function ($d, $post) {
 	return $post->title . ' ' . get_post_meta($post->ID, 'custom_field_key', true);
 } );
 </pre>
+
+## Author
+[GitHub (technote-space)](https://github.com/technote-space)  
+[homepage](https://technote.space)
+
+## プラグイン作成用フレームワーク
+[WP Content Framework](https://github.com/wp-content-framework/core)
