@@ -1024,7 +1024,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$this->app->option->delete( 'word_updated' );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
-		$this->unlock_process( 30 );
+		$this->unlock_process( 60 );
 	}
 
 	/**

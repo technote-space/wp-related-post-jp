@@ -14,8 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-@require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if ( defined( 'WP_RELATED_POST_JP' ) ) {
+	return;
+}
 
 define( 'WP_RELATED_POST_JP', 'Related_Post' );
+
+@require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 WP_Framework::get_instance( WP_RELATED_POST_JP, __FILE__ );
