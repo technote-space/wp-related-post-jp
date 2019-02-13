@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.6
  * @author technote-space
  * @since 1.0.2.3
  * @since 1.2.8.1 Changed: trivial change
  * @since 1.3.0 Changed: trivial change
  * @since 1.3.2 Added: 除外ワード (#22)
+ * @since 1.3.6 Changed: デザイン調整 (#52)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -46,5 +47,9 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
     .<?php $instance->id(); ?>-tab-content.active #exclude-word-buttons-template {
         display: none;
+    }
+
+    .<?php $instance->id(); ?>-tab-content.active #exclude-buttons {
+        margin-top: 10px;
     }
 </style>

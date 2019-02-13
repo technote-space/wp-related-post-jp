@@ -1,8 +1,9 @@
 <?php
 /**
- * @version 1.3.4
+ * @version 1.3.6
  * @author technote-space
  * @since 1.3.2
+ * @since 1.3.6 Changed: デザイン調整 (#52)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -44,12 +45,12 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					<?php $instance->form( 'input/button', $args, [
 						'value' => '',
 						'name'  => '',
-						'class' => 'on-exclude-word word-exclude-button button-primary left',
+						'class' => 'on-exclude-word word-exclude-button button-primary',
 					] ); ?>
 					<?php $instance->form( 'input/button', $args, [
 						'value' => '',
 						'name'  => '',
-						'class' => 'off-exclude-word word-exclude-button button-primary left',
+						'class' => 'off-exclude-word word-exclude-button button-primary',
 					] ); ?>
                 </span>
             </div>
@@ -57,19 +58,19 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 				<?php $instance->form( 'input/button', $args, [
 					'name'  => 'prev',
 					'value' => 'Prev',
-					'class' => 'button-primary left',
+					'class' => 'button-primary',
 					'id'    => 'excluded-words-prev',
 				] ); ?>
 				<?php $instance->form( 'input/button', $args, [
 					'name'  => 'next',
 					'value' => 'Next',
-					'class' => 'button-primary left',
+					'class' => 'button-primary',
 					'id'    => 'excluded-words-next',
 				] ); ?>
 				<?php $instance->form( 'input/button', $args, [
 					'name'  => 'reload',
 					'value' => 'Reload',
-					'class' => 'button-primary left',
+					'class' => 'button-primary word-exclude-button',
 					'id'    => 'excluded-words-reload',
 				] ); ?>
             </div>
