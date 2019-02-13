@@ -1,8 +1,9 @@
 <?php
 /**
- * @version 1.3.4
+ * @version 1.3.6
  * @author technote-space
  * @since 1.3.2
+ * @since 1.3.6 Changed: デザイン調整 (#52)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
