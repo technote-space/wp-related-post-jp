@@ -47,4 +47,8 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
     .<?php $instance->id(); ?>-tab-content.active #exclude-word-buttons-template {
         display: none;
     }
+
+    .<?php $instance->id(); ?>-tab-content.active #exclude-buttons {
+        margin-top: 10px;
+    }
 </style>

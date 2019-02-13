@@ -40,7 +40,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 		<?php $instance->form( 'input/submit', $args, [
 			'name'  => 'update',
 			'value' => 'Update',
-			'class' => 'button-primary left',
+			'class' => 'button-primary large',
 		] ); ?>
     </div>
 
