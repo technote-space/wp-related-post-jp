@@ -60,7 +60,6 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
                     $('#exclude-word-buttons-template .on-exclude-word').val(word.word).attr('data-word', word.word);
                     $('#exclude-word-buttons-template .off-exclude-word').val(word.word).attr('data-word', word.word);
                     const buttons = $('#exclude-word-buttons-template').html();
-                    console.log(buttons);
                     $('#excluded-words').append(buttons);
                 });
                 length = json.words.length;

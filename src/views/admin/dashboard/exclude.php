@@ -44,12 +44,12 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					<?php $instance->form( 'input/button', $args, [
 						'value' => '',
 						'name'  => '',
-						'class' => 'on-exclude-word word-exclude-button button-primary left',
+						'class' => 'on-exclude-word word-exclude-button button-primary',
 					] ); ?>
 					<?php $instance->form( 'input/button', $args, [
 						'value' => '',
 						'name'  => '',
-						'class' => 'off-exclude-word word-exclude-button button-primary left',
+						'class' => 'off-exclude-word word-exclude-button button-primary',
 					] ); ?>
                 </span>
             </div>
@@ -57,19 +57,19 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 				<?php $instance->form( 'input/button', $args, [
 					'name'  => 'prev',
 					'value' => 'Prev',
-					'class' => 'button-primary left',
+					'class' => 'button-primary',
 					'id'    => 'excluded-words-prev',
 				] ); ?>
 				<?php $instance->form( 'input/button', $args, [
 					'name'  => 'next',
 					'value' => 'Next',
-					'class' => 'button-primary left',
+					'class' => 'button-primary',
 					'id'    => 'excluded-words-next',
 				] ); ?>
 				<?php $instance->form( 'input/button', $args, [
 					'name'  => 'reload',
 					'value' => 'Reload',
-					'class' => 'button-primary left',
+					'class' => 'button-primary word-exclude-button',
 					'id'    => 'excluded-words-reload',
 				] ); ?>
             </div>

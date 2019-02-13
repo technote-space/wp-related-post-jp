@@ -18,12 +18,12 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 <div id="<?php $instance->id(); ?>-switch-buttons">
 	<?php $instance->form( 'input/button', $args, [
-		'class' => 'index_on button-primary left',
+		'class' => 'index_on button-primary',
 		'name'  => 'index_on',
 		'value' => 'On index posts',
 	] ); ?>
 	<?php $instance->form( 'input/button', $args, [
-		'class' => 'index_off button-primary left',
+		'class' => 'index_off button-primary',
 		'name'  => 'index_off',
 		'value' => 'Off index posts',
 	] ); ?>
@@ -38,7 +38,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 <div id="<?php $instance->id(); ?>-finished-wrap">
     <div class="message"><?php $instance->h( 'Posts index has successfully completed.', true ); ?></div>
 	<?php $instance->form( 'input/button', $args, [
-		'class' => 'index_clear button-primary left',
+		'class' => 'index_clear button-primary',
 		'name'  => 'index_clear',
 		'value' => 'Clear index data',
 	] ); ?>
