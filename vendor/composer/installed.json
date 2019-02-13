@@ -574,17 +574,17 @@
     },
     {
         "name": "wp-content-framework/upgrade",
-        "version": "v0.0.7",
-        "version_normalized": "0.0.7.0",
+        "version": "v0.0.8",
+        "version_normalized": "0.0.8.0",
         "source": {
             "type": "git",
             "url": "https://github.com/wp-content-framework/upgrade.git",
-            "reference": "2e739ac3ef178eef9907a4a9fed7bda6df1dd220"
+            "reference": "6088532b1787a779eb2aed73388c11e46f07511d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/wp-content-framework/upgrade/zipball/2e739ac3ef178eef9907a4a9fed7bda6df1dd220",
-            "reference": "2e739ac3ef178eef9907a4a9fed7bda6df1dd220",
+            "url": "https://api.github.com/repos/wp-content-framework/upgrade/zipball/6088532b1787a779eb2aed73388c11e46f07511d",
+            "reference": "6088532b1787a779eb2aed73388c11e46f07511d",
             "shasum": ""
         },
         "require": {
@@ -592,7 +592,7 @@
             "wp-content-framework/presenter": "~0.0.1",
             "yahnis-elsts/plugin-update-checker": "^4.4"
         },
-        "time": "2019-02-12T17:52:08+00:00",
+        "time": "2019-02-13T18:15:59+00:00",
         "type": "library",
         "installation-source": "dist",
         "notification-url": "https://packagist.org/downloads/",
