@@ -17,22 +17,22 @@ return [
 
 	'api' => [
 		'${prefix}app_initialized' => [
-			'setup_settings' => [],
+			'setup_settings',
 		],
 		'rest_api_init'            => [
-			'register_rest_api' => [],
+			'register_rest_api',
 		],
 		'admin_init'               => [
-			'register_ajax_api' => [],
+			'register_ajax_api',
 		],
 		'wp_footer'                => [
-			'register_script' => [],
+			'register_script',
 		],
 		'admin_footer'             => [
-			'register_script' => [],
+			'register_script',
 		],
 		'rest_pre_dispatch'        => [
-			'rest_pre_dispatch' => [ 999 ],
+			'rest_pre_dispatch' => 999,
 		],
 	],
 
