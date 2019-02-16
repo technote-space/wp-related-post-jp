@@ -2,7 +2,7 @@
 /**
  * WP_Framework Package Log
  *
- * @version 0.0.7
+ * @version 0.0.10
  * @author technote-space
  * @copyright technote-space All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -26,6 +26,20 @@ class Package_Log extends Package_Base {
 	 */
 	public function get_priority() {
 		return 10;
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function is_valid_view() {
+		return true;
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function is_valid_admin() {
+		return true;
 	}
 
 	/**
