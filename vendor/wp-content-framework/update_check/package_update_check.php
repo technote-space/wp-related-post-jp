@@ -1,8 +1,8 @@
 <?php
 /**
- * WP_Framework Package Api
+ * WP_Framework Package Update_Check
  *
- * @version 0.0.8
+ * @version 0.0.1
  * @author technote-space
  * @copyright technote-space All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -16,30 +16,16 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
 }
 
 /**
- * Class Package_Api
+ * Class Package_Update_Check
  * @package WP_Framework
  */
-class Package_Api extends Package_Base {
+class Package_Update_Check extends Package_Base {
 
 	/**
 	 * @return int
 	 */
 	public function get_priority() {
-		return 10;
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected function is_valid_view() {
-		return true;
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected function is_valid_api() {
-		return true;
+		return 20;
 	}
 
 	/**
@@ -51,7 +37,6 @@ class Package_Api extends Package_Base {
 			'filter',
 			'map',
 			'setting',
-			'slug',
 		];
 	}
 }
