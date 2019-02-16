@@ -2,7 +2,7 @@
 /**
  * WP_Framework Package Test
  *
- * @version 0.0.5
+ * @version 0.0.8
  * @author technote-space
  * @copyright technote-space All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -39,6 +39,13 @@ class Package_Test extends Package_Base {
 	 * @return bool
 	 */
 	protected function is_valid_translate() {
+		return true;
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function is_valid_admin() {
 		return true;
 	}
 

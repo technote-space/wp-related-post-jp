@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.5
+ * @version 1.3.7
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
@@ -27,9 +27,9 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Control
  * @package Related_Post\Classes\Models
  */
-class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook, \WP_Framework_Presenter\Interfaces\Presenter, \WP_Framework_Common\Interfaces\Uninstall, \WP_Framework_Upgrade\Interfaces\Upgrade {
+class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook, \WP_Framework_Presenter\Interfaces\Presenter, \WP_Framework_Common\Interfaces\Uninstall {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Presenter\Traits\Presenter, \WP_Framework_Common\Traits\Uninstall, \WP_Framework_Upgrade\Traits\Upgrade, \WP_Framework_Common\Traits\Package;
+	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Presenter\Traits\Presenter, \WP_Framework_Common\Traits\Uninstall, \WP_Framework_Common\Traits\Package;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -1178,20 +1178,5 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$this->init_posts_index();
 
 		return true;
-	}
-
-	/**
-	 * @since 1.2.6
-	 * @return array
-	 */
-	public function get_upgrade_methods() {
-		return [
-			[
-				'version'  => '1.2.6',
-				'callback' => function () {
-					$this->init_posts_index();
-				},
-			],
-		];
 	}
 }
