@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.5
+ * @version 1.3.7
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.1.3
