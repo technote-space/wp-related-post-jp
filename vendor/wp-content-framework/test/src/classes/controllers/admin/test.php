@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Test Classes Controller Test
  *
- * @version 0.0.8
+ * @version 0.0.9
  * @author technote-space
  * @copyright technote-space All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -62,7 +62,13 @@ class Test extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function do_test() {
 		foreach ( $this->app->test->do_tests() as list( $success, $result ) ) {
-			$this->app->add_message( $result, 'test', ! $success, false );
+			$this->app->add_message( $result, 'test', ! $success, false, [
+				'table' => [ 'class' => true ],
+				'tr'    => [],
+				'td'    => [],
+				'ul'    => [],
+				'li'    => [],
+			] );
 		}
 	}
 }
