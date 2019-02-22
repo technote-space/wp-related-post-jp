@@ -3,7 +3,7 @@ Contributors: technote0space
 Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Tested up to: 5.0.3
-Stable tag: 1.3.7
+Stable tag: 1.3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,9 +31,14 @@ This plugin needs PHP5.6 or higher.
 
 == Upgrade Notice ==
 
+= 1.3.8 =
+* README に書いてある filter の仕様 は 1/30 の v1.3.0 以降のバージョンから変更されました。
+* related_post『-』... ⇒ related_post『/』... のように スラッシュ区切りになります。
+* また v1.3.8 からは simplicity2 に対応しているので simplicity2利用者も functions.php への追加は基本的に不要になります。
+
 == Changelog ==
 
-= 1.3.7 =
+= 1.3.8 =
 
 * First release
 

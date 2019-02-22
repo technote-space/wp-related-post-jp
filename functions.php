@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.8
  * @author technote-space
  * @since 1.0.0.0
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Added: wp_related_posts メソッドの追加 (#40)
  * @since 1.3.3 Added: 関連記事取得関数の追加 (#46)
+ * @since 1.3.8 Added: simplicity2用の設定も追加 (#59)
  * @copyright technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -31,6 +32,9 @@ if ( strpos( wp_get_theme()->get_template(), 'cocoon' ) !== false ) {
 	} );
 }
 
+/**
+ * @since 1.3.8
+ */
 // simplicity2用
 if ( strpos( wp_get_theme()->get_template(), 'simplicity2' ) !== false ) {
 	add_action( 'get_template_part_related-entries', function () {
