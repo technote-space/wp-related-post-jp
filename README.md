@@ -104,7 +104,7 @@ https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
 ### テーマの用意している仕組みを利用する場合
 関連記事を取得するクエリを生成する前に以下のアクションを発行します。
 <pre>
-do_action( 'related_post-on_related_post' );
+do_action( 'related_post/on_related_post' );
 </pre>
 このアクションが発行された後の一回のみ、WP_Queryはこのプラグインで算出された関連記事を返します。
 
@@ -115,7 +115,7 @@ get_template_part('related-list');
 functions.php 等に記述するコードは以下のようになります。
 <pre>
 add_action( 'get_template_part_related-list', function () {
-	do_action( 'related_post-on_related_post' );
+	do_action( 'related_post/on_related_post' );
 } );
 </pre>
 このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 用のコードが記述されているため、
@@ -134,7 +134,7 @@ str_repeat( $post->post_title . ' ', 3 ) . $post->post_content;
 </pre>
 あらかじめ「本文のみ」「タイトルのみ」「タイトルと本文とタグ」を対象とする設定が別途用意されており、以下のようなプログラムを functions.php などに記述することで変更することが可能です。
 <pre>
-add_filter( 'related_post-extractor', function () {
+add_filter( 'related_post/extractor', function () {
 	return 'content';            // 本文のみ
 //	return 'title';              // タイトルのみ
 //	return 'title_content_tags'; // タイトルと本文とタグ
@@ -143,10 +143,10 @@ add_filter( 'related_post-extractor', function () {
 
 さらに以下のようなプログラムを記述することで、カスタムフィールドなどを含め自由に対象を設定することが可能です。
 <pre>
-add_filter( 'related_post-extractor', function () {
+add_filter( 'related_post/extractor', function () {
 	return false;
 } );
-add_filter( 'related_post-extractor_result', function ($d, $post) {
+add_filter( 'related_post/extractor_result', function ($d, $post) {
 	return $post->title . ' ' . get_post_meta($post->ID, 'custom_field_key', true);
 } );
 </pre>
