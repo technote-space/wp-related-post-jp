@@ -79,6 +79,7 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 			'related_posts_title'      => $this->get_setting( 'related_posts_title' ),
 			'auto_insert_related_post' => $this->get_setting( 'auto_insert_related_post', true ),
 			'category_data'            => $control->get_category_data(),
+			'no_reset_button'          => true,
 		];
 	}
 
