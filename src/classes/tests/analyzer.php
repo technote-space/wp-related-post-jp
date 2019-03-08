@@ -53,6 +53,7 @@ class Analyzer extends \WP_Framework_Test\Classes\Tests\Base {
 			[ 'test <!-- comment コメント　こめんと　　　 !"#$%&\'()=~|\^-[]:@`*}{\/_?:;.,><+ -->', [ 'test' => 1 ] ],
 			[ file_get_contents( __DIR__ . DS . 'test2.txt' ), [ 'こめんと' => 1, '除去' => 3, 'てすと' => 4, 'test' => 3 ] ],
 			[ '&nbsp;テスト&amp;テスト&apos;テスト', [ 'てすと' => 3 ] ],
+			[ '<p>テスト</p><p><a href="https://example.com/test/?abc=123#xyz">https://example.com/test/?abc=123#xyz</a></p>', [ 'てすと' => 1 ] ],
 		];
 	}
 }
