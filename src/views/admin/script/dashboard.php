@@ -1,13 +1,13 @@
 <?php
 /**
  * @version 1.3.6
- * @author technote-space
+ * @author Technote
  * @since 1.0.2.3
  * @since 1.3.0 Changed: trivial change
  * @since 1.3.2 Improved: refactoring
  * @since 1.3.2 Added: 除外ワード (#22)
  * @since 1.3.6 Changed: trivial change
- * @copyright technote All Rights Reserved
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */

@@ -1,13 +1,13 @@
 <?php
 /**
  * @version 1.3.2
- * @author technote-space
+ * @author Technote
  * @since 1.0.2.1
  * @since 1.1.3
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Added: 除外カテゴリ (#12)
  * @since 1.3.2 Added: 除外ワード (#22)
- * @copyright technote All Rights Reserved
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
