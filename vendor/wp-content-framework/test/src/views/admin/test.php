@@ -2,9 +2,9 @@
 /**
  * WP_Framework_Test Views Admin Test
  *
- * @version 0.0.8
- * @author technote-space
- * @copyright technote-space All Rights Reserved
+ * @version 0.0.10
+ * @author Technote
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -19,8 +19,7 @@ $instance->add_style_view( 'admin/style/table' );
 ?>
 
 <?php if ( count( $tests ) > 0 ): ?>
-    <h3><?php $instance->h( 'Test count: ', true );
-		echo count( $tests ); ?></h3>
+    <h3><?php $instance->h( 'Test count: ', true );$instance->n( $tests ); ?></h3>
     <table class="widefat striped">
 		<?php foreach ( $tests as $test ): ?>
             <tr>
