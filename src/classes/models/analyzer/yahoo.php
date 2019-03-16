@@ -123,7 +123,7 @@ class Yahoo extends Api {
 			return isset( $d['surface'], $d['count'] );
 		} );
 
-		return $this->app->utility->array_combine( $data, 'surface', 'count' );
+		return $this->app->array->combine( $data, 'surface', 'count' );
 	}
 
 	/**

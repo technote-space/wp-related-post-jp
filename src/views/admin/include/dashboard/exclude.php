@@ -26,7 +26,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
                 <div>
 					<?php $instance->form( 'input/checkbox', $args, [
 						'name'    => 'exclude_categories[]',
-						'label'   => $data['name'] . ' (' . implode( ', ', $instance->app->utility->array_pluck( $data['post_types'], 'label' ) ) . ')',
+						'label'      => $data['name'] . ' (' . implode( ', ', $instance->app->array->pluck( $data['post_types'], 'label' ) ) . ')',
 						'value'   => $slug,
 						'checked' => $data['excluded'],
 					] ); ?>
