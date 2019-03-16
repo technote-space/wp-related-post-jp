@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.2
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.3.0 Changed: trivial change
  * @since 1.3.2 Deleted: unused settings
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 #51
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -43,14 +44,29 @@ return [
 			10 => [
 				'ranking_number'                    => [
 					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'int',
 					'default' => 10,
 					'min'     => 1,
 					'max'     => 25,
 				],
+				'ranking_threshold'                 => [
+					'label'   => "Threshold of ranking posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
+				'search_threshold'                  => [
+					'label'   => 'Threshold of search posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.',
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
 				'auto_insert_related_post'          => [
 					'label'   => "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)",
 					'type'    => 'bool',
-					'default' => true,
+					'default' => false,
 				],
 				'related_posts_title'               => [
 					'label'     => "Related posts title",
@@ -67,6 +83,7 @@ return [
 				],
 				'max_index_target_length'           => [
 					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
+					'type'    => 'int',
 					'default' => 1000,
 					'min'     => 0,
 				],

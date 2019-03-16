@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.0
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 trivial change
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -107,7 +108,7 @@ class Goo extends Api {
 	 * @return array
 	 */
 	protected function parse_data( $data ) {
-		$data = $this->app->utility->flatten( $data );
+		$data = $this->app->array->flatten( $data );
 		$ret  = [];
 		foreach ( $data as $word ) {
 			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;

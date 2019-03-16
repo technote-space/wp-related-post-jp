@@ -1,11 +1,11 @@
 <?php
 /**
  * @version 1.3.2
- * @author technote-space
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.3.0 Changed: trivial change
  * @since 1.3.2 Added: exclude_word table (#22)
- * @copyright technote All Rights Reserved
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -94,7 +94,7 @@ return [
 		],
 	],
 
-	'ranking' => [
+	'ranking'      => [
 		'columns' => [
 			'post_id'      => [
 				'type'     => 'BIGINT(20)',

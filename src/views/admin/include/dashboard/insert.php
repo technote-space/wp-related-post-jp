@@ -1,9 +1,10 @@
 <?php
 /**
- * @version 1.3.2
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.3.2
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 wp-content-framework/admin#20
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -25,4 +26,3 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
         </td>
     </tr>
 </table>
-<!--        <h3>ランダム表示設定</h3>-->

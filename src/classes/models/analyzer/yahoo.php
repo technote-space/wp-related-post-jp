@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.0
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 trivial change
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -123,7 +124,7 @@ class Yahoo extends Api {
 			return isset( $d['surface'], $d['count'] );
 		} );
 
-		return $this->app->utility->array_combine( $data, 'surface', 'count' );
+		return $this->app->array->combine( $data, 'surface', 'count' );
 	}
 
 	/**

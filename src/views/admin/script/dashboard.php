@@ -1,13 +1,14 @@
 <?php
 /**
- * @version 1.3.6
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.2.3
  * @since 1.3.0 Changed: trivial change
  * @since 1.3.2 Improved: refactoring
  * @since 1.3.2 Added: 除外ワード (#22)
  * @since 1.3.6 Changed: trivial change
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 #67
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -100,10 +101,10 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
         const check_changed = function () {
             let result = false;
             $('.check-value-changed').each(function () {
-                result |= $(this).val() + '' != $(this).data('value') + '';
+                result |= $(this).val() + '' !== $(this).data('value') + '';
             });
             $('.check-checked-changed').each(function () {
-                result = $(this).prop('checked') != $(this).data('value');
+                result |= $(this).prop('checked') !== ($(this).data('value') !== '');
             });
             return result;
         };

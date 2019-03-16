@@ -1,13 +1,14 @@
 <?php
 /**
- * @version 1.3.0
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.2.0 Updated: test
  * @since 1.2.6 Added: remove comment test
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 #64
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -53,6 +54,7 @@ class Analyzer extends \WP_Framework_Test\Classes\Tests\Base {
 			[ 'test <!-- comment コメント　こめんと　　　 !"#$%&\'()=~|\^-[]:@`*}{\/_?:;.,><+ -->', [ 'test' => 1 ] ],
 			[ file_get_contents( __DIR__ . DS . 'test2.txt' ), [ 'こめんと' => 1, '除去' => 3, 'てすと' => 4, 'test' => 3 ] ],
 			[ '&nbsp;テスト&amp;テスト&apos;テスト', [ 'てすと' => 3 ] ],
+			[ '<p>テスト</p><p><a href="https://example.com/test/?abc=123#xyz">https://example.com/test/?abc=123#xyz</a></p>', [ 'てすと' => 1 ] ],
 		];
 	}
 }
