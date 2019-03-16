@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.9
  * @author Technote
  * @since 1.0.0.0
  * @since 1.2.6 Changed: master > develop (update_info_file_url)
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Changed: db version
+ * @since 1.3.9 wp-content-framework/admin#20
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

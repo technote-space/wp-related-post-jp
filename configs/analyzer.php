@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.9
  * @author Technote
  * @since 1.0.0.0
  * @since 1.2.6 Added: comment char filter
  * @since 1.3.0 Improved: 文字実体参照を削除 (#29)
+ * @since 1.3.9 #64
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

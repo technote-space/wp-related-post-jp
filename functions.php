@@ -1,12 +1,13 @@
 <?php
 /**
- * @version 1.3.8
+ * @version 1.3.9
  * @author Technote
  * @since 1.0.0.0
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Added: wp_related_posts メソッドの追加 (#40)
  * @since 1.3.3 Added: 関連記事取得関数の追加 (#46)
  * @since 1.3.8 Added: simplicity2用の設定も追加 (#59)
+ * @since 1.3.9 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
