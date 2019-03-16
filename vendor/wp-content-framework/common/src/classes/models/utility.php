@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Common Classes Models Utility
  *
- * @version 0.0.32
+ * @version 0.0.35
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -27,6 +27,21 @@ class Utility implements \WP_Framework_Core\Interfaces\Singleton {
 	 * @var float $_tick
 	 */
 	private $_tick;
+
+	/**
+	 * @var array $_active_plugins
+	 */
+	private $_active_plugins;
+
+	/**
+	 * @var string $_active_plugins_hash
+	 */
+	private $_active_plugins_hash;
+
+	/**
+	 * @var string $_framework_plugin_hash
+	 */
+	private $_framework_plugin_hash;
 
 	/**
 	 * @return bool
@@ -373,12 +388,58 @@ class Utility implements \WP_Framework_Core\Interfaces\Singleton {
 	}
 
 	/**
+	 * @param bool $combine
+	 *
+	 * @return array
+	 */
+	public function get_active_plugins( $combine = true ) {
+		if ( ! isset( $this->_active_plugins ) ) {
+			$option = get_option( 'active_plugins', [] );
+			if ( is_multisite() ) {
+				$option = array_merge( $option, array_keys( get_site_option( 'active_sitewide_plugins' ) ) );
+				$option = array_unique( $option );
+			}
+			$this->_active_plugins = $combine ? $this->app->array->combine( $option, null ) : array_values( $option );
+		}
+
+		return $this->_active_plugins;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_active_plugins_hash() {
+		! isset( $this->_active_plugins_hash ) and $this->_active_plugins_hash = sha1( json_encode( $this->get_active_plugins( false ) ) );
+
+		return $this->_active_plugins_hash;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function get_framework_plugins() {
+		return $this->app->array->map( $this->app->get_instances(), function ( $instance ) {
+			/** @var \WP_Framework $instance */
+			return $instance->plugin_name . '/' . $instance->get_plugin_version();
+		} );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_framework_plugins_hash() {
+		! isset( $this->_framework_plugin_hash ) and $this->_framework_plugin_hash = sha1( json_encode( $this->get_framework_plugins() ) );
+
+		return $this->_framework_plugin_hash;
+	}
+
+	/**
 	 * @param string $plugin
 	 *
 	 * @return bool
 	 */
 	public function is_active_plugin( $plugin ) {
-		return in_array( $plugin, (array) get_option( 'active_plugins', [] ) ) || ( is_multisite() && ( $plugins = get_site_option( 'active_sitewide_plugins' ) ) && isset( $plugins[ $plugin ] ) );
+		return in_array( $plugin, $this->get_active_plugins( false ) );
 	}
 
 	/**
