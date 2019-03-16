@@ -290,6 +290,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return \WP_Post[]|false
 	 */
 	public function get_related_posts( $_post = null ) {
+		if ( ! $this->is_valid_posts_index() ) {
+			return false;
+		}
 		if ( ! isset( $_post ) ) {
 			global $post;
 			$_post = $post;
