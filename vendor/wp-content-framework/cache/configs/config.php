@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Cache Configs Config
  *
- * @version 0.0.3
+ * @version 0.0.5
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -15,7 +15,7 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
 
 return [
 
-	// cache type (kv, option, class name)
+	// cache type (option, class name)
 	'cache_type' => 'option',
 
 ];

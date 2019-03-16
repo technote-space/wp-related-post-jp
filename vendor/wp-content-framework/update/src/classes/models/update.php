@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Update Classes Models Update
  *
- * @version 0.0.5
+ * @version 0.0.6
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -176,7 +176,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 			foreach ( (array) preg_split( '~[\r\n]+~', trim( $matches[1] ) ) as $line ) {
 				$line = preg_replace( '~\[\[([^\]]*)\]\]\(([^\)]*)\)~', '<span style="${2}">${1}</span>', $line );
 				/** @noinspection HtmlUnknownTarget */
-				$line = preg_replace( '~\[([^\]]*)\]\(([^\)]*)\)~', '<a href="${2}">${1}</a>', $line );
+				$line = preg_replace( '~\[([^\]]*)\]\(([^\)]*)\)~', '<a href="${2}" target="_blank" rel="noopener noreferrer">${1}</a>', $line );
 				$line = preg_replace( '#\A\s*\*+\s*#', '', $line );
 				$line = preg_replace( '#\*\*\s*([^*]+)\s*\*\*#', '<b>${1}</b>', $line );
 				$line = preg_replace( '#`\s*(.+)\s*`#', '<code>${1}</code>', $line );
