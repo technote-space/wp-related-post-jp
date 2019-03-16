@@ -12,7 +12,7 @@
  * @since 1.3.2 Added: 除外カテゴリ (#12)
  * @since 1.3.2 Added: 除外ワード (#22)
  * @since 1.3.3 Improved: refactoring
- * @since 1.3.9 #51, wp-content-framework/db#9, wp-content-framework/common#44
+ * @since 1.3.9 #51, #71, wp-content-framework/db#9, wp-content-framework/common#44
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
