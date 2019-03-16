@@ -1,13 +1,14 @@
 <?php
 /**
- * @version 1.3.8
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Added: wp_related_posts メソッドの追加 (#40)
  * @since 1.3.3 Added: 関連記事取得関数の追加 (#46)
  * @since 1.3.8 Added: simplicity2用の設定も追加 (#59)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 trivial change
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -26,10 +27,10 @@ if ( strpos( wp_get_theme()->get_template(), 'cocoon' ) !== false ) {
 		remove_action( 'after_setup_theme', 'code_minify_buffer_start', 99999999 );
 	} );
 
-	add_action( 'related_post/app_initialize', function ( $app ) {
-		/** @var \WP_Framework $app */
-		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
-	} );
+//	add_action( 'related_post/app_initialize', function ( $app ) {
+//		/** @var \WP_Framework $app */
+//		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
+//	} );
 }
 
 /**
@@ -41,10 +42,10 @@ if ( strpos( wp_get_theme()->get_template(), 'simplicity2' ) !== false ) {
 		do_action( 'related_post/on_related_post' );
 	} );
 
-	add_action( 'related_post/app_initialize', function ( $app ) {
-		/** @var \WP_Framework $app */
-		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
-	} );
+//	add_action( 'related_post/app_initialize', function ( $app ) {
+//		/** @var \WP_Framework $app */
+//		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
+//	} );
 }
 
 add_action( 'related_post/app_initialize', function ( $app ) {

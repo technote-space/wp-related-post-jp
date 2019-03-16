@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.3.6
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.3.2
  * @since 1.3.6 Changed: デザイン調整 (#52)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 wp-content-framework/admin#20
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -15,6 +16,8 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
 /** @var array $category_data */
+/** @var array $ranking_threshold */
+/** @var array $search_threshold */
 ?>
 <table class="form-table">
     <tr>
@@ -25,10 +28,14 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 			<?php foreach ( $category_data as $slug => $data ): ?>
                 <div>
 					<?php $instance->form( 'input/checkbox', $args, [
-						'name'    => 'exclude_categories[]',
-						'label'   => $data['name'] . ' (' . implode( ', ', $instance->app->utility->array_pluck( $data['post_types'], 'label' ) ) . ')',
-						'value'   => $slug,
-						'checked' => $data['excluded'],
+						'name'       => 'exclude_categories[]',
+						'label'      => $data['name'] . ' (' . implode( ', ', $instance->app->array->pluck( $data['post_types'], 'label' ) ) . ')',
+						'value'      => $slug,
+						'checked'    => $data['excluded'],
+						'class'      => 'check-checked-changed',
+						'attributes' => [
+							'data-value' => $data['excluded'],
+						],
 					] ); ?>
                 </div>
 			<?php endforeach; ?>
@@ -74,6 +81,22 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					'id'    => 'excluded-words-reload',
 				] ); ?>
             </div>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <label for="<?php $instance->h( $ranking_threshold['id'] ); ?>"><?php $instance->h( 'Related posts threshold (0～1)', true ); ?></label>
+        </th>
+        <td>
+			<?php $instance->form( 'input/number', $args, $ranking_threshold ); ?>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <label for="<?php $instance->h( $search_threshold['id'] ); ?>"><?php $instance->h( 'Search threshold (0～1)', true ); ?></label>
+        </th>
+        <td>
+			<?php $instance->form( 'input/number', $args, $search_threshold ); ?>
         </td>
     </tr>
 </table>

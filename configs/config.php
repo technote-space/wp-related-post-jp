@@ -1,12 +1,13 @@
 <?php
 /**
- * @version 1.3.2
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.2.6 Changed: master > develop (update_info_file_url)
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Changed: db version
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 wp-content-framework/admin#20
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -37,5 +38,14 @@ return [
 
 	// setting page slug
 	'setting_page_slug'              => 'dashboard',
+
+	// detail url
+	'detail_url'                     => 'https://technote.space/wp-related-post-jp',
+
+	// twitter
+	'twitter'                        => 'technote15',
+
+	// github repo
+	'github_repo'                    => 'technote-space/wp-related-post-jp',
 
 ];

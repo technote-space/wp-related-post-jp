@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.0
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.0.0
  * @since 1.1.3
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 trivial change
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -63,16 +64,16 @@ class Progress extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	 * @return int|\WP_Error|\WP_REST_Response
 	 */
 	public function callback( $params ) {
-		$posts_indexed        = ! empty( $this->app->get_option( 'posts_indexed' ) );
-		$is_valid_posts_index = ! empty( $this->app->get_option( 'is_valid_posts_index' ) );
+		/** @var \Related_Post\Classes\Models\Control $control */
+		$control              = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+		$posts_indexed        = ! empty( $control->cache_get( 'posts_indexed' ) );
+		$is_valid_posts_index = $control->is_valid_posts_index();
 		$total                = 0;
 		$target               = 0;
 		$processed            = 0;
 		$processed_rate       = 0;
 		$next                 = '';
 		if ( ! $posts_indexed && $is_valid_posts_index ) {
-			/** @var \Related_Post\Classes\Models\Control $control */
-			$control        = \Related_Post\Classes\Models\Control::get_instance( $this->app );
 			$total          = $control->get_total_posts_count();
 			$target         = $control->get_update_posts_count();
 			$processed      = $total - $target;

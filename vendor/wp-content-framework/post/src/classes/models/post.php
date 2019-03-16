@@ -2,9 +2,9 @@
 /**
  * WP_Framework_Post Classes Models Post
  *
- * @version 0.0.5
- * @author technote-space
- * @copyright technote-space All Rights Reserved
+ * @version 0.0.9
+ * @author Technote
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -126,18 +126,16 @@ class Post implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @param string $value
 	 */
 	public function set_all( $key, $value ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "UPDATE $wpdb->postmeta SET meta_value = %s WHERE meta_key LIKE %s", $value, $this->get_meta_key( $key ) );
-		$wpdb->query( $query );
+		$query = $this->wpdb()->prepare( "UPDATE {$this->get_wp_table('postmeta')} SET meta_value = %s WHERE meta_key LIKE %s", $value, $this->get_meta_key( $key ) );
+		$this->wpdb()->query( $query );
 	}
 
 	/**
 	 * @param string $key
 	 */
 	public function delete_all( $key ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE %s", $this->get_meta_key( $key ) );
-		$wpdb->query( $query );
+		$query = $this->wpdb()->prepare( "DELETE FROM {$this->get_wp_table('postmeta')} WHERE meta_key LIKE %s", $this->get_meta_key( $key ) );
+		$this->wpdb()->query( $query );
 	}
 
 	/**
@@ -165,15 +163,14 @@ class Post implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @return array
 	 */
 	public function find( $key, $value ) {
-		global $wpdb;
 		$query   = <<< SQL
-			SELECT * FROM {$wpdb->postmeta}
+			SELECT * FROM {$this->get_wp_table( 'postmeta' )}
 			WHERE meta_key LIKE %s
 			AND   meta_value LIKE %s
 SQL;
-		$results = $wpdb->get_results( $wpdb->prepare( $query, $this->get_meta_key( $key ), $value ) );
+		$results = $this->wpdb()->get_results( $this->wpdb()->prepare( $query, $this->get_meta_key( $key ), $value ) );
 
-		return $this->apply_filters( 'find_post_meta', $this->app->utility->array_pluck( $results, 'post_id' ), $key, $value );
+		return $this->apply_filters( 'find_post_meta', $this->app->array->pluck( $results, 'post_id' ), $key, $value );
 	}
 
 	/**
@@ -197,23 +194,21 @@ SQL;
 	 * @return array
 	 */
 	public function get_meta_post_ids( $key ) {
-		global $wpdb;
 		$query   = <<< SQL
-		SELECT post_id FROM {$wpdb->postmeta}
+		SELECT post_id FROM {$this->get_wp_table( 'postmeta' )}
 		WHERE meta_key LIKE %s
 SQL;
-		$results = $wpdb->get_results( $wpdb->prepare( $query, $this->get_meta_key( $key ) ) );
+		$results = $this->wpdb()->get_results( $this->wpdb()->prepare( $query, $this->get_meta_key( $key ) ) );
 
-		return $this->apply_filters( 'get_meta_post_ids', $this->app->utility->array_pluck( $results, 'post_id' ), $key );
+		return $this->apply_filters( 'get_meta_post_ids', $this->app->array->pluck( $results, 'post_id' ), $key );
 	}
 
 	/**
 	 * uninstall
 	 */
 	public function uninstall() {
-		global $wpdb;
-		$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE %s", $this->get_post_prefix() . '%' );
-		$wpdb->query( $query );
+		$query = $this->wpdb()->prepare( "DELETE FROM {$this->get_wp_table('postmeta')} WHERE meta_key LIKE %s", $this->get_post_prefix() . '%' );
+		$this->wpdb()->query( $query );
 	}
 
 	/**

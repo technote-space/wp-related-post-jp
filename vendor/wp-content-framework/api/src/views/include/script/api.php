@@ -1,10 +1,10 @@
 <?php
 /**
- * WP_Framework_Presenter Views Include Script Api
+ * WP_Framework_Api Views Include Script Api
  *
- * @version 0.0.1
- * @author technote-space
- * @copyright technote-space All Rights Reserved
+ * @version 0.0.11
+ * @author Technote
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -30,7 +30,7 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
             this.is_admin_ajax = <?php $instance->h( $is_admin_ajax ? 'true' : 'false' );?>;
             this.endpoint = '<?php $instance->h( $endpoint );?>';
             this.namespace = '<?php $instance->h( $namespace );?>';
-            this.functions = <?php echo json_encode( $functions );?>;
+            this.functions = <?php $instance->json( $functions );?>;
             this.xhr = {};
             this.nonce_key = '<?php $instance->h( isset( $nonce_key ) ? $nonce_key : '' );?>';
             this.nonce_value = '<?php $instance->h( isset( $nonce_value ) ? $nonce_value : '' );?>';
@@ -45,8 +45,13 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
                     if (!this.is_admin_ajax) {
                         url += this.namespace + '/' + setting.endpoint;
                     } else {
-                        args[this.nonce_key] = this.nonce_value;
-                        args.action = this.namespace + '_' + setting.endpoint;
+                        if (args instanceof FormData) {
+                            args.append(this.nonce_key, this.nonce_value);
+                            args.append('action', this.namespace + '_' + setting.endpoint);
+                        } else {
+                            args[this.nonce_key] = this.nonce_value;
+                            args.action = this.namespace + '_' + setting.endpoint;
+                        }
                     }
                     const method = setting.method.toUpperCase();
                     const config = {};
@@ -68,7 +73,11 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
                         config.method = 'POST';
                         config.data = args;
                         if (method !== 'POST') {
-                            config.data._method = method;
+                            if (args instanceof FormData) {
+                                config.data.append('_method', method);
+                            } else {
+                                config.data._method = method;
+                            }
                         }
                     }
                     config.url = url;
@@ -148,7 +157,9 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
                 const xhr = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 
                 xhr.open(config.method, config.url, true);
-                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                if (!(args instanceof FormData)) {
+                    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                }
                 if (!this.is_admin_ajax && !nonce_check) {
                     xhr.setRequestHeader('X-WP-Nonce', this.nonce);
                 }
@@ -188,7 +199,11 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
                     }
                 };
                 if (config.data) {
-                    xhr.send($this._param(config.data));
+                    if (args instanceof FormData) {
+                        xhr.send(config.data);
+                    } else {
+                        xhr.send($this._param(config.data));
+                    }
                 } else {
                     xhr.send();
                 }

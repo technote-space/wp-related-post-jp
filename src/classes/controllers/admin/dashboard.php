@@ -1,13 +1,14 @@
 <?php
 /**
- * @version 1.3.2
- * @author technote-space
+ * @version 1.3.9
+ * @author Technote
  * @since 1.0.2.1
  * @since 1.1.3
  * @since 1.3.0 Changed: ライブラリの更新 (#28)
  * @since 1.3.2 Added: 除外カテゴリ (#12)
  * @since 1.3.2 Added: 除外ワード (#22)
- * @copyright technote All Rights Reserved
+ * @since 1.3.9 #51, wp-content-framework/admin#20
+ * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
@@ -46,6 +47,8 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 		! is_array( $exclude_categories ) and $exclude_categories = [];
 		$this->app->input->set_post( $this->get_filter_prefix() . 'exclude_categories', implode( ',', $exclude_categories ) );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'ranking_number' );
+		$this->app->option->set_post_value( $this->get_filter_prefix() . 'ranking_threshold' );
+		$this->app->option->set_post_value( $this->get_filter_prefix() . 'search_threshold' );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'related_posts_title' );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'auto_insert_related_post', 0 );
 		$this->app->option->set_post_value( $this->get_filter_prefix() . 'exclude_categories' );
@@ -76,26 +79,29 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 			],
 			'admin_page_url'           => admin_url( 'admin.php?page=' ),
 			'ranking_number'           => $this->get_setting( 'ranking_number' ),
+			'ranking_threshold'        => $this->get_setting( 'ranking_threshold' ),
+			'search_threshold'         => $this->get_setting( 'search_threshold' ),
 			'related_posts_title'      => $this->get_setting( 'related_posts_title' ),
-			'auto_insert_related_post' => $this->get_setting( 'auto_insert_related_post', true ),
+			'auto_insert_related_post' => $this->get_setting( 'auto_insert_related_post' ),
 			'category_data'            => $control->get_category_data(),
+			'no_reset_button'          => true,
 		];
 	}
 
 	/**
 	 * @param string $name
-	 * @param bool $checkbox
 	 * @param null|callable $callback
 	 *
 	 * @return array
 	 */
-	private function get_setting( $name, $checkbox = false, $callback = null ) {
-		$value = $this->app->setting->get_setting( $name, true )['value'];
+	private function get_setting( $name, $callback = null ) {
+		$setting = $this->app->setting->get_setting( $name, true );
+		$value   = $setting['value'];
 		if ( is_callable( $callback ) ) {
 			$value = $callback( $value, $name );
 		}
 
-		$ret = [
+		$ret  = [
 			'id'         => $name,
 			'name'       => $this->get_filter_prefix() . $name,
 			'value'      => $value,
@@ -104,10 +110,19 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 				'data-value' => $value,
 			],
 		];
-		if ( $checkbox ) {
+		$type = $this->app->array->get( $setting, 'type' );
+		if ( 'bool' === $type ) {
 			$ret['value'] = 1;
 			$ret['class'] = 'check-checked-changed';
 			! empty( $value ) and $ret['attributes']['checked'] = 'checked';
+		} elseif ( 'float' === $type ) {
+			$ret['attributes']['step'] = '0.01';
+		}
+		if ( 'int' === $type || 'float' === $type ) {
+			$min = $this->app->array->get( $setting, 'min' );
+			$max = $this->app->array->get( $setting, 'max' );
+			isset( $min ) and $ret['attributes']['min'] = $min;
+			isset( $max ) and $ret['attributes']['max'] = $max;
 		}
 
 		return $ret;
