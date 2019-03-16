@@ -26,10 +26,10 @@ if ( strpos( wp_get_theme()->get_template(), 'cocoon' ) !== false ) {
 		remove_action( 'after_setup_theme', 'code_minify_buffer_start', 99999999 );
 	} );
 
-	add_action( 'related_post/app_initialize', function ( $app ) {
-		/** @var \WP_Framework $app */
-		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
-	} );
+//	add_action( 'related_post/app_initialize', function ( $app ) {
+//		/** @var \WP_Framework $app */
+//		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
+//	} );
 }
 
 /**
@@ -41,10 +41,10 @@ if ( strpos( wp_get_theme()->get_template(), 'simplicity2' ) !== false ) {
 		do_action( 'related_post/on_related_post' );
 	} );
 
-	add_action( 'related_post/app_initialize', function ( $app ) {
-		/** @var \WP_Framework $app */
-		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
-	} );
+//	add_action( 'related_post/app_initialize', function ( $app ) {
+//		/** @var \WP_Framework $app */
+//		$app->setting->edit_setting( 'auto_insert_related_post', 'default', false );
+//	} );
 }
 
 add_action( 'related_post/app_initialize', function ( $app ) {
