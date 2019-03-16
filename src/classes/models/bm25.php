@@ -122,12 +122,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				$max = max( $data );
 				$this->table( 'rel_document_word' )->insert(
 					$this->app->array->map( $data, function ( $count, $word_id ) use ( $document_id, $dl, $max ) {
-				return [
+						return [
 							'document_id' => $document_id,
 							'word_id'     => $word_id,
 							'count'       => $count,
 							'tf'          => $this->calc_tf( $count, $dl, $max ),
-				];
+						];
 					} )
 				);
 			}
@@ -321,7 +321,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		return $this->app->db->transaction( function () use ( $post_id, $post_types, $update_ranking_now ) {
 			if ( $update_ranking_now ) {
 				$important_words = $this->get_important_words( $post_id );
-				$ranking         = $this->get_ranking( $post_id, $important_words, $post_types );
+				$ranking         = $this->get_ranking( $post_id, $important_words, $post_types, false );
 
 				$this->table( 'ranking' )->where( 'post_id', $post_id )->delete();
 				$this->table( 'ranking' )->insert( $this->app->array->map( $ranking, function ( $item ) use ( $post_id ) {
@@ -515,12 +515,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		            ->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
 		            ->where( 'd.post_id', $post_id )
 		            ->select( [
-			'rw.word_id',
+			            'rw.word_id',
 			            $this->raw( 'rw.tf * w.idf as tfidf' ),
-			'rw.count',
-			'rw.tf',
-			'w.word',
-			'w.idf',
+			            'rw.count',
+			            'rw.tf',
+			            'w.word',
+			            'w.idf',
 		            ] )->limit( $this->control->get_important_words_count() )
 		            ->order_by_desc( $this->raw( 'tfidf' ) )->get();
 	}
@@ -563,25 +563,34 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @param int $post_id
 	 * @param array $words
 	 * @param array $post_types
+	 * @param bool $is_search
 	 * @param bool $is_count
 	 * @param int|null $count
 	 * @param int|null $page
 	 *
 	 * @return array|int
 	 */
-	public function get_ranking( $post_id, $words, $post_types, $is_count = false, $count = null, $page = null ) {
+	public function get_ranking( $post_id, $words, $post_types, $is_search, $is_count = false, $count = null, $page = null ) {
 		if ( empty( $words ) ) {
 			return [];
 		}
 
-		$table = [];
+		$subquery = $this->builder();
+		$first    = true;
 		foreach ( $words as $word ) {
 			$word_id = $word['word_id'];
 			$n       = $word['count'];
-			$table[] = "SELECT $word_id AS word_id, $n AS n";
+			$select  = [
+				$this->raw( "{$word_id} as word_id" ),
+				$this->raw( "{$n} as n" ),
+			];
+			if ( $first ) {
+				$first = false;
+				$subquery->select( $select );
+			} else {
+				$subquery->union( $this->builder()->select( $select ) );
+			}
 		}
-		$table = implode( ' UNION ', $table );
-		$table = "($table)";
 
 		! isset( $count ) and $count = $this->control->get_ranking_count();
 		if ( isset( $page ) && $page > 1 ) {
@@ -589,91 +598,32 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		} else {
 			$offset = null;
 		}
+		$threshold = $this->control->get_score_threshold( $is_search );
+		$k1        = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
+		$b         = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
+		$avgdl     = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
 
-		if ( $is_count ) {
-			$field    = [
-				'DISTINCT d.post_id' => [
-					'COUNT',
-					'num',
-				],
-			];
-			$order_by = [];
-			$group_by = [];
-			$count    = 1;
-		} else {
-			$k1       = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
-			$b        = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
-			$avgdl    = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
-			$field    = [
-				"w.idf * t.n * ( rw.tf * ( $k1 + 1 ) ) / ( rw.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) )" => [
-					'SUM',
-					'score',
-				],
-				'd.post_id',
-			];
-			$order_by = [
-				'score' => 'desc',
-			];
-			$group_by = [
-				'd.post_id',
-			];
-		}
-		$where = [
-			'p.post_status' => 'publish',
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'd.post_id'     => [ '!=', $post_id ],
-		];
-		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
-			$where['NOT EXISTS'] = $subquery;
+		$select = [ 'd.post_id' ];
+		if ( $threshold > 0 || ! $is_count ) {
+			$select[] = $this->raw( "SUM( w.idf * t.n * ( rw.tf * ( $k1 + 1 ) ) / ( rw.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) ) ) as score" );
 		}
 
-		/** @var \wpdb $wpdb */
-		global $wpdb;
-		$results = $this->app->db->select( [
-			[ 'rel_document_word', 'rw' ],
-			[
-				[ 'document', 'd' ],
-				'INNER JOIN',
-				[
-					'rw.document_id',
-					'=',
-					'd.document_id',
-				],
-			],
-			[
-				[ $wpdb->posts, 'p' ],
-				'INNER JOIN',
-				[
-					'd.post_id',
-					'=',
-					'p.ID',
-				],
-			],
-			[
-				[ 'word', 'w' ],
-				'INNER JOIN',
-				[
-					'rw.word_id',
-					'=',
-					'w.word_id',
-				],
-			],
-			[
-				[ $table, 't' ],
-				'INNER JOIN',
-				[
-					't.word_id',
-					'=',
-					'rw.word_id',
-				],
-			],
-		], $where, $field, $count, $offset, $order_by, $group_by );
+		$query = $this->from_document_word( $post_types )
+		              ->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
+		              ->join_sub( $subquery, 't', 't.word_id', 'rw.word_id' )
+		              ->where( 'd.post_id', '!=', $post_id )
+		              ->select( $select )
+		              ->group_by( 'd.post_id' );
 
-		if ( $is_count ) {
-			return $this->app->utility->array_get( $results[0], 'num', 0 );
+		if ( $threshold > 0 ) {
+			$max_query       = clone $query;
+			$max             = $this->app->array->get( $max_query->order_by_desc( $this->raw( 'score' ) )->row(), 'score' );
+			$threshold_score = $max * $threshold;
+			$query->having( $this->raw( 'score' ), '>=', $threshold_score );
 		}
+		$query = $this->builder()->from_sub( $query, 't' );
 
-		return $results;
+		return $is_count ? $query->count() : $query->order_by_desc( $this->raw( 'score' ) )->limit( $count )->offset( $offset )->get();
 	}
 
 }

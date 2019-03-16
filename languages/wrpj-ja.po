@@ -45,6 +45,16 @@ msgstr ""
 "これを変更した場合ランキングプロセスが再度実行されます。"
 
 msgid ""
+"Threshold of ranking posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\n"
+"If change this, it's necessary to run posts index ranking again."
+msgstr ""
+"ランキングの閾値。最大のスコアに対するスコアの割合がこの値よりも低いものを足切りします。\n"
+"これを変更した場合ランキングプロセスが再度実行されます。"
+
+msgid "Threshold of search posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value."
+msgstr "検索の閾値。最大のスコアに対するスコアの割合がこの値よりも低いものを足切りします。"
+
+msgid ""
 "Max length of target extracted content (set 0 to invalidate)\n"
 "If change this, it's necessary to run posts index process again."
 msgstr ""
@@ -223,3 +233,9 @@ msgstr "次へ"
 
 msgid "Reload"
 msgstr "リロード"
+
+msgid "Ranking threshold"
+msgstr "ランキングの足切り基準"
+
+msgid "Search threshold"
+msgstr "検索の足切り基準"

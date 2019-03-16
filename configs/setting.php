@@ -47,6 +47,20 @@ return [
 					'min'     => 1,
 					'max'     => 25,
 				],
+				'ranking_threshold'                 => [
+					'label'   => "Threshold of ranking posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
+				'search_threshold'                  => [
+					'label'   => 'Threshold of search posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.',
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
 				'auto_insert_related_post'          => [
 					'label'   => "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)",
 					'type'    => 'bool',

@@ -54,6 +54,15 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
+	 * @param bool $is_search
+	 *
+	 * @return float
+	 */
+	public function get_score_threshold( $is_search ) {
+		return $is_search ? $this->apply_filters( 'search_threshold' ) : $this->apply_filters( 'ranking_threshold' );
+	}
+
+	/**
 	 * @return int
 	 */
 	public function get_important_words_count() {
@@ -368,9 +377,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		} );
 		$post_types  = $this->get_valid_post_types();
 		$ranking     = [];
-		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true );
+		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true, true );
 		$total_pages = ceil( $total / $posts_per_page );
-		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, false, $posts_per_page, $paged ) as $item ) {
+		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, $posts_per_page, $paged ) as $item ) {
 			$ranking[ $item['post_id'] ] = $item['score'];
 		}
 
@@ -1003,6 +1012,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( in_array( $key, [
 			$this->get_filter_prefix() . 'target_post_types',
 			$this->get_filter_prefix() . 'ranking_number',
+			$this->get_filter_prefix() . 'ranking_threshold',
+			$this->get_filter_prefix() . 'search_threshold',
 			$this->get_filter_prefix() . 'exclude_categories',
 		] ) ) {
 			$this->init_posts_rankings();
