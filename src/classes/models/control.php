@@ -492,10 +492,13 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return;
 		}
 
+		if ( $this->app->utility->doing_cron() ) {
 		add_action( $this->get_hook_name(), function () {
 			$this->index_posts();
 		} );
+		} else {
 		$this->set_event();
+	}
 	}
 
 	/**
