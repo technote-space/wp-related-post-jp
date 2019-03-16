@@ -493,12 +493,12 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 
 		if ( $this->app->utility->doing_cron() ) {
-		add_action( $this->get_hook_name(), function () {
-			$this->index_posts();
-		} );
+			add_action( $this->get_hook_name(), function () {
+				$this->index_posts();
+			} );
 		} else {
-		$this->set_event();
-	}
+			$this->set_event();
+		}
 	}
 
 	/**
@@ -1084,6 +1084,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function edit_post_page() {
+		if ( ! $this->is_valid_posts_index() ) {
+			return;
+		}
 		$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
 		if ( $this->is_invalid_post_type( $post_type ) ) {
 			return;
