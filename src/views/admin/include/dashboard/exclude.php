@@ -85,7 +85,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
     </tr>
     <tr>
         <th>
-            <label for="<?php $instance->h( $ranking_threshold['id'] ); ?>"><?php $instance->h( 'Ranking threshold', true ); ?></label>
+            <label for="<?php $instance->h( $ranking_threshold['id'] ); ?>"><?php $instance->h( 'Related posts threshold (0～1)', true ); ?></label>
         </th>
         <td>
 			<?php $instance->form( 'input/number', $args, $ranking_threshold ); ?>
@@ -93,7 +93,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
     </tr>
     <tr>
         <th>
-            <label for="<?php $instance->h( $search_threshold['id'] ); ?>"><?php $instance->h( 'Search threshold', true ); ?></label>
+            <label for="<?php $instance->h( $search_threshold['id'] ); ?>"><?php $instance->h( 'Search threshold (0～1)', true ); ?></label>
         </th>
         <td>
 			<?php $instance->form( 'input/number', $args, $search_threshold ); ?>

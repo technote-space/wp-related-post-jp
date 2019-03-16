@@ -50,7 +50,7 @@ return [
 					'max'     => 25,
 				],
 				'ranking_threshold'                 => [
-					'label'   => "Threshold of ranking posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
+					'label'   => "Threshold of related posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
 					'type'    => 'float',
 					'default' => 0,
 					'min'     => 0,
