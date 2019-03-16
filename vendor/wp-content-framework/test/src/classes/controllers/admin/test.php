@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Test Classes Controller Test
  *
- * @version 0.0.9
+ * @version 0.0.11
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -42,8 +42,8 @@ class Test extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 	 */
 	protected function post_action() {
 		$action = $this->app->input->post( 'action' );
-		if ( method_exists( $this, $action ) && is_callable( [ $this, $action ] ) ) {
-			$this->$action();
+		if ( $this->is_method_callable( $action ) ) {
+			call_user_func( [ $this, $action ] );
 		}
 	}
 

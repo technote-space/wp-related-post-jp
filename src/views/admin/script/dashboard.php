@@ -100,10 +100,10 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
         const check_changed = function () {
             let result = false;
             $('.check-value-changed').each(function () {
-                result |= $(this).val() + '' != $(this).data('value') + '';
+                result |= $(this).val() + '' !== $(this).data('value') + '';
             });
             $('.check-checked-changed').each(function () {
-                result = $(this).prop('checked') != $(this).data('value');
+                result |= $(this).prop('checked') !== ($(this).data('value') !== '');
             });
             return result;
         };

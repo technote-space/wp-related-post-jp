@@ -43,9 +43,24 @@ return [
 			10 => [
 				'ranking_number'                    => [
 					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'int',
 					'default' => 10,
 					'min'     => 1,
 					'max'     => 25,
+				],
+				'ranking_threshold'                 => [
+					'label'   => "Threshold of ranking posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
+				'search_threshold'                  => [
+					'label'   => 'Threshold of search posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.',
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
 				],
 				'auto_insert_related_post'          => [
 					'label'   => "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)",
@@ -67,6 +82,7 @@ return [
 				],
 				'max_index_target_length'           => [
 					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
+					'type'    => 'int',
 					'default' => 1000,
 					'min'     => 0,
 				],

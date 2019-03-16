@@ -54,6 +54,15 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
+	 * @param bool $is_search
+	 *
+	 * @return float
+	 */
+	public function get_score_threshold( $is_search ) {
+		return $is_search ? $this->apply_filters( 'search_threshold' ) : $this->apply_filters( 'ranking_threshold' );
+	}
+
+	/**
 	 * @return int
 	 */
 	public function get_important_words_count() {
@@ -79,7 +88,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return array
 	 */
 	private function get_valid_post_types() {
-		return $this->app->utility->flatten( $this->load_post_types() );
+		return $this->app->array->flatten( $this->load_post_types() );
 	}
 
 	/**
@@ -125,7 +134,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 */
 	private function get_exclude_category() {
 		if ( ! isset( $this->exclude_categories ) ) {
-			$raw_exclude_categories = $this->apply_filters( 'exclude_categories' );
+			$raw_exclude_categories = $this->app->string->explode( $this->apply_filters( 'exclude_categories' ) );
 			$exclude_categories     = [];
 			$target_taxonomies      = $this->get_target_taxonomies();
 			if ( ! empty( $target_taxonomies ) ) {
@@ -149,7 +158,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 					$term = array_shift( $terms );
 
 					return $term;
-				}, explode( ',', $raw_exclude_categories ) ) );
+				}, $raw_exclude_categories ) );
 			}
 			$this->exclude_categories = $this->apply_filters( 'get_exclude_category', $exclude_categories, $raw_exclude_categories, $target_taxonomies );
 		}
@@ -161,7 +170,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return array
 	 */
 	private function get_exclude_category_id() {
-		return $this->app->utility->array_pluck( $this->get_exclude_category(), 'term_taxonomy_id' );
+		return $this->app->array->pluck( $this->get_exclude_category(), 'term_taxonomy_id' );
 	}
 
 	/**
@@ -185,7 +194,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 				'name'       => $term->name,
 				'id'         => $term->term_taxonomy_id,
 				'taxonomy'   => $term->taxonomy,
-				'post_types' => $this->app->utility->array_map( array_keys( $this->app->utility->array_get( $target_taxonomies, $term->taxonomy ) ), function ( $post_type ) {
+				'post_types' => $this->app->array->map( array_keys( $this->app->array->get( $target_taxonomies, $term->taxonomy ) ), function ( $post_type ) {
 					$post_type = get_post_type_object( $post_type );
 
 					return [
@@ -214,7 +223,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/**
 	 * @return bool
 	 */
-	private function is_valid_update_post() {
+	public function is_valid_posts_index() {
 		return $this->app->get_option( 'is_valid_posts_index' );
 	}
 
@@ -250,15 +259,15 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function transition_post_status( $new_status, $old_status, $post ) {
-		if ( ! ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) && $this->is_valid_update_post() ) {
+		if ( ! $this->app->utility->is_autosave() && $this->is_valid_posts_index() ) {
 			if ( $new_status === 'publish' ) {
 				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
 					$this->get_bm25()->delete( $post->ID );
 				} else {
 					if ( $this->apply_filters( 'index_background_when_update_post' ) ) {
 						$this->app->post->delete( $post->ID, 'indexed' );
-						$this->app->option->delete( 'posts_indexed' );
-						$this->app->option->delete( 'word_updated' );
+						$this->cache_set( 'posts_indexed', false );
+						$this->cache_set( 'word_updated', false );
 					} else {
 						$this->get_bm25()->update( $post );
 					}
@@ -290,7 +299,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return false;
 		}
 		if ( ! $this->app->post->get( 'setup_ranking', $_post->ID ) ) {
-			if ( $this->app->get_option( 'word_updated', false ) ) {
+			if ( $this->cache_get( 'word_updated' ) ) {
 				$this->get_bm25()->update_ranking( $_post->ID, $this->get_post_types( $_post->post_type ), true );
 			} else {
 				return false;
@@ -307,9 +316,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 				$post->score = $score;
 
 				return $post;
-			}, $this->app->db->select( 'ranking', [
-				'post_id' => $_post->ID,
-			], [ 'rank_post_id', 'score' ], null, null, [ 'score' => 'DESC' ] ) ), function ( $p ) {
+			}, $this->table( 'ranking' )->where( 'post_id', $_post->ID )->select( [ 'rank_post_id', 'score' ] )->order_by_desc( 'score' )->get() ), function ( $p ) {
 				return false !== $p;
 			} );
 		}
@@ -338,7 +345,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 
 		if ( $query->is_search() ) {
-			if ( $this->apply_filters( 'use_keyword_search' ) && $this->app->get_option( 'is_valid_posts_search', false ) ) {
+			if ( $this->apply_filters( 'use_keyword_search' ) && $this->cache_get( 'is_valid_posts_search' ) ) {
 				$q = $query->get( 's' );
 				if ( ! empty( $q ) ) {
 					$this->keyword_search( $query, $q );
@@ -362,17 +369,17 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return [ [], 0 ];
 		}
 
-		$words       = array_map( function ( $k, $v ) {
+		$words       = $this->app->array->map( $data, function ( $v, $k ) {
 			return [
 				'word_id' => $k,
 				'count'   => $v,
 			];
-		}, array_keys( $data ), array_values( $data ) );
+		} );
 		$post_types  = $this->get_valid_post_types();
 		$ranking     = [];
-		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true );
+		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true, true );
 		$total_pages = ceil( $total / $posts_per_page );
-		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, false, $posts_per_page, $paged ) as $item ) {
+		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, $posts_per_page, $paged ) as $item ) {
 			$ranking[ $item['post_id'] ] = $item['score'];
 		}
 
@@ -481,7 +488,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function setup_index_posts() {
-		if ( $this->app->get_option( 'posts_indexed' ) || ! $this->app->get_option( 'is_valid_posts_index' ) || $this->is_process_running() ) {
+		if ( $this->cache_get( 'posts_indexed' ) || ! $this->is_valid_posts_index() || $this->is_process_running() ) {
 			return;
 		}
 
@@ -660,11 +667,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @since 1.2.8 Added: index process log
 	 */
 	private function index_posts() {
-		if ( $this->app->get_option( 'posts_indexed' ) || $this->is_process_running() ) {
+		if ( $this->cache_get( 'posts_indexed' ) || $this->is_process_running() ) {
 			return;
 		}
 
-		if ( ! $this->app->get_option( 'is_valid_posts_index' ) ) {
+		if ( ! $this->is_valid_posts_index() ) {
 			$this->lock_process( false );
 
 			return;
@@ -675,11 +682,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		set_time_limit( 0 );
 		$uuid = $this->lock_process();
 
-		if ( $this->app->get_option( 'db_truncate_required' ) ) {
-			$this->app->option->delete( 'db_truncate_required' );
+		if ( $this->cache_get( 'db_truncate_required' ) ) {
+			$this->cache_set( 'db_truncate_required', false );
 			$this->app->post->delete_all( 'indexed' );
 			$this->app->post->delete_all( 'setup_ranking' );
-			$this->app->db->truncate( 'post_document' );
+			$this->app->db->truncate( 'document' );
 			$this->app->db->truncate( 'ranking' );
 			$this->app->db->truncate( 'rel_document_word' );
 			$this->app->db->truncate( 'word' );
@@ -708,8 +715,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			}
 
 			if ( $this->get_setup_ranking_posts( true ) <= 0 ) {
-				$this->app->option->set( 'posts_indexed', true );
-				$this->app->option->set( 'is_valid_posts_search', true );
+				$this->cache_set( 'posts_indexed', true );
+				$this->cache_set( 'is_valid_posts_search', true );
 			}
 		}
 
@@ -753,8 +760,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return bool|string
 	 */
 	private function update_word() {
-		if ( ! $this->app->get_option( 'word_updated', false ) ) {
-			$this->app->option->set( 'word_updated', true );
+		if ( ! $this->cache_get( 'word_updated' ) ) {
+			$this->cache_set( 'word_updated', true );
 
 			$uuid  = $this->lock_process( true, 'word index process' );
 			$cache = [];
@@ -817,7 +824,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @param string $post_id_column
 	 * @param string $term_relationships_table
 	 *
-	 * @return false|string
+	 * @return false|\Closure
 	 */
 	public function get_taxonomy_subquery( $term_taxonomy_ids = null, $post_table = 'p', $post_id_column = 'ID', $term_relationships_table = 'tr' ) {
 		! isset( $term_taxonomy_ids ) and $term_taxonomy_ids = $this->get_exclude_category_id();
@@ -825,13 +832,32 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return false;
 		}
 
-		/** @var \wpdb $wpdb */
-		global $wpdb;
+		return function ( $query ) use ( $term_taxonomy_ids, $post_table, $post_id_column, $term_relationships_table ) {
+			/** @var \WP_Framework_Db\Classes\Models\Query\Builder $query */
+			$query->table( $this->get_wp_table( 'term_relationships', $term_relationships_table ) )
+			      ->select_raw( '"X"' )
+			      ->where_column( "{$term_relationships_table}.object_id", "{$post_table}.{$post_id_column}" )
+			      ->where_integer_in_raw( "{$term_relationships_table}.term_taxonomy_id", $term_taxonomy_ids );
+		};
+	}
 
-		return $this->app->db->get_select_sql( [ [ $wpdb->term_relationships, $term_relationships_table ] ], [
-			$term_relationships_table . '.object_id'        => [ '=', $post_table . '.' . $post_id_column, true ],
-			$term_relationships_table . '.term_taxonomy_id' => [ 'in', $term_taxonomy_ids ],
-		], '"X"' );
+	/**
+	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 */
+	private function from_posts() {
+		$post_types = $this->get_valid_post_types();
+		$query      = $this->wp_table( 'posts', 'p' )
+		                   ->where( 'p.post_status', 'publish' );
+		if ( count( $post_types ) === 1 ) {
+			$query->where( 'p.post_type', reset( $post_types ) );
+		} else {
+			$query->where_in( 'p.post_type', $post_types );
+		}
+		if ( $subquery = $this->get_taxonomy_subquery() ) {
+			$query->where_not_exists( $subquery );
+		}
+
+		return $query;
 	}
 
 	/**
@@ -846,51 +872,35 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return $is_count ? 0 : [];
 		}
 
+		$query = $this->from_posts()
+		              ->alias_left_join_wp( 'postmeta', 'pm', 'p.ID', 'pm.post_id' )
+		              ->where_not_exists( function ( $query ) use ( $key ) {
+			              /** @var \WP_Framework_Db\Classes\Models\Query\Builder $query */
+			              $query->table( $this->get_wp_table( 'postmeta', 'pm2' ) )
+			                    ->where_column( 'pm2.post_id', 'pm.post_id' )
+			                    ->where( 'pm2.meta_key', $this->app->post->get_meta_key( $key ) )
+			                    ->select_raw( '"X"' );
+		              } );
 		if ( $is_count ) {
-			$limit    = 1;
-			$fields   = [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ];
-			$order_by = null;
-			$group_by = null;
-			$output   = ARRAY_A;
+			return $query->distinct()->count( 'p.ID' );
 		} else {
-			$fields   = [ '*', 'p.ID' => 'ID' ];
-			$order_by = [ 'p.ID' => 'ASC' ];
-			$group_by = [ 'p.ID' ];
-			$output   = OBJECT;
+			return $query->select( [
+				'p.ID',
+				'p.post_author',
+				'p.post_date',
+				'p.post_date_gmt',
+				'p.post_content',
+				'p.post_title',
+				'p.post_excerpt',
+				'p.post_status',
+				'p.post_name',
+				'p.post_modified',
+				'p.post_modified_gmt',
+				'p.post_parent',
+				'p.guid',
+				'p.post_type',
+			] )->set_object_mode()->limit( $limit )->order_by( 'p.ID' )->group_by( 'p.ID' )->get();
 		}
-
-		/** @var \wpdb $wpdb */
-		global $wpdb;
-		$post_types = $this->get_valid_post_types();
-		$subquery   = $this->app->db->get_select_sql( [ [ $wpdb->postmeta, 'pm2' ] ], [
-			'pm2.post_id'  => [ '=', 'pm.post_id', true ],
-			'pm2.meta_key' => [ '=', $this->app->post->get_meta_key( $key ) ],
-		], '"X"' );
-		$where      = [
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'p.post_status' => 'publish',
-			'NOT EXISTS'    => [ $subquery ],
-		];
-		if ( $subquery = $this->get_taxonomy_subquery() ) {
-			$where['NOT EXISTS'][] = $subquery;
-		}
-
-		$results = $this->app->db->select( [
-			[ $wpdb->posts, 'p' ],
-			[
-				[ $wpdb->postmeta, 'pm' ],
-				'LEFT JOIN',
-				[
-					[ 'p.ID', '=', 'pm.post_id' ],
-				],
-			],
-		], $where, $fields, $limit, null, $order_by, $group_by, $output );
-
-		if ( $is_count ) {
-			return $this->app->utility->array_get( $results[0], 'num', 0 );
-		}
-
-		return $results;
 	}
 
 	/**
@@ -926,20 +936,18 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return $count;
 		}
 
-		/** @var \wpdb $wpdb */
-		global $wpdb;
 		$post_types = $this->get_valid_post_types();
-		$where      = [
-			'p.post_type'   => count( $post_types ) === 1 ? reset( $post_types ) : [ 'in', $post_types ],
-			'p.post_status' => 'publish',
-		];
-		if ( $subquery = $this->get_taxonomy_subquery() ) {
-			$where['NOT EXISTS'] = $subquery;
+		$query      = $this->wp_table( 'posts', 'p' )
+		                   ->where( 'p.post_status', 'publish' );
+		if ( count( $post_types ) === 1 ) {
+			$query->where( 'p.post_type', reset( $post_types ) );
+		} else {
+			$query->where_in( 'p.post_type', $post_types );
 		}
-
-		$count = $this->app->utility->array_get( $this->app->db->select_row( [
-			[ $wpdb->posts, 'p' ],
-		], $where, [ 'DISTINCT p.ID' => [ 'COUNT', 'num' ] ] ), 'num' );
+		if ( $subquery = $this->get_taxonomy_subquery() ) {
+			$query->where_not_exists( $subquery );
+		}
+		$count = $this->from_posts()->distinct()->count( 'p.ID' );
 
 		// index, ranking
 		$count *= 2;
@@ -953,7 +961,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return int
 	 */
 	public function get_update_posts_count() {
-		if ( $this->app->get_option( 'db_truncate_required' ) ) {
+		if ( $this->cache_get( 'db_truncate_required' ) ) {
 			return $this->get_total_posts_count();
 		}
 		$count = get_site_transient( $this->get_update_posts_count_transient_key() );
@@ -977,23 +985,23 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	public function on_posts_index() {
 		$this->app->option->set( 'is_valid_posts_index', true );
 
-		return $this->app->get_option( 'is_valid_posts_index' );
+		return $this->is_valid_posts_index();
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function off_posts_index() {
-		if ( $this->app->get_option( 'posts_indexed' ) ) {
+		if ( $this->cache_get( 'posts_indexed' ) ) {
 			return false;
 		}
-		if ( ! $this->app->get_option( 'is_valid_posts_index' ) ) {
+		if ( ! $this->is_valid_posts_index() ) {
 			return true;
 		}
 		$this->app->option->set( 'is_valid_posts_index', false );
 		$this->unlock_process();
 
-		return ! $this->app->get_option( 'is_valid_posts_index' );
+		return ! $this->is_valid_posts_index();
 	}
 
 	/**
@@ -1004,6 +1012,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( in_array( $key, [
 			$this->get_filter_prefix() . 'target_post_types',
 			$this->get_filter_prefix() . 'ranking_number',
+			$this->get_filter_prefix() . 'ranking_threshold',
+			$this->get_filter_prefix() . 'search_threshold',
 			$this->get_filter_prefix() . 'exclude_categories',
 		] ) ) {
 			$this->init_posts_rankings();
@@ -1018,10 +1028,10 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * init posts index
 	 */
 	public function init_posts_index() {
-		$this->app->option->set( 'db_truncate_required', true );
-		$this->app->option->delete( 'posts_indexed' );
-		$this->app->option->delete( 'is_valid_posts_search' );
-		$this->app->option->delete( 'word_updated' );
+		$this->cache_set( 'db_truncate_required', true );
+		$this->cache_set( 'posts_indexed', false );
+		$this->cache_set( 'is_valid_posts_search', false );
+		$this->cache_set( 'word_updated', false );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
 		$this->unlock_process( 60 );
@@ -1031,7 +1041,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * init posts index
 	 */
 	public function init_posts_rankings() {
-		$this->app->option->delete( 'posts_indexed' );
+		$this->cache_set( 'posts_indexed', false );
 		$this->app->post->delete_all( 'setup_ranking' );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
@@ -1061,7 +1071,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$this->clear_event();
 		$this->unlock_process();
 		$this->unlock_interval_process();
-		$this->app->option->delete( 'db_truncate_required' );
+		$this->cache_set( 'db_truncate_required', false );
 		delete_site_transient( $this->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_update_posts_count_transient_key() );
 	}
@@ -1082,7 +1092,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
-			$columns['wrpj_show_related_post'] = $this->translate( 'Recommendation' );
+			$columns['wrpj_show_related_post'] = $this->translate( 'Index Detail' );
 
 			return $columns;
 		} );
@@ -1115,11 +1125,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 
 		$indexed       = $this->app->post->get( 'indexed', $post_id );
-		$setup_ranking = $this->app->post->get( 'setup_ranking', $post_id );
 		$posts         = $this->get_related_posts( $post_id );
 		$words         = array_filter( $this->get_bm25()->get_important_words( $post_id ), function ( $d ) {
 			return ! $this->get_bm25()->is_excluded( $d['word'] );
 		} );
+		$setup_ranking = $this->app->post->get( 'setup_ranking', $post_id );
 
 		return [
 			'message'       => $this->get_view( 'admin/index_result', [
@@ -1144,7 +1154,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 */
 	public function get_excluded_words( $page, $per_page ) {
 		$offset   = $per_page * ( $page - 1 );
-		$rows     = $this->app->db->select( 'exclude_word', null, null, $per_page + 1, $offset, [ 'updated_at' => 'desc', 'id' => 'desc' ] );
+		$rows     = $this->table( 'exclude_word' )->limit( $per_page + 1 )->offset( $offset )->order_by_desc( 'updated_at' )->order_by_desc( 'id' )->get();
 		$has_next = count( $rows ) > $per_page;
 
 		return [ array_slice( $rows, 0, $per_page ), $has_next ];
@@ -1156,9 +1166,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return bool
 	 */
 	public function on_exclude_word( $word ) {
-		$this->app->db->insert_or_update( 'exclude_word', [
-			'word' => $word,
-		], [
+		$this->table( 'exclude_word' )->update_or_insert( [
 			'word' => $word,
 		] );
 		$this->init_posts_index();
@@ -1172,9 +1180,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return bool
 	 */
 	public function off_exclude_word( $word ) {
-		$this->app->db->delete( 'exclude_word', [
-			'word' => $word,
-		] );
+		$this->table( 'exclude_word' )->where( 'word', $word )->delete();
 		$this->init_posts_index();
 
 		return true;

@@ -107,7 +107,7 @@ class Goo extends Api {
 	 * @return array
 	 */
 	protected function parse_data( $data ) {
-		$data = $this->app->utility->flatten( $data );
+		$data = $this->app->array->flatten( $data );
 		$ret  = [];
 		foreach ( $data as $word ) {
 			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;

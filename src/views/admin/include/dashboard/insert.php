@@ -25,4 +25,3 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
         </td>
     </tr>
 </table>
-<!--        <h3>ランダム表示設定</h3>-->

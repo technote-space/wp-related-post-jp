@@ -94,7 +94,7 @@ return [
 		],
 	],
 
-	'ranking' => [
+	'ranking'      => [
 		'columns' => [
 			'post_id'      => [
 				'type'     => 'BIGINT(20)',
