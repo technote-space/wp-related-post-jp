@@ -30,8 +30,13 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
             <label for="<?php $instance->h( $ranking_number['id'] ); ?>"><?php $instance->h( 'Display Count', true ); ?></label>
         </th>
         <td>
-			<?php $instance->form( 'input/text', $args, $ranking_number ); ?>
+			<?php $instance->form( 'input/number', $args, $ranking_number ); ?>
+        </td>
+    </tr>
+    <tr>
+        <th><?php $instance->h( 'Design', true ); ?></th>
+        <td>
+            実装予定...
         </td>
     </tr>
 </table>
-<!--        <h3>デザイン</h3>-->

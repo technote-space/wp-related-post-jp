@@ -15,6 +15,8 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
 /** @var array $category_data */
+/** @var array $ranking_threshold */
+/** @var array $search_threshold */
 ?>
 <table class="form-table">
     <tr>
@@ -25,10 +27,14 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 			<?php foreach ( $category_data as $slug => $data ): ?>
                 <div>
 					<?php $instance->form( 'input/checkbox', $args, [
-						'name'    => 'exclude_categories[]',
+						'name'       => 'exclude_categories[]',
 						'label'      => $data['name'] . ' (' . implode( ', ', $instance->app->array->pluck( $data['post_types'], 'label' ) ) . ')',
-						'value'   => $slug,
-						'checked' => $data['excluded'],
+						'value'      => $slug,
+						'checked'    => $data['excluded'],
+						'class'      => 'check-checked-changed',
+						'attributes' => [
+							'data-value' => $data['excluded'],
+						],
 					] ); ?>
                 </div>
 			<?php endforeach; ?>
@@ -74,6 +80,22 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					'id'    => 'excluded-words-reload',
 				] ); ?>
             </div>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <label for="<?php $instance->h( $ranking_threshold['id'] ); ?>"><?php $instance->h( 'Ranking threshold', true ); ?></label>
+        </th>
+        <td>
+			<?php $instance->form( 'input/number', $args, $ranking_threshold ); ?>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <label for="<?php $instance->h( $search_threshold['id'] ); ?>"><?php $instance->h( 'Search threshold', true ); ?></label>
+        </th>
+        <td>
+			<?php $instance->form( 'input/number', $args, $search_threshold ); ?>
         </td>
     </tr>
 </table>

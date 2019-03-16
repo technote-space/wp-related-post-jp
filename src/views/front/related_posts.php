@@ -17,7 +17,6 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var WP_Post $post */
 /** @var WP_Post[] $related_posts */
 ?>
-
 <div class="related_posts">
     <h3 class="related_posts_title">
 		<?php $instance->h( $title ); ?>

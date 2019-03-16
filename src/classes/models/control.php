@@ -1092,7 +1092,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$this->setup_modal();
 
 		add_filter( "manage_{$post_type}_posts_columns", function ( $columns ) {
-			$columns['wrpj_show_related_post'] = $this->translate( 'Recommendation' );
+			$columns['wrpj_show_related_post'] = $this->translate( 'Index Detail' );
 
 			return $columns;
 		} );
@@ -1125,11 +1125,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 
 		$indexed       = $this->app->post->get( 'indexed', $post_id );
-		$setup_ranking = $this->app->post->get( 'setup_ranking', $post_id );
 		$posts         = $this->get_related_posts( $post_id );
 		$words         = array_filter( $this->get_bm25()->get_important_words( $post_id ), function ( $d ) {
 			return ! $this->get_bm25()->is_excluded( $d['word'] );
 		} );
+		$setup_ranking = $this->app->post->get( 'setup_ranking', $post_id );
 
 		return [
 			'message'       => $this->get_view( 'admin/index_result', [

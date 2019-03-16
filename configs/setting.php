@@ -43,6 +43,7 @@ return [
 			10 => [
 				'ranking_number'                    => [
 					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'int',
 					'default' => 10,
 					'min'     => 1,
 					'max'     => 25,
@@ -81,6 +82,7 @@ return [
 				],
 				'max_index_target_length'           => [
 					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
+					'type'    => 'int',
 					'default' => 1000,
 					'min'     => 0,
 				],

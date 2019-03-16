@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wrpj\n"
 "POT-Creation-Date: 2018-07-01 17:47+0900\n"
-"PO-Revision-Date: 2019-01-31 23:03+0900\n"
+"PO-Revision-Date: 2019-03-16 16:29+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -233,6 +233,12 @@ msgstr "次へ"
 
 msgid "Reload"
 msgstr "リロード"
+
+msgid "Design"
+msgstr "デザイン"
+
+msgid "Index Detail"
+msgstr "インデックスの詳細"
 
 msgid "Ranking threshold"
 msgstr "ランキングの足切り基準"
