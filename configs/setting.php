@@ -65,7 +65,7 @@ return [
 				'auto_insert_related_post'          => [
 					'label'   => "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)",
 					'type'    => 'bool',
-					'default' => true,
+					'default' => false,
 				],
 				'related_posts_title'               => [
 					'label'     => "Related posts title",
