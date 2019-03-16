@@ -79,7 +79,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 					$nis      = $this->calc_nis( $post_types, $word_ids );
 					foreach ( $word_ids as $word_id ) {
 						$ni = $this->app->array->get( $nis, $word_id, 0 );
-						$this->table( 'word' )->where( 'id', $word_ids )->update( [
+						$this->table( 'word' )->where_in( 'id', $word_ids )->update( [
 							'count' => $ni,
 							'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $N, $ni ),
 						] );
