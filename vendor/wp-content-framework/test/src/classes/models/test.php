@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Test Classes Models Test
  *
- * @version 0.0.11
+ * @version 0.0.12
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -80,6 +80,13 @@ class Test implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Presen
 		return [
 			$this->app->define->plugin_namespace . '\\Classes\\Tests',
 		];
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function is_common_cache_class_settings() {
+		return true;
 	}
 
 	/**
