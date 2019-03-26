@@ -1056,7 +1056,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * pre load admin page
+	 * post load admin page
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function post_load_admin_page() {
