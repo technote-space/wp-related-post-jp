@@ -60,7 +60,7 @@ class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 				'required'          => true,
 				'description'       => 'post_id',
 				'validate_callback' => function ( $var ) {
-					return ! empty( $var );
+					return $this->validate_positive_int( $var );
 				},
 				'sanitize_callback' => function ( $var ) {
 					return (int) $var;
