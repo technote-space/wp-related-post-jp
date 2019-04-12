@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.9
+ * @version 1.3.12
  * @author Technote
  * @since 1.0.2.1
  * @since 1.1.3
@@ -8,6 +8,7 @@
  * @since 1.3.2 Added: 除外カテゴリ (#12)
  * @since 1.3.2 Added: 除外ワード (#22)
  * @since 1.3.9 #51, wp-content-framework/admin#20
+ * @since 1.3.12 #77
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

@@ -1,18 +1,19 @@
 <?php
 /**
- * @version 1.3.9
+ * @version 1.3.12
  * @author Technote
  * @since 1.0.0.0
  * @since 1.1.3
- * @since 1.2.3 Updated: setup to use api
- * @since 1.2.6 Added: upgrade method
- * @since 1.2.8 Added: index process log
- * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @since 1.3.2 Improved: performance
- * @since 1.3.2 Added: 除外カテゴリ (#12)
- * @since 1.3.2 Added: 除外ワード (#22)
- * @since 1.3.3 Improved: refactoring
+ * @since 1.2.3 setup to use api
+ * @since 1.2.6 upgrade method
+ * @since 1.2.8 index process log
+ * @since 1.3.0 #28
+ * @since 1.3.2 performance
+ * @since 1.3.2 #12
+ * @since 1.3.2 #22
+ * @since 1.3.3 refactoring
  * @since 1.3.9 #51, #71, wp-content-framework/db#9, wp-content-framework/common#44
+ * @since 1.3.12 #77
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -685,7 +686,6 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 	/**
 	 * index posts
-	 * @since 1.2.8 Added: index process log
 	 */
 	private function index_posts() {
 		if ( $this->cache_get( 'posts_indexed' ) || $this->is_process_running() ) {

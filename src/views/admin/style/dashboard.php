@@ -1,12 +1,13 @@
 <?php
 /**
- * @version 1.3.6
+ * @version 1.3.12
  * @author Technote
  * @since 1.0.2.3
- * @since 1.2.8.1 Changed: trivial change
- * @since 1.3.0 Changed: trivial change
- * @since 1.3.2 Added: 除外ワード (#22)
- * @since 1.3.6 Changed: デザイン調整 (#52)
+ * @since 1.2.8.1 trivial change
+ * @since 1.3.0 trivial change
+ * @since 1.3.2 #22
+ * @since 1.3.6 #52
+ * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
