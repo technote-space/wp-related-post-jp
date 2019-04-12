@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.3
+ * @version 1.3.12
  * @author Technote
  * @since 1.0.1.9
- * @since 1.3.0 Changed: trivial change
- * @since 1.3.2 Added: 除外ワード (#22)
- * @since 1.3.3 Changed: trivial change
+ * @since 1.3.0 trivial change
+ * @since 1.3.2 #22
+ * @since 1.3.3 trivial change
+ * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -23,7 +24,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 include 'style/index_result.php';
 ?>
 
-<h2><?php echo esc_html( $post->post_title ); ?></h2>
+<h2><?php $instance->h( $post->post_title ); ?></h2>
 <div class="ranking-posts">
     <h3><?php $instance->h( 'Related Posts', true ); ?></h3>
 	<?php if ( ! $setup_ranking ): ?>
@@ -46,12 +47,10 @@ include 'style/index_result.php';
 				<?php $n = 1; ?>
 				<?php foreach ( $posts as $p ): ?>
                     <tr>
-                        <td><?php echo $n ++; ?></td>
-                        <td><?php echo $p->ID; ?></td>
-                        <td><a href="<?php echo esc_url( get_permalink( $p->ID ) ); ?>"
-                               onclick="window.open('<?php echo esc_url( get_permalink( $p->ID ) ); ?>', 'wrpj-window'); return false;"><?php echo esc_html( $p->post_title ); ?></a>
-                        </td>
-                        <td><?php echo round( $p->score, 4 ); ?></td>
+                        <td><?php $instance->h( $n++ ); ?></td>
+                        <td><?php $instance->h( $p->ID ); ?></td>
+                        <td><?php $instance->url( get_permalink( $p->ID ), $p->post_title, false, true ); ?></td>
+                        <td><?php $instance->h( round( $p->score, 4 ) ); ?></td>
                     </tr>
 				<?php endforeach; ?>
 			<?php endif; ?>
@@ -81,9 +80,9 @@ include 'style/index_result.php';
 				<?php foreach ( $words as $w ): ?>
                     <tr>
                         <td><?php $instance->h( $w['word'] ); ?></td>
-                        <td><?php echo $w['tf']; ?></td>
-                        <td><?php echo $w['idf']; ?></td>
-                        <td><?php echo round( $w['tfidf'], 4 ); ?></td>
+                        <td><?php $instance->h( $w['tf'] ); ?></td>
+                        <td><?php $instance->h( $w['idf'] ); ?></td>
+                        <td><?php $instance->h( round( $w['tfidf'], 4 ) ); ?></td>
                         <td class="exclude-word-buttons-wrap">
 							<?php $instance->form( 'input/button', $args, [
 								'value'      => 'Exclude',

@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.12
  * @author Technote
  * @since 1.0.1.9
  * @since 1.1.3
- * @since 1.3.0 Changed: ライブラリの更新 (#28)
- * @since 1.3.2 Changed: trivial change
+ * @since 1.3.0 #28
+ * @since 1.3.2 trivial change
+ * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -60,7 +61,7 @@ class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 				'required'          => true,
 				'description'       => 'post_id',
 				'validate_callback' => function ( $var ) {
-					return ! empty( $var );
+					return $this->validate_positive_int( $var );
 				},
 				'sanitize_callback' => function ( $var ) {
 					return (int) $var;

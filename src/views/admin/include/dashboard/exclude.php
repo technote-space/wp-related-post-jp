@@ -1,10 +1,11 @@
 <?php
 /**
- * @version 1.3.9
+ * @version 1.3.12
  * @author Technote
  * @since 1.3.2
  * @since 1.3.6 Changed: デザイン調整 (#52)
  * @since 1.3.9 wp-content-framework/admin#20
+ * @since 1.3.12 #77
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -16,6 +17,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
 /** @var array $category_data */
+/** @var string $exclude_post_ids */
 /** @var array $ranking_threshold */
 /** @var array $search_threshold */
 ?>
@@ -39,6 +41,21 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					] ); ?>
                 </div>
 			<?php endforeach; ?>
+        </td>
+    </tr>
+    <tr>
+        <th>
+			<?php $instance->h( 'Exclude post ids', true ); ?>
+        </th>
+        <td>
+			<?php $instance->form( 'input/text', $args, [
+				'name'       => 'exclude_ids',
+				'value'      => $exclude_post_ids,
+				'class'      => 'check-value-changed',
+				'attributes' => [
+					'data-value' => $exclude_post_ids,
+				],
+			] ); ?>
         </td>
     </tr>
     <tr>

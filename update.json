@@ -1,9 +1,9 @@
 {
   "name": "WP Related Post JP",
   "slug": "wp-related-post-jp",
-  "download_url": "https://github.com/technote-space/wp-related-post-jp/archive/develop.zip",
-  "version": "1.3.11",
-  "tested": "5.1.1",
+  "download_url": "https://github.com/technote-space/wp-related-post-jp/archive/master.zip",
+  "version": "1.3.12",
+  "tested": "5.2",
   "homepage": "https://technote.space/",
   "author": "Technote",
   "author_homepage": "https://technote.space/",
