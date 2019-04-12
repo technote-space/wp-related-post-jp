@@ -23,7 +23,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 include 'style/index_result.php';
 ?>
 
-<h2><?php echo esc_html( $post->post_title ); ?></h2>
+<h2><?php $instance->h( $post->post_title ); ?></h2>
 <div class="ranking-posts">
     <h3><?php $instance->h( 'Related Posts', true ); ?></h3>
 	<?php if ( ! $setup_ranking ): ?>
@@ -46,12 +46,10 @@ include 'style/index_result.php';
 				<?php $n = 1; ?>
 				<?php foreach ( $posts as $p ): ?>
                     <tr>
-                        <td><?php echo $n ++; ?></td>
-                        <td><?php echo $p->ID; ?></td>
-                        <td><a href="<?php echo esc_url( get_permalink( $p->ID ) ); ?>"
-                               onclick="window.open('<?php echo esc_url( get_permalink( $p->ID ) ); ?>', 'wrpj-window'); return false;"><?php echo esc_html( $p->post_title ); ?></a>
-                        </td>
-                        <td><?php echo round( $p->score, 4 ); ?></td>
+                        <td><?php $instance->h( $n++ ); ?></td>
+                        <td><?php $instance->h( $p->ID ); ?></td>
+                        <td><?php $instance->url( get_permalink( $p->ID ), $p->post_title, false, true ); ?></td>
+                        <td><?php $instance->h( round( $p->score, 4 ) ); ?></td>
                     </tr>
 				<?php endforeach; ?>
 			<?php endif; ?>
@@ -81,9 +79,9 @@ include 'style/index_result.php';
 				<?php foreach ( $words as $w ): ?>
                     <tr>
                         <td><?php $instance->h( $w['word'] ); ?></td>
-                        <td><?php echo $w['tf']; ?></td>
-                        <td><?php echo $w['idf']; ?></td>
-                        <td><?php echo round( $w['tfidf'], 4 ); ?></td>
+                        <td><?php $instance->h( $w['tf'] ); ?></td>
+                        <td><?php $instance->h( $w['idf'] ); ?></td>
+                        <td><?php $instance->h( round( $w['tfidf'], 4 ) ); ?></td>
                         <td class="exclude-word-buttons-wrap">
 							<?php $instance->form( 'input/button', $args, [
 								'value'      => 'Exclude',
