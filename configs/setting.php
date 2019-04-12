@@ -81,6 +81,10 @@ return [
 					'label'   => "Exclude category slugs (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
 					'default' => '',
 				],
+				'exclude_ids'                       => [
+					'label'   => "Exclude post ids (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
+					'default' => '',
+				],
 				'max_index_target_length'           => [
 					'label'   => "Max length of target extracted content (set 0 to invalidate)\nIf change this, it's necessary to run posts index process again.",
 					'type'    => 'int',

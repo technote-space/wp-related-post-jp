@@ -16,6 +16,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
 /** @var array $category_data */
+/** @var string $exclude_post_ids */
 /** @var array $ranking_threshold */
 /** @var array $search_threshold */
 ?>
@@ -39,6 +40,21 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 					] ); ?>
                 </div>
 			<?php endforeach; ?>
+        </td>
+    </tr>
+    <tr>
+        <th>
+			<?php $instance->h( 'Exclude post ids', true ); ?>
+        </th>
+        <td>
+			<?php $instance->form( 'input/text', $args, [
+				'name'       => 'exclude_ids',
+				'value'      => $exclude_post_ids,
+				'class'      => 'check-value-changed',
+				'attributes' => [
+					'data-value' => $exclude_post_ids,
+				],
+			] ); ?>
         </td>
     </tr>
     <tr>

@@ -41,6 +41,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/** @var array $exclude_categories */
 	private $exclude_categories;
 
+	/** @var array $exclude_post_ids */
+	private $exclude_post_ids;
+
 	/** @var array $target_taxonomies */
 	private $target_taxonomies;
 
@@ -208,6 +211,17 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 
 		return $data;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_exclude_post_ids() {
+		if ( ! $this->exclude_post_ids ) {
+			$this->exclude_post_ids = $this->app->array->combine( $this->app->string->explode( $this->apply_filters( 'exclude_ids' ) ), null );
+		}
+
+		return $this->exclude_post_ids;
 	}
 
 	/**
@@ -418,7 +432,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 					$ra = $ranking[ $a->ID ];
 					$rb = $ranking[ $b->ID ];
 
-					return $ra === $rb ? 0 : ( $ra < $rb ) ? 1 : - 1;
+					return $ra === $rb ? 0 : ( $ra < $rb ) ? 1 : -1;
 				} );
 				$query->set( 's', $q );
 				$query->set( 'paged', $paged );
@@ -443,7 +457,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 				$query->set( 'tag__in', null );
 				$query->set( 'orderby', null );
 
-				$query->set( 'p', - 1 );
+				$query->set( 'p', -1 );
 				$posts_results = function () use ( &$posts_results, $related_posts ) {
 					remove_filter( 'posts_results', $posts_results );
 
@@ -637,7 +651,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$process   = get_site_transient( $this->get_executing_process_transient_key() );
 		$executing and $value2 = false;
 		if ( empty( $value1 ) && empty( $value2 ) ) {
-			return [ - 1, $process ];
+			return [ -1, $process ];
 		}
 		if ( empty( $value1 ) ) {
 			$value = $value2;
@@ -852,9 +866,17 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
 	 */
 	private function from_posts() {
-		$post_types = $this->get_valid_post_types();
-		$query      = $this->wp_table( 'posts', 'p' )
-		                   ->where( 'p.post_status', 'publish' );
+		return $this->common_filter( $this->get_valid_post_types(), $this->wp_table( 'posts', 'p' ) );
+	}
+
+	/**
+	 * @param array $post_types
+	 * @param \WP_Framework_Db\Classes\Models\Query\Builder $query
+	 *
+	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 */
+	public function common_filter( array $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query ) {
+		$query->where( 'p.post_status', 'publish' );
 		if ( count( $post_types ) === 1 ) {
 			$query->where( 'p.post_type', reset( $post_types ) );
 		} else {
@@ -862,6 +884,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 		if ( $subquery = $this->get_taxonomy_subquery() ) {
 			$query->where_not_exists( $subquery );
+		}
+		if ( $exclude_post_ids = $this->get_exclude_post_ids() ) {
+			$query->where_integer_not_in_raw( 'p.ID', $exclude_post_ids );
 		}
 
 		return $query;
@@ -943,17 +968,6 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return $count;
 		}
 
-		$post_types = $this->get_valid_post_types();
-		$query      = $this->wp_table( 'posts', 'p' )
-		                   ->where( 'p.post_status', 'publish' );
-		if ( count( $post_types ) === 1 ) {
-			$query->where( 'p.post_type', reset( $post_types ) );
-		} else {
-			$query->where_in( 'p.post_type', $post_types );
-		}
-		if ( $subquery = $this->get_taxonomy_subquery() ) {
-			$query->where_not_exists( $subquery );
-		}
 		$count = $this->from_posts()->distinct()->count( 'p.ID' );
 
 		// index, ranking
@@ -1022,6 +1036,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$this->get_filter_prefix() . 'ranking_threshold',
 			$this->get_filter_prefix() . 'search_threshold',
 			$this->get_filter_prefix() . 'exclude_categories',
+			$this->get_filter_prefix() . 'exclude_ids',
 		] ) ) {
 			$this->init_posts_rankings();
 		} elseif ( in_array( $key, [
