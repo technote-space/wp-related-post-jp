@@ -25,7 +25,7 @@ return [
 	'db_version'                     => '0.0.2',
 
 	// update
-	'update_info_file_url'           => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/develop/update.json',
+	'update_info_file_url'           => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/update.json',
 
 	// suppress setting help contents
 	'suppress_setting_help_contents' => true,
