@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Admin Configs Config
  *
- * @version 0.0.21
+ * @version 0.0.22
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -51,14 +51,14 @@ return [
 	// action links
 	'action_links'                   => [
 		[
-			'url'  => function (
+			'url'   => function (
 				/** @noinspection PhpUnusedParameterInspection */
 				$app, $admin, $plugin_data, $context
 			) {
 				/** @var \WP_Framework_Admin\Classes\Models\Admin $admin */
 				return menu_page_url( $admin->get_menu_slug(), false );
 			},
-			'text' => 'Settings',
+			'label' => 'Settings',
 		],
 	],
 

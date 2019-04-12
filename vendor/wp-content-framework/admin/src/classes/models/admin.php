@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Admin Classes Models Admin
  *
- * @version 0.0.21
+ * @version 0.0.22
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -214,15 +214,17 @@ class Admin implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Prese
 	 */
 	private function parse_config_links( array $links, array $plugin_data, $status ) {
 		if ( is_array( $links ) && ! empty( $links ) ) {
-			$links = array_filter( $this->app->array->map( $links, function ( $setting ) use ( $plugin_data, $status ) {
-				if ( empty( $setting['url'] ) || ! isset( $setting['text'] ) ) {
+			return array_filter( $this->app->array->map( $links, function ( $setting ) use ( $plugin_data, $status ) {
+				if ( empty( $setting['url'] ) || ! isset( $setting['label'] ) ) {
 					return false;
 				}
 
-				return $this->url( $this->app->utility->value( $setting['url'], $this, $plugin_data, $status ), $setting['text'], true, ! empty( $setting['new_tab'] ), [], false );
+				return $this->url(
+					$this->app->utility->value( $setting['url'], $this, $plugin_data, $status ),
+					$this->app->utility->value( $setting['label'], $this, $plugin_data, $status ),
+					true, ! empty( $setting['new_tab'] ), [], false
+				);
 			} ) );
-
-			return $links;
 		}
 
 		return [];
