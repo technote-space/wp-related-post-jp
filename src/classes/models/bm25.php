@@ -169,8 +169,8 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				$ni  = $this->app->array->get( $nis, $word_id, 0 );
 				$row = $this->app->array->get( $words, $word_id, false );
 				if ( empty( $row ) ) {
-					$c   = - 1;
-					$idf = - 1;
+					$c   = -1;
+					$idf = -1;
 				} else {
 					$c   = $this->app->array->get( $row, 'count' );
 					$idf = $this->app->array->get( $row, 'idf' );
@@ -201,18 +201,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
 	 */
 	private function from_common( $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query ) {
-		$query->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' )
-		      ->where( 'p.post_status', 'publish' );
-		if ( count( $post_types ) === 1 ) {
-			$query->where( 'p.post_type', reset( $post_types ) );
-		} else {
-			$query->where_in( 'p.post_type', $post_types );
-		}
-		if ( $subquery = $this->control->get_taxonomy_subquery() ) {
-			$query->where_not_exists( $subquery );
-		}
-
-		return $query;
+		return $this->control->common_filter( $post_types, $query->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' ) );
 	}
 
 	/**
