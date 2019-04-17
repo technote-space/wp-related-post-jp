@@ -494,11 +494,13 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return '';
 		}
 
-		return $this->get_view( 'front/related_posts', [
-			'title'         => $this->apply_filters( 'related_posts_title' ),
+		$title = $this->apply_filters( 'related_posts_title' );
+
+		return $this->apply_filters( 'related_posts_content', $this->get_view( 'front/related_posts', [
+			'title'         => $title,
 			'post'          => $_post,
 			'related_posts' => $related_posts,
-		] );
+		] ), $this, $title, $_post, $related_posts );
 	}
 
 
