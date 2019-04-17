@@ -52,6 +52,18 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	private $is_related_post = false;
 
 	/**
+	 * @param array $tables
+	 *
+	 * @return array
+	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function allowed_wp_tables( $tables ) {
+		$tables[ $this->get_wp_table( 'term_relationships' ) ] = $this->get_wp_table( 'term_relationships' );
+
+		return $tables;
+	}
+
+	/**
 	 * @return int
 	 */
 	public function get_ranking_count() {
@@ -1098,6 +1110,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$this->app->setting->remove_setting( 'goo_retry_count' );
 			$this->app->setting->remove_setting( 'goo_retry_interval' );
 		}
+		$this->app->setting->remove_setting( 'assets_version' );
 	}
 
 	/**
@@ -1121,7 +1134,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return;
 		}
 
-		$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
+		$post_type   = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
 		$post_status = isset( $_REQUEST['post_status'] ) ? $_REQUEST['post_status'] : 'publish';
 		if ( $this->is_invalid_post_type( $post_type ) || $this->is_invalid_post_status( $post_status ) ) {
 			return;

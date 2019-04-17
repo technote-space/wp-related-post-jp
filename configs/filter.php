@@ -18,6 +18,10 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 return [
 
 	'\Related_Post\Classes\Models\Control' => [
+		'${prefix}allowed_wp_tables' => [
+			'allowed_wp_tables',
+		],
+
 		'transition_post_status' => [
 			'transition_post_status',
 		],
