@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Presenter Interfaces Presenter
  *
- * @version 0.0.16
+ * @version 0.0.18
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -199,6 +199,15 @@ interface Presenter {
 	 * @return string
 	 */
 	public function no_img( array $args = [], $echo = true );
+
+	/**
+	 * @param null|int|\WP_Post $post
+	 * @param array $args
+	 * @param string|array $size
+	 *
+	 * @return string
+	 */
+	public function get_thumbnail( $post = null, array $args = [], $size = 'post-thumbnail' );
 
 	/**
 	 * @param string $path

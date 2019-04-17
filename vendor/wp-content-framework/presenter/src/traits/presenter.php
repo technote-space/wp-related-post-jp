@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Presenter Traits Presenter
  *
- * @version 0.0.16
+ * @version 0.0.18
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -119,7 +119,9 @@ trait Presenter {
 			$args['nonce_value'] = $this->create_nonce();
 		}
 		$args['instance']  = $this;
-		$args['action']    = $this->app->input->server( "REQUEST_URI" );
+		$args['action']    = $this->app->array->get( $args, 'action', function () {
+			return $this->app->input->server( "REQUEST_URI" );
+		} );
 		$args['is_admin']  = is_admin();
 		$args['user_can']  = $this->app->user_can();
 		$args['api_class'] = $this->get_api_class();
@@ -400,7 +402,7 @@ trait Presenter {
 
 		foreach ( $use_upload_dir ? $this->get_upload_dir() : $this->get_check_assets_dirs() as $_dir => $_url ) {
 			$_dir = rtrim( $_dir, DS . '/' );
-			if ( file_exists( $_dir . DS . $path ) && is_file( $_dir . DS . $path ) ) {
+			if ( is_file( $_dir . DS . $path ) ) {
 				if ( $url ) {
 					return rtrim( $_url, '/' ) . '/' . str_replace( DS, '/', $path ) . $this->get_assets_version( $append_version );
 				}
@@ -528,6 +530,17 @@ trait Presenter {
 	 */
 	public function no_img( array $args = [], $echo = true ) {
 		return $this->img( 'no_img.png', $args, $echo );
+	}
+
+	/**
+	 * @param null|int|\WP_Post $post
+	 * @param array $args
+	 * @param string|array $size
+	 *
+	 * @return string
+	 */
+	public function get_thumbnail( $post = null, array $args = [], $size = 'post-thumbnail' ) {
+		return has_post_thumbnail( $post ) ? get_the_post_thumbnail( $post, $size ) : $this->no_img( $args, false );
 	}
 
 	/**
@@ -672,7 +685,7 @@ trait Presenter {
 		$index   = 0;
 		foreach ( $use_upload_dir ? $this->get_upload_dir() : $this->get_check_assets_dirs( true ) as $_dir => $_url ) {
 			$_dir = rtrim( $_dir, DS . '/' );
-			if ( file_exists( $_dir . DS . $path ) && is_file( $_dir . DS . $path ) ) {
+			if ( is_file( $_dir . DS . $path ) ) {
 				$enqueue( $handle, $_url . '/' . $dir . '/' . $file );
 
 				if ( ! $this->app->is_theme ) {
@@ -680,7 +693,7 @@ trait Presenter {
 				}
 				$result = true;
 				$handle = "{$_handle}-{$index}";
-				$index ++;
+				$index++;
 			}
 		}
 
