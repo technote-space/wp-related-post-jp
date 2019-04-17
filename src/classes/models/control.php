@@ -396,9 +396,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		} );
 		$post_types  = $this->get_valid_post_types();
 		$ranking     = [];
-		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true, true );
+		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, true );
 		$total_pages = ceil( $total / $posts_per_page );
-		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, $posts_per_page, $paged ) as $item ) {
+		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, false, $posts_per_page, $paged ) as $item ) {
 			$ranking[ $item['post_id'] ] = $item['score'];
 		}
 
@@ -872,10 +872,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/**
 	 * @param array $post_types
 	 * @param \WP_Framework_Db\Classes\Models\Query\Builder $query
+	 * @param bool $is_exclude_post_ids
 	 *
 	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
 	 */
-	public function common_filter( array $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query ) {
+	public function common_filter( array $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query, $is_exclude_post_ids = false ) {
 		$query->where( 'p.post_status', 'publish' );
 		if ( count( $post_types ) === 1 ) {
 			$query->where( 'p.post_type', reset( $post_types ) );
@@ -885,7 +886,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( $subquery = $this->get_taxonomy_subquery() ) {
 			$query->where_not_exists( $subquery );
 		}
-		if ( $exclude_post_ids = $this->get_exclude_post_ids() ) {
+		if ( $is_exclude_post_ids && ( $exclude_post_ids = $this->get_exclude_post_ids() ) ) {
 			$query->where_integer_not_in_raw( 'p.ID', $exclude_post_ids );
 		}
 
