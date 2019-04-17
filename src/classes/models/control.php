@@ -269,6 +269,17 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
+	 * @param string $post_status
+	 *
+	 * @return bool
+	 */
+	private function is_invalid_post_status( $post_status ) {
+		return ! in_array( $post_status, $this->apply_filters( 'target_post_status', [
+			'publish',
+		] ) );
+	}
+
+	/**
 	 * @param string $new_status
 	 * @param string $old_status
 	 * @param \WP_Post $post
@@ -277,7 +288,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	private function transition_post_status( $new_status, $old_status, $post ) {
 		if ( ! $this->app->utility->is_autosave() && $this->is_valid_posts_index() ) {
 			if ( $new_status === 'publish' ) {
-				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
+				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) || $this->is_invalid_post_status( $post->post_status ) ) {
 					$this->get_bm25()->delete( $post->ID );
 				} else {
 					if ( $this->apply_filters( 'index_background_when_update_post' ) ) {
@@ -314,7 +325,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		} else {
 			$_post = get_post( $_post );
 		}
-		if ( empty( $_post ) || ! $_post instanceof \WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) ) {
+		if ( empty( $_post ) || ! $_post instanceof \WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) || $this->is_invalid_post_status( $_post->post_status ) ) {
 			return false;
 		}
 		if ( ! $this->app->post->get( 'setup_ranking', $_post->ID ) ) {
@@ -1108,8 +1119,10 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( ! $this->is_valid_posts_index() ) {
 			return;
 		}
+
 		$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
-		if ( $this->is_invalid_post_type( $post_type ) ) {
+		$post_status = isset( $_REQUEST['post_status'] ) ? $_REQUEST['post_status'] : 'publish';
+		if ( $this->is_invalid_post_type( $post_type ) || $this->is_invalid_post_status( $post_status ) ) {
 			return;
 		}
 
