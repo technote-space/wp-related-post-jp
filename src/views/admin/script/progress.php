@@ -3,9 +3,6 @@
  * @version 1.3.12
  * @author Technote
  * @since 1.0.0.0
- * @since 1.2.8.1 use mprogress.js instead of jquery-ui-progressbar
- * @since 1.3.0 trivial change
- * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

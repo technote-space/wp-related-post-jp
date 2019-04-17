@@ -1,13 +1,8 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.13
  * @author Technote
  * @since 1.0.0.0
- * @since 1.1.3
- * @since 1.3.0 #28
- * @since 1.3.2 #22
- * @since 1.3.9 #51, wp-content-framework/db#9, wp-content-framework/common#44
- * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

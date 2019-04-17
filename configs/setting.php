@@ -3,10 +3,6 @@
  * @version 1.3.12
  * @author Technote
  * @since 1.0.0.0
- * @since 1.3.0 Changed: trivial change
- * @since 1.3.2 Deleted: unused settings
- * @since 1.3.9 #51
- * @since 1.3.12 #77
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

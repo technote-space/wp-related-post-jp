@@ -3,10 +3,6 @@
  * @version 1.3.9
  * @author Technote
  * @since 1.0.2.1
- * @since 1.3.0 Changed: trivial change
- * @since 1.3.2 Improved: refactoring
- * @since 1.3.6 Changed: デザイン調整 (#52)
- * @since 1.3.9 wp-content-framework/admin#20
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
