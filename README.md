@@ -151,6 +151,101 @@ add_filter( 'related_post/extractor_result', function ($d, $post) {
 } );
 </pre>
 
+## 関連記事の表示を変更
+`related_post/related_posts_content` をフィルタすることで関連記事の表示を変更することが可能です。  
+
+例：
+```
+add_filter( 'related_post/related_posts_content', function (
+	/** @noinspection PhpUnusedParameterInspection */
+	$content, $control, $title, $post, $related_posts
+) {
+	/** @var \Related_Post\Classes\Models\Control $control */
+	/** @var string $title */
+	/** @var array $related_posts */
+	ob_start();
+	?>
+    <style>
+        .related_posts_content {
+            margin: 10px;
+            padding: 10px;
+            border: #ccc 1px solid;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            background: white;
+        }
+
+        .related_posts_content:hover {
+            -webkit-box-shadow: #ccc 0 0 16px;
+            -moz-box-shadow: #ccc 0 0 16px;
+            box-shadow: #ccc 0 0 16px;
+            background: #f0ffff;
+        }
+
+        .link-item {
+            letter-spacing: -1em;
+        }
+
+        .link-item .thumbnail {
+            display: inline-block;
+            width: 20%;
+            margin: 0;
+            vertical-align: middle;
+        }
+
+        .link-item .thumbnail img {
+            vertical-align: middle;
+        }
+
+        .link-item .title {
+            display: inline-block;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            width: 80%;
+            padding: 1em;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: normal;
+        }
+    </style>
+    <div class="related_posts">
+        <h3 class="related_posts_title">
+			<?php $control->h( $title ); ?>
+        </h3>
+        <div class="related_posts_wrap">
+			<?php foreach ( $related_posts as $related_post ): ?>
+				<?php /** @var WP_Post $related_post */ ?>
+                <div class="related_posts_content">
+					<?php $control->url( get_permalink( $related_post->ID ), <<< EOS
+                    <div class="link-item">
+                        <div class="thumbnail">
+                            {$control->get_thumbnail( $related_post->ID )}
+                        </div>
+                        <div class="title">
+                            {$related_post->post_title}
+                        </div>
+                    </div>
+EOS
+						, false, false, [], true, false ); ?>
+                </div>
+			<?php endforeach; ?>
+        </div>
+    </div>
+	<?php
+
+	$view = ob_get_contents();
+	ob_end_clean();
+
+	return $view;
+}, 10, 5 );
+```
+
+![関連記事の表示を変更](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/.github/images/201904171559.png)
+
 ## Author
 [GitHub (Technote)](https://github.com/technote-space)  
 [Blog](https://technote.space)
