@@ -17,35 +17,6 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 <script>
 	( function ( $ ) {
-		$( '#<?php $instance->id(); ?>-dashboard .nav-tab' ).click( function () {
-			const page = $( this ).data( 'target_page' );
-			if ( page ) {
-				location.href = $( this ).closest( 'h2' ).data( 'admin_page_url' ) + page;
-				return false;
-			}
-			$( '#<?php $instance->id(); ?>-dashboard .nav-tab' ).removeClass( 'nav-tab-active' );
-			$( '#<?php $instance->id(); ?>-dashboard .<?php $instance->id(); ?>-tab-content' ).removeClass( 'active' );
-			$( this ).addClass( 'nav-tab-active' );
-			$( '.<?php $instance->id(); ?>-tab-content[data-tab="' + $( this ).data( 'target' ) + '"]' ).addClass( 'active' );
-			location.hash = $( this ).data( 'target' );
-			const action  = $( this ).closest( 'form' ).attr( 'action' ).replace( /#\w+$/, '' ) + '#' + $( this ).data( 'target' );
-			$( this ).closest( 'form' ).attr( 'action', action );
-			return false;
-		} );
-
-		const hash = location.hash;
-		let tab;
-		if ( hash ) {
-			tab = $( '[data-target="' + location.hash.replace( /^#/, '' ) + '"]' ).eq( 0 );
-			if ( tab.length <= 0 ) {
-				tab = null;
-			}
-		}
-		if ( ! tab ) {
-			tab = $( '#<?php $instance->id(); ?>-dashboard .nav-tab' ).eq( 0 );
-		}
-		tab.trigger( 'click' );
-
 		let page                 = 1, is_loading = false, has_next = false, length;
 		const api_class          = window[ '<?php $instance->h( $api_class );?>' ];
 		const get_excluded_words = function ( p ) {

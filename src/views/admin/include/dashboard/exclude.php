@@ -13,10 +13,9 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
+/** @var array $settings */
 /** @var array $category_data */
 /** @var string $exclude_post_ids */
-/** @var array $ranking_threshold */
-/** @var array $search_threshold */
 ?>
 <table class="form-table">
     <tr>
@@ -99,18 +98,18 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
     </tr>
     <tr>
         <th>
-            <label for="<?php $instance->h( $ranking_threshold['id'] ); ?>"><?php $instance->h( 'Related posts threshold (0～1)', true ); ?></label>
+            <label for="<?php $instance->h( $settings['ranking_threshold']['id'] ); ?>"><?php $instance->h( 'Related posts threshold (0～1)', true ); ?></label>
         </th>
         <td>
-			<?php $instance->form( 'input/number', $args, $ranking_threshold ); ?>
+			<?php $instance->form( 'input/number', $args, $settings['ranking_threshold'] ); ?>
         </td>
     </tr>
     <tr>
         <th>
-            <label for="<?php $instance->h( $search_threshold['id'] ); ?>"><?php $instance->h( 'Search threshold (0～1)', true ); ?></label>
+            <label for="<?php $instance->h( $settings['search_threshold']['id'] ); ?>"><?php $instance->h( 'Search threshold (0～1)', true ); ?></label>
         </th>
         <td>
-			<?php $instance->form( 'input/number', $args, $search_threshold ); ?>
+			<?php $instance->form( 'input/number', $args, $settings['search_threshold'] ); ?>
         </td>
     </tr>
 </table>

@@ -13,24 +13,23 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
-/** @var array $related_posts_title */
-/** @var array $ranking_number */
+/** @var array $settings */
 ?>
 <table class="form-table">
     <tr>
         <th>
-            <label for="<?php $instance->h( $related_posts_title['id'] ); ?>"><?php $instance->h( 'Related posts title', true ); ?></label>
+            <label for="<?php $instance->h( $settings['related_posts_title']['id'] ); ?>"><?php $instance->h( 'Related posts title', true ); ?></label>
         </th>
         <td>
-			<?php $instance->form( 'input/text', $args, $related_posts_title ); ?>
+			<?php $instance->form( 'input/text', $args, $settings['related_posts_title'] ); ?>
         </td>
     </tr>
     <tr>
         <th>
-            <label for="<?php $instance->h( $ranking_number['id'] ); ?>"><?php $instance->h( 'Display Count', true ); ?></label>
+            <label for="<?php $instance->h( $settings['ranking_number']['id'] ); ?>"><?php $instance->h( 'Display Count', true ); ?></label>
         </th>
         <td>
-			<?php $instance->form( 'input/number', $args, $ranking_number ); ?>
+			<?php $instance->form( 'input/number', $args, $settings['ranking_number'] ); ?>
         </td>
     </tr>
     <tr>
