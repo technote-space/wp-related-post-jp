@@ -1,13 +1,8 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.13
  * @author Technote
  * @since 1.0.2.3
- * @since 1.2.8.1 trivial change
- * @since 1.3.0 trivial change
- * @since 1.3.2 #22
- * @since 1.3.6 #52
- * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -20,30 +15,6 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 ?>
 
 <style>
-    #<?php $instance->id(); ?>-dashboard {
-        display: table;
-        margin: 15px 10px;
-        width: 100%;
-    }
-
-    #<?php $instance->id(); ?>-content-wrap .nav-tab-wrapper {
-        margin-right: 5%;
-    }
-
-    #<?php $instance->id(); ?>-tab-content-wrap {
-        margin: 10px;
-    }
-
-    .<?php $instance->id(); ?>-tab-content {
-        display: none;
-        font-size: 1em;
-        margin: 25px 25px 25px 10px;
-    }
-
-    .<?php $instance->id(); ?>-tab-content.active {
-        display: block;
-    }
-
     .<?php $instance->id(); ?>-tab-content.active .on-exclude-word {
         display: none;
         background: #ea6666;

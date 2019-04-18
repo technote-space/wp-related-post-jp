@@ -1,19 +1,8 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.13
  * @author Technote
  * @since 1.0.0.0
- * @since 1.1.3
- * @since 1.2.3 setup to use api
- * @since 1.2.6 upgrade method
- * @since 1.2.8 index process log
- * @since 1.3.0 #28
- * @since 1.3.2 performance
- * @since 1.3.2 #12
- * @since 1.3.2 #22
- * @since 1.3.3 refactoring
- * @since 1.3.9 #51, #71, wp-content-framework/db#9, wp-content-framework/common#44
- * @since 1.3.12 #77
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -50,6 +39,18 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 	/** @var bool $is_related_post */
 	private $is_related_post = false;
+
+	/**
+	 * @param array $tables
+	 *
+	 * @return array
+	 */
+	/** @noinspection PhpUnusedPrivateMethodInspection */
+	private function allowed_wp_tables( $tables ) {
+		$tables[ $this->get_wp_table( 'term_relationships' ) ] = $this->get_wp_table( 'term_relationships' );
+
+		return $tables;
+	}
 
 	/**
 	 * @return int
@@ -269,6 +270,17 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
+	 * @param string $post_status
+	 *
+	 * @return bool
+	 */
+	private function is_invalid_post_status( $post_status ) {
+		return ! in_array( $post_status, $this->apply_filters( 'target_post_status', [
+			'publish',
+		] ) );
+	}
+
+	/**
 	 * @param string $new_status
 	 * @param string $old_status
 	 * @param \WP_Post $post
@@ -277,7 +289,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	private function transition_post_status( $new_status, $old_status, $post ) {
 		if ( ! $this->app->utility->is_autosave() && $this->is_valid_posts_index() ) {
 			if ( $new_status === 'publish' ) {
-				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) ) {
+				if ( $this->is_invalid_post_type( $post->post_type ) || $this->is_invalid_category( $post->ID ) || $this->is_invalid_post_status( $post->post_status ) ) {
 					$this->get_bm25()->delete( $post->ID );
 				} else {
 					if ( $this->apply_filters( 'index_background_when_update_post' ) ) {
@@ -314,7 +326,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		} else {
 			$_post = get_post( $_post );
 		}
-		if ( empty( $_post ) || ! $_post instanceof \WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) ) {
+		if ( empty( $_post ) || ! $_post instanceof \WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) || $this->is_invalid_post_status( $_post->post_status ) ) {
 			return false;
 		}
 		if ( ! $this->app->post->get( 'setup_ranking', $_post->ID ) ) {
@@ -396,9 +408,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		} );
 		$post_types  = $this->get_valid_post_types();
 		$ranking     = [];
-		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true, true );
+		$total       = $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, true );
 		$total_pages = ceil( $total / $posts_per_page );
-		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, $posts_per_page, $paged ) as $item ) {
+		foreach ( $this->get_bm25()->get_ranking( 0, $words, $post_types, true, false, false, $posts_per_page, $paged ) as $item ) {
 			$ranking[ $item['post_id'] ] = $item['score'];
 		}
 
@@ -494,11 +506,13 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			return '';
 		}
 
-		return $this->get_view( 'front/related_posts', [
-			'title'         => $this->apply_filters( 'related_posts_title' ),
+		$title = $this->apply_filters( 'related_posts_title' );
+
+		return $this->apply_filters( 'related_posts_content', $this->get_view( 'front/related_posts', [
+			'title'         => $title,
 			'post'          => $_post,
 			'related_posts' => $related_posts,
-		] );
+		] ), $this, $title, $_post, $related_posts );
 	}
 
 
@@ -872,10 +886,11 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/**
 	 * @param array $post_types
 	 * @param \WP_Framework_Db\Classes\Models\Query\Builder $query
+	 * @param bool $is_exclude_post_ids
 	 *
 	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
 	 */
-	public function common_filter( array $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query ) {
+	public function common_filter( array $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query, $is_exclude_post_ids = false ) {
 		$query->where( 'p.post_status', 'publish' );
 		if ( count( $post_types ) === 1 ) {
 			$query->where( 'p.post_type', reset( $post_types ) );
@@ -885,7 +900,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( $subquery = $this->get_taxonomy_subquery() ) {
 			$query->where_not_exists( $subquery );
 		}
-		if ( $exclude_post_ids = $this->get_exclude_post_ids() ) {
+		if ( $is_exclude_post_ids && ( $exclude_post_ids = $this->get_exclude_post_ids() ) ) {
 			$query->where_integer_not_in_raw( 'p.ID', $exclude_post_ids );
 		}
 
@@ -1084,6 +1099,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$this->app->setting->remove_setting( 'goo_retry_count' );
 			$this->app->setting->remove_setting( 'goo_retry_interval' );
 		}
+		$this->app->setting->remove_setting( 'assets_version' );
 	}
 
 	/**
@@ -1106,8 +1122,10 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( ! $this->is_valid_posts_index() ) {
 			return;
 		}
-		$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
-		if ( $this->is_invalid_post_type( $post_type ) ) {
+
+		$post_type   = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : 'post';
+		$post_status = isset( $_REQUEST['post_status'] ) ? $_REQUEST['post_status'] : 'publish';
+		if ( $this->is_invalid_post_type( $post_type ) || $this->is_invalid_post_status( $post_status ) ) {
 			return;
 		}
 

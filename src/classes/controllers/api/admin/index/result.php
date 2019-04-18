@@ -3,10 +3,6 @@
  * @version 1.3.12
  * @author Technote
  * @since 1.0.1.9
- * @since 1.1.3
- * @since 1.3.0 #28
- * @since 1.3.2 trivial change
- * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space

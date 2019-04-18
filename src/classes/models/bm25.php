@@ -1,13 +1,8 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.13
  * @author Technote
  * @since 1.0.0.0
- * @since 1.1.3
- * @since 1.3.0 #28
- * @since 1.3.2 #22
- * @since 1.3.9 #51, wp-content-framework/db#9, wp-content-framework/common#44
- * @since 1.3.12 trivial change
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -198,11 +193,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	/**
 	 * @param array $post_types
 	 * @param \WP_Framework_Db\Classes\Models\Query\Builder $query
+	 * @param bool $is_exclude_post_ids
 	 *
 	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
 	 */
-	private function from_common( $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query ) {
-		return $this->control->common_filter( $post_types, $query->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' ) );
+	private function from_common( $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query, $is_exclude_post_ids = false ) {
+		return $this->control->common_filter( $post_types, $query->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' ), $is_exclude_post_ids );
 	}
 
 	/**
@@ -216,12 +212,13 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 
 	/**
 	 * @param array $post_types
+	 * @param bool $is_exclude_post_ids
 	 *
 	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
 	 */
-	private function from_document_word( $post_types ) {
+	private function from_document_word( $post_types, $is_exclude_post_ids = false ) {
 		return $this->from_common( $post_types, $this->table( 'rel_document_word', 'rw' )
-		                                             ->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' ) );
+		                                             ->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' ), $is_exclude_post_ids );
 	}
 
 	/**
@@ -312,7 +309,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		return $this->app->db->transaction( function () use ( $post_id, $post_types, $update_ranking_now ) {
 			if ( $update_ranking_now ) {
 				$important_words = $this->get_important_words( $post_id );
-				$ranking         = $this->get_ranking( $post_id, $important_words, $post_types, false );
+				$ranking         = $this->get_ranking( $post_id, $important_words, $post_types, false, true );
 
 				$this->table( 'ranking' )->where( 'post_id', $post_id )->delete();
 				$this->table( 'ranking' )->insert( $this->app->array->map( $ranking, function ( $item ) use ( $post_id ) {
@@ -555,13 +552,14 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @param array $words
 	 * @param array $post_types
 	 * @param bool $is_search
+	 * @param bool $is_exclude_post_ids
 	 * @param bool $is_count
 	 * @param int|null $count
 	 * @param int|null $page
 	 *
 	 * @return array|int
 	 */
-	public function get_ranking( $post_id, $words, $post_types, $is_search, $is_count = false, $count = null, $page = null ) {
+	public function get_ranking( $post_id, $words, $post_types, $is_search, $is_exclude_post_ids, $is_count = false, $count = null, $page = null ) {
 		if ( empty( $words ) ) {
 			return [];
 		}
@@ -599,7 +597,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			$select[] = $this->raw( "SUM( w.idf * t.n * ( rw.tf * ( $k1 + 1 ) ) / ( rw.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) ) ) as score" );
 		}
 
-		$query = $this->from_document_word( $post_types )
+		$query = $this->from_document_word( $post_types, $is_exclude_post_ids )
 		              ->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
 		              ->join_sub( $subquery, 't', 't.word_id', 'rw.word_id' )
 		              ->where( 'd.post_id', '!=', $post_id )
