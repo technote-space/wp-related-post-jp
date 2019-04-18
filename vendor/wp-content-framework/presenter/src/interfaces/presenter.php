@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Presenter Interfaces Presenter
  *
- * @version 0.0.18
+ * @version 0.0.19
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -22,6 +22,13 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
  * @mixin \WP_Framework_Core\Traits\Translate
  */
 interface Presenter {
+
+	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function view_exists( $name );
 
 	/**
 	 * @param string $name

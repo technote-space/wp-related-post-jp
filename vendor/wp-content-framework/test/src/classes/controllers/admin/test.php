@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Test Classes Controller Test
  *
- * @version 0.0.11
+ * @version 0.0.13
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -27,7 +27,7 @@ class Test extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 	 * @return int
 	 */
 	public function get_load_priority() {
-		return $this->app->test->is_valid() ? $this->apply_filters( 'test_page_priority', $this->app->utility->definedv( 'WP_DEBUG' ) ? 900 : - 1 ) : - 1;
+		return $this->app->test->is_valid() ? $this->apply_filters( 'test_page_priority', $this->app->utility->defined( 'WP_DEBUG' ) ? 900 : - 1 ) : - 1;
 	}
 
 	/**
