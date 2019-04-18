@@ -13,15 +13,15 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 /** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
 /** @var array $args */
-/** @var array $auto_insert_related_post */
+/** @var array $settings */
 ?>
 <table class="form-table">
     <tr>
         <th>
-            <label for="<?php $instance->h( $auto_insert_related_post['id'] ); ?>"><?php $instance->h( 'Auto insert related posts', true ); ?></label>
+            <label for="<?php $instance->h( $settings['auto_insert_related_post']['id'] ); ?>"><?php $instance->h( 'Auto insert related posts', true ); ?></label>
         </th>
         <td>
-			<?php $instance->form( 'input/checkbox', $args, $auto_insert_related_post ); ?>
+			<?php $instance->form( 'input/checkbox', $args, $settings['auto_insert_related_post'] ); ?>
         </td>
     </tr>
 </table>

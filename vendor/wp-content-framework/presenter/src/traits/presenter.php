@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Presenter Traits Presenter
  *
- * @version 0.0.18
+ * @version 0.0.19
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -50,6 +50,25 @@ trait Presenter {
 		}
 
 		return $this->apply_filters( 'check_view_dirs', $dirs, $this->get_class_name() );
+	}
+
+	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function view_exists( $name ) {
+		$name = trim( $name, '/' . DS );
+		$name = str_replace( '/', DS, $name );
+		$name .= '.php';
+		foreach ( $this->get_check_view_dirs() as $dir ) {
+			$dir = rtrim( $dir, DS . '/' );
+			if ( is_readable( $dir . DS . $name ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

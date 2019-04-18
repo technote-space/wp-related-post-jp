@@ -15,30 +15,6 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 ?>
 
 <style>
-    #<?php $instance->id(); ?>-dashboard {
-        display: table;
-        margin: 15px 10px;
-        width: 100%;
-    }
-
-    #<?php $instance->id(); ?>-content-wrap .nav-tab-wrapper {
-        margin-right: 5%;
-    }
-
-    #<?php $instance->id(); ?>-tab-content-wrap {
-        margin: 10px;
-    }
-
-    .<?php $instance->id(); ?>-tab-content {
-        display: none;
-        font-size: 1em;
-        margin: 25px 25px 25px 10px;
-    }
-
-    .<?php $instance->id(); ?>-tab-content.active {
-        display: block;
-    }
-
     .<?php $instance->id(); ?>-tab-content.active .on-exclude-word {
         display: none;
         background: #ea6666;
