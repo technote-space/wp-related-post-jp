@@ -66,9 +66,9 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 	}
 
 	/**
-	 * pre update
+	 * before update
 	 */
-	protected function pre_update() {
+	protected function before_update() {
 		$exclude_categories = $this->app->input->post( 'exclude_categories' );
 		! is_array( $exclude_categories ) and $exclude_categories = [];
 		$this->app->input->set_post( $this->get_filter_prefix() . 'exclude_categories', implode( ',', $exclude_categories ) );
