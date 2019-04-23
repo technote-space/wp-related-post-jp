@@ -34,6 +34,7 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 			'auto_insert_related_post',
 			'exclude_categories',
 			'exclude_ids',
+			'use_admin_ajax',
 		];
 	}
 
@@ -56,10 +57,11 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 					'search_threshold',
 				],
 			],
-			'insert'  => [
-				'name'  => 'Auto Insert Settings',
+			'misc'    => [
+				'name'  => 'Misc',
 				'items' => [
 					'auto_insert_related_post',
+					'use_admin_ajax',
 				],
 			],
 		];
