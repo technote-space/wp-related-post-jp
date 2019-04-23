@@ -43,5 +43,4 @@ return [
 
 	// github repo
 	'github_repo'                    => 'technote-space/wp-related-post-jp',
-
 ];

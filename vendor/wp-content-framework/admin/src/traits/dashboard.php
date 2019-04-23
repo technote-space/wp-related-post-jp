@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Admin Traits Dashboard
  *
- * @version 0.0.26
+ * @version 0.0.29
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -86,32 +86,51 @@ trait Dashboard {
 	 */
 	protected function post_action() {
 		if ( $this->app->input->post( 'update' ) ) {
-			$this->pre_update();
+			$this->before_update();
 			foreach ( $this->_get_setting_list() as $name => $option ) {
 				$this->update_setting( $name, $option );
 			}
 			$this->app->add_message( 'Settings have been updated.', 'setting' );
+			$this->after_update();
 		} else {
-			$this->pre_delete();
+			$this->before_delete();
 			foreach ( $this->_get_setting_list() as $name => $option ) {
 				$this->app->option->delete( $this->get_filter_prefix() . $name );
 				$this->delete_hook_cache( $name );
 			}
 			$this->app->add_message( 'Settings have been reset.', 'setting' );
+			$this->after_delete();
 		}
 	}
 
 	/**
-	 * pre update
+	 * before update
 	 */
-	protected function pre_update() {
+	protected function before_update() {
+		// support v0.0.24 - v0.0.27
+		if ( method_exists( $this, 'pre_update' ) ) {
+			$this->pre_update();
+		}
+	}
+
+	/**
+	 * after update
+	 */
+	protected function after_update() {
 
 	}
 
 	/**
-	 * pre delete
+	 * before delete
 	 */
-	protected function pre_delete() {
+	protected function before_delete() {
+
+	}
+
+	/**
+	 * after delete
+	 */
+	protected function after_delete() {
 
 	}
 

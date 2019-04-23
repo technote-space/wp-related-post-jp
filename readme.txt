@@ -4,7 +4,7 @@ Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Requires PHP: 5.6
 Tested up to: 5.2
-Stable tag: 1.3.13
+Stable tag: 1.3.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,11 @@ This plugin needs PHP5.6 or higher.
 4. After
 
 == Upgrade Notice ==
+
+= 1.3.14 =
+* wp-json の代わりに admin-ajax.php を使用するかどうか の設定をダッシュボードに追加。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/89)
+* post_status = all の場合にボタンが一覧に表示されないバグを修正。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/90)
+* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/93)
 
 = 1.3.9 =
 * 評価による足切り機能を追加しました。

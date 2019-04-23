@@ -118,8 +118,8 @@ add_action( 'get_template_part_related-list', function () {
 	do_action( 'related_post/on_related_post' );
 } );
 </pre>
-このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 用のコードが記述されているため、
-Cocoonを使用している方は別途設定は必要ありません。
+このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 及び [Simplicity2](https://wp-simplicity.com/) 用のコードが記述されているため、
+それらを使用している方は別途設定は必要ありません。
 
 ### 直接出力する場合
 以下のコードを貼り付けると関連記事が表示されます。

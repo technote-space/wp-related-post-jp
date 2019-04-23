@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.13
+ * @version 1.3.14
  * @author Technote
  * @since 1.0.2.1
  * @copyright Technote All Rights Reserved
@@ -34,6 +34,7 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 			'auto_insert_related_post',
 			'exclude_categories',
 			'exclude_ids',
+			'use_admin_ajax',
 		];
 	}
 
@@ -56,19 +57,20 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 					'search_threshold',
 				],
 			],
-			'insert'  => [
-				'name'  => 'Auto Insert Settings',
+			'misc'    => [
+				'name'  => 'Misc',
 				'items' => [
 					'auto_insert_related_post',
+					'use_admin_ajax',
 				],
 			],
 		];
 	}
 
 	/**
-	 * pre update
+	 * before update
 	 */
-	protected function pre_update() {
+	protected function before_update() {
 		$exclude_categories = $this->app->input->post( 'exclude_categories' );
 		! is_array( $exclude_categories ) and $exclude_categories = [];
 		$this->app->input->set_post( $this->get_filter_prefix() . 'exclude_categories', implode( ',', $exclude_categories ) );
