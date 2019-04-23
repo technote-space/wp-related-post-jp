@@ -277,6 +277,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	private function is_invalid_post_status( $post_status ) {
 		return ! in_array( $post_status, $this->apply_filters( 'target_post_status', [
 			'publish',
+			'all',
 		] ) );
 	}
 
