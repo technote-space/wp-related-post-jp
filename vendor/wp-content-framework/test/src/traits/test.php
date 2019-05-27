@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Test Traits Test
  *
- * @version 0.0.1
+ * @version 0.0.14
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -11,6 +11,13 @@
 
 namespace WP_Framework_Test\Traits;
 
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
+use WP_Framework;
+use WP_Framework_Core\Traits\Hook;
+use WP_Framework_Core\Traits\Singleton;
+
 if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
 	exit;
 }
@@ -18,12 +25,12 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
 /**
  * Trait Test
  * @package WP_Framework_Test\Traits
- * @property \WP_Framework $app
- * @mixin \PHPUnit\Framework\TestCase
+ * @property WP_Framework $app
+ * @mixin TestCase
  */
 trait Test {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook;
+	use Singleton, Hook;
 
 	/**
 	 * @var array $_objects
@@ -37,16 +44,16 @@ trait Test {
 	 * @param mixed $arg2
 	 * @param mixed $arg3
 	 *
-	 * @throws \ReflectionException
+	 * @throws ReflectionException
 	 */
 	public function __construct( $arg1 = null, $arg2 = [], $arg3 = '' ) {
 		$args = func_get_args();
-		if ( count( $args ) > 1 && $args[0] instanceof \WP_Framework && $args[1] instanceof \ReflectionClass ) {
+		if ( count( $args ) > 1 && $args[0] instanceof WP_Framework && $args[1] instanceof ReflectionClass ) {
 			// Singleton
 			$this->init( ...$args );
 		} elseif ( count( $args ) > 2 ) {
 			// \PHPUnit_Framework_TestCase
-			$reflectionClass = new \ReflectionClass( '\PHPUnit_Framework_TestCase' );
+			$reflectionClass = new ReflectionClass( '\PHPUnit_Framework_TestCase' );
 			if ( $arg1 !== null ) {
 				$this->setName( $arg1 );
 			}

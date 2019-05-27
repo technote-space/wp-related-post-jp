@@ -2,7 +2,7 @@
 /**
  * WP_Framework_Test Classes Models Test
  *
- * @version 0.0.12
+ * @version 0.0.14
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
@@ -10,6 +10,13 @@
  */
 
 namespace WP_Framework_Test\Classes\Models;
+
+use PHPUnit_Framework_TestSuite;
+use PHPUnit_Framework_TestSuite_DataProvider;
+use WP_Framework_Core\Traits\Loader;
+use WP_Framework_Presenter\Traits\Presenter;
+use WP_Framework_Test\Classes\Tests\Base;
+use WP_Framework_Test\Traits\Package;
 
 if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
 	exit;
@@ -21,7 +28,7 @@ if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
  */
 class Test implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Presenter\Interfaces\Presenter {
 
-	use \WP_Framework_Core\Traits\Loader, \WP_Framework_Presenter\Traits\Presenter, \WP_Framework_Test\Traits\Package;
+	use Loader, Presenter, Package;
 
 	/**
 	 * @var bool $_is_valid
@@ -104,7 +111,7 @@ class Test implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Presen
 			return [];
 		}
 
-		\WP_Framework_Test\Classes\Tests\Base::set_app( $this->app );
+		Base::set_app( $this->app );
 		$results = [];
 		foreach ( $this->get_tests() as $slug => $class ) {
 			$results[] = $this->do_test( $class );
@@ -114,12 +121,12 @@ class Test implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Presen
 	}
 
 	/**
-	 * @param \WP_Framework_Test\Classes\Tests\Base $class
+	 * @param Base $class
 	 *
 	 * @return array
 	 */
-	private function do_test( \WP_Framework_Test\Classes\Tests\Base $class ) {
-		$suite = new \PHPUnit_Framework_TestSuite( $class->get_class_name() );
+	private function do_test( Base $class ) {
+		$suite = new PHPUnit_Framework_TestSuite( $class->get_class_name() );
 		$suite->setBackupGlobals( false );
 		$result = $suite->run();
 
@@ -127,7 +134,7 @@ class Test implements \WP_Framework_Core\Interfaces\Loader, \WP_Framework_Presen
 		foreach ( $result->topTestSuite()->tests() as $item ) {
 			if ( $item instanceof \WP_Framework_Test\Interfaces\Test ) {
 				$dump = array_merge( $dump, $item->get_dump_objects() );
-			} elseif ( $item instanceof \PHPUnit_Framework_TestSuite_DataProvider ) {
+			} elseif ( $item instanceof PHPUnit_Framework_TestSuite_DataProvider ) {
 				foreach ( $item->tests() as $item2 ) {
 					if ( $item2 instanceof \WP_Framework_Test\Interfaces\Test ) {
 						$dump = array_merge( $dump, $item2->get_dump_objects() );

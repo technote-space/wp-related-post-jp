@@ -2,20 +2,23 @@
 /**
  * WP_Framework_Test Views Admin Test
  *
- * @version 0.0.5
+ * @version 0.0.14
  * @author Technote
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Interfaces\Presenter;
+use WP_Framework_Test\Classes\Tests\Base;
+
 if ( ! defined( 'WP_CONTENT_FRAMEWORK' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
+/** @var Presenter $instance */
+/** @var PHPUnit_Framework_TestResult $result */
+/** @var Base $class */
 /** @var array $args */
-/** @var \PHPUnit_Framework_TestResult $result */
-/** @var \WP_Framework_Test\Classes\Tests\Base $class */
 /** @var array $dump */
 $instance->add_style_view( 'admin/style/table' );
 try {
@@ -48,7 +51,7 @@ try {
 					<?php if ( $result->warningCount() > 0 ): ?>
                         <ul>
 							<?php foreach ( $result->warnings() as $item ): ?>
-								<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
+								<?php /** @var PHPUnit_Framework_TestFailure $item */ ?>
                                 <li><?php $instance->h( $item->toString() ); ?></li>
 							<?php endforeach; ?>
                         </ul>
@@ -63,7 +66,7 @@ try {
 					<?php if ( $result->errorCount() > 0 ): ?>
                         <ul>
 							<?php foreach ( $result->errors() as $item ): ?>
-								<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
+								<?php /** @var PHPUnit_Framework_TestFailure $item */ ?>
                                 <li>
 									<?php $instance->h( $item->toString() ); ?>
 									<?php $instance->dump( $item->thrownException()->getTraceAsString() ); ?>
@@ -81,7 +84,7 @@ try {
 					<?php if ( $result->failureCount() > 0 ): ?>
                         <ul>
 							<?php foreach ( $result->failures() as $item ): ?>
-								<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
+								<?php /** @var PHPUnit_Framework_TestFailure $item */ ?>
                                 <li><?php $instance->h( $item->toString() ); ?></li>
 							<?php endforeach; ?>
                         </ul>
@@ -96,7 +99,7 @@ try {
 					<?php if ( $result->riskyCount() > 0 ): ?>
                         <ul>
 							<?php foreach ( $result->risky() as $item ): ?>
-								<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
+								<?php /** @var PHPUnit_Framework_TestFailure $item */ ?>
                                 <li><?php $instance->h( $item->toString() ); ?></li>
 							<?php endforeach; ?>
                         </ul>
@@ -111,7 +114,7 @@ try {
 					<?php if ( $result->notImplementedCount() > 0 ): ?>
                         <ul>
 							<?php foreach ( $result->notImplemented() as $item ): ?>
-								<?php /** @var \PHPUnit_Framework_TestFailure $item */ ?>
+								<?php /** @var PHPUnit_Framework_TestFailure $item */ ?>
                                 <li><?php $instance->h( $item->toString() ); ?></li>
 							<?php endforeach; ?>
                         </ul>
@@ -134,6 +137,6 @@ try {
             </tr>
 		<?php endif; ?>
     </table>
-<?php } catch ( \Exception $e ) {
+<?php } catch ( Exception $e ) {
 	$instance->dump( $e );
 } ?>
