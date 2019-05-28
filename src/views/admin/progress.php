@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.6
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -8,13 +8,14 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Interfaces\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
+/** @var Presenter $instance */
 /** @var array $args */
 ?>
-
 <div id="<?php $instance->id(); ?>-switch-buttons">
 	<?php $instance->form( 'input/button', $args, [
 		'class' => 'index_on button-primary',

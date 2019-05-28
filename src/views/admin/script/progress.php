@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -8,74 +8,75 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Interfaces\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
+/** @var Presenter $instance */
 /** @var string $api_class */
 $instance->js( 'mprogress.min.js' );
 ?>
-
 <script>
-	( function ( $ ) {
+	( function( $ ) {
 		const mprogress = new Mprogress( {
 			template: 2,
 			parent: '#related_post-progressbar-wrap .progressbar',
 		} );
 
 		let is_valid_button = true;
-		const api_class     = window[ '<?php $instance->h( $api_class );?>' ];
-		$( '#<?php $instance->id(); ?>-switch-buttons .index_on' ).click( function () {
+		const api_class = window[ '<?php $instance->h( $api_class );?>' ];
+		$( '#<?php $instance->id(); ?>-switch-buttons .index_on' ).click( function() {
 			$( this ).addClass( 'disabled' );
 			if ( ! is_valid_button ) {
 				return;
 			}
 			is_valid_button = false;
-			api_class.ajax( 'index_on' ).done( function ( json ) {
+			api_class.ajax( 'index_on' ).done( function( json ) {
 
-			} ).fail( function ( err ) {
+			} ).fail( function( err ) {
 				console.log( err );
-			} ).always( function () {
+			} ).always( function() {
 				is_valid_button = true;
 				check_progress( false );
 			} );
 			return false;
 		} );
-		$( '#<?php $instance->id(); ?>-switch-buttons .index_off' ).click( function () {
+		$( '#<?php $instance->id(); ?>-switch-buttons .index_off' ).click( function() {
 			$( this ).addClass( 'disabled' );
 			if ( ! is_valid_button ) {
 				return;
 			}
 			is_valid_button = false;
-			api_class.ajax( 'index_off' ).done( function ( json ) {
+			api_class.ajax( 'index_off' ).done( function( json ) {
 
-			} ).fail( function ( err ) {
+			} ).fail( function( err ) {
 				console.log( err );
-			} ).always( function () {
+			} ).always( function() {
 				is_valid_button = true;
 				check_progress( false );
 			} );
 			return false;
 		} );
-		$( '#<?php $instance->id(); ?>-finished-wrap .index_clear' ).click( function () {
+		$( '#<?php $instance->id(); ?>-finished-wrap .index_clear' ).click( function() {
 			$( this ).addClass( 'disabled' );
 			if ( ! is_valid_button ) {
 				return;
 			}
 			is_valid_button = false;
-			api_class.ajax( 'index_clear' ).done( function ( json ) {
+			api_class.ajax( 'index_clear' ).done( function( json ) {
 
-			} ).fail( function ( err ) {
+			} ).fail( function( err ) {
 				console.log( err );
-			} ).always( function () {
+			} ).always( function() {
 				is_valid_button = true;
 				check_progress( false );
 			} );
 			return false;
 		} );
 
-		const check_progress = function ( repeat ) {
-			api_class.ajax( 'progress' ).done( function ( json ) {
+		const check_progress = function( repeat ) {
+			api_class.ajax( 'progress' ).done( function( json ) {
 				/** @var {{posts_indexed: boolean, is_valid_posts_index: boolean, processed_rate: number}} json */
 				if ( json.posts_indexed ) {
 					// すでに初期化済み
@@ -110,11 +111,11 @@ $instance->js( 'mprogress.min.js' );
 					$( '#<?php $instance->id(); ?>-info-wrap' ).hide();
 					$( '#<?php $instance->id(); ?>-finished-wrap' ).hide();
 				}
-			} ).fail( function ( err ) {
+			} ).fail( function( err ) {
 				console.log( err );
-			} ).always( function () {
+			} ).always( function() {
 				if ( repeat ) {
-					setTimeout( function () {
+					setTimeout( function() {
 						check_progress( repeat );
 					}, 5000 );
 				}

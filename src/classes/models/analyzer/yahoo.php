@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.9
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -9,6 +9,8 @@
  */
 
 namespace Related_Post\Classes\Models\Analyzer;
+
+use Exception;
 
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
@@ -98,14 +100,14 @@ class Yahoo extends Api {
 	 * @param string $res
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function parse_response( $res ) {
 		$xml   = simplexml_load_string( $res );
 		$json  = json_encode( $xml );
 		$array = json_decode( $json, true );
 		if ( ! isset( $array['uniq_result']['word_list']['word'] ) ) {
-			throw new \Exception( $this->translate( 'Invalid API Response.' ) );
+			throw new Exception( $this->translate( 'Invalid API Response.' ) );
 		}
 
 		return $array['uniq_result']['word_list']['word'];

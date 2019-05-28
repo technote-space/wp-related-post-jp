@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -16,9 +16,6 @@ return [
 
 	// main menu title
 	'main_menu_title'                => 'WP Related Post JP',
-
-	// db version
-	'db_version'                     => '0.0.2',
 
 	// update
 	'update_info_file_url'           => 'https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/update.json',

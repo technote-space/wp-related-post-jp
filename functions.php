@@ -1,12 +1,14 @@
 <?php
 /**
- * @version 1.3.13
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
  */
+
+use Related_Post\Classes\Models\Control;
 
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
@@ -28,21 +30,21 @@ if ( strpos( wp_get_theme()->get_template(), 'simplicity2' ) !== false ) {
 
 if ( ! function_exists( 'wp_related_posts' ) ) {
 	function wp_related_posts() {
-		/** @var \Related_Post\Classes\Models\Control $control */
-		$control = \Related_Post\Classes\Models\Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
+		/** @var Control $control */
+		$control = Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
 		echo $control->get_related_posts_content();
 	}
 }
 
 if ( ! function_exists( 'get_related_posts' ) ) {
 	/**
-	 * @param null|\WP_Post $_post
+	 * @param null|WP_Post $_post
 	 *
 	 * @return WP_Post[]|false
 	 */
 	function get_related_posts( $_post = null ) {
-		/** @var \Related_Post\Classes\Models\Control $control */
-		$control = \Related_Post\Classes\Models\Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
+		/** @var Control $control */
+		$control = Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
 
 		return $control->get_related_posts( $_post->ID );
 	}

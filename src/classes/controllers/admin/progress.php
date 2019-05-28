@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Controllers\Admin;
 
+use WP_Framework_Admin\Classes\Controllers\Admin\Base;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Progress
  * @package Related_Post\Classes\Controllers\Admin
  */
-class Progress extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
+class Progress extends Base {
 
 	/**
 	 * @return string

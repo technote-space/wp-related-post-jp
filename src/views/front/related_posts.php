@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.1.9
  * @copyright Technote All Rights Reserved
@@ -8,10 +8,12 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Traits\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Traits\Presenter $instance */
+/** @var Presenter $instance */
 /** @var string $title */
 /** @var WP_Post $post */
 /** @var WP_Post[] $related_posts */

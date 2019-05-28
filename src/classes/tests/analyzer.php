@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.9
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Tests;
 
+use WP_Framework_Test\Classes\Tests\Base;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Analyzer
  * @package Related_Post\Classes\Tests
  */
-class Analyzer extends \WP_Framework_Test\Classes\Tests\Base {
+class Analyzer extends Base {
 
 	/** @var \Related_Post\Classes\Models\Analyzer */
 	private $analyzer;

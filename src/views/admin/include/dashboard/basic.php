@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.13
+ * @version 1.3.16
  * @author Technote
  * @since 1.3.2
  * @copyright Technote All Rights Reserved
@@ -8,10 +8,12 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Interfaces\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
+/** @var Presenter $instance */
 /** @var array $args */
 /** @var array $settings */
 ?>

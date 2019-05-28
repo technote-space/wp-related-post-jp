@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.9
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -9,6 +9,8 @@
  */
 
 namespace Related_Post\Classes\Models\Analyzer;
+
+use Exception;
 
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
@@ -88,12 +90,12 @@ class Goo extends Api {
 	 * @param string $res
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function parse_response( $res ) {
 		$array = json_decode( $res, true );
 		if ( ! isset( $array['word_list'] ) ) {
-			throw new \Exception( $this->translate( 'Invalid API Response.' ) );
+			throw new Exception( $this->translate( 'Invalid API Response.' ) );
 		}
 
 		return $array['word_list'];

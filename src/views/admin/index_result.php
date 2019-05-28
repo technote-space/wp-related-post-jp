@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.12
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.1.9
  * @copyright Technote All Rights Reserved
@@ -8,10 +8,12 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Traits\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Traits\Presenter $instance */
+/** @var Presenter $instance */
 /** @var WP_Post $post */
 /** @var WP_Post[]|false $posts */
 /** @var array $words */
@@ -19,7 +21,6 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var bool $setup_ranking */
 include 'style/index_result.php';
 ?>
-
 <h2><?php $instance->h( $post->post_title ); ?></h2>
 <div class="ranking-posts">
     <h3><?php $instance->h( 'Related Posts', true ); ?></h3>

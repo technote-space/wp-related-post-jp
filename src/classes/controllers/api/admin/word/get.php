@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.2
+ * @version 1.3.16
  * @author Technote
  * @since 1.3.2
  * @copyright Technote All Rights Reserved
@@ -10,6 +10,12 @@
 
 namespace Related_Post\Classes\Controllers\Api\Admin\Word;
 
+use Related_Post\Classes\Models\Control;
+use WP_Error;
+use WP_Framework_Api\Classes\Controllers\Api\Base;
+use WP_REST_Request;
+use WP_REST_Response;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +24,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Get
  * @package Related_Post\Classes\Controllers\Api\Admin\Word
  */
-class Get extends \WP_Framework_Api\Classes\Controllers\Api\Base {
+class Get extends Base {
 
 	/**
 	 * @return string
@@ -86,16 +92,16 @@ class Get extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	}
 
 	/**
-	 * @param \WP_REST_Request|array $params
+	 * @param WP_REST_Request|array $params
 	 *
-	 * @return int|\WP_Error|\WP_REST_Response
+	 * @return int|WP_Error|WP_REST_Response
 	 */
 	public function callback( $params ) {
-		/** @var \Related_Post\Classes\Models\Control $control */
-		$control = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+		/** @var Control $control */
+		$control = Control::get_instance( $this->app );
 		list( $words, $has_next ) = $control->get_excluded_words( $params['page'], $params['per_page'] );
 
-		return new \WP_REST_Response( [
+		return new WP_REST_Response( [
 			'words'    => $words,
 			'has_next' => $has_next,
 		] );

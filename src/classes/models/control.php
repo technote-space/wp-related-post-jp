@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.14
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -9,6 +9,18 @@
  */
 
 namespace Related_Post\Classes\Models;
+
+use Closure;
+use WP_Framework_Common\Traits\Package;
+use WP_Framework_Common\Traits\Uninstall;
+use WP_Framework_Core\Traits\Hook;
+use WP_Framework_Core\Traits\Singleton;
+use WP_Framework_Db\Classes\Models\Query\Builder;
+use WP_Framework_Presenter\Traits\Presenter;
+use WP_Post;
+use WP_Query;
+use WP_Taxonomy;
+use WP_Term;
 
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
@@ -20,7 +32,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  */
 class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook, \WP_Framework_Presenter\Interfaces\Presenter, \WP_Framework_Common\Interfaces\Uninstall {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Presenter\Traits\Presenter, \WP_Framework_Common\Traits\Uninstall, \WP_Framework_Common\Traits\Package;
+	use Singleton, Hook, Presenter, Uninstall, Package;
 
 	/** @var Bm25 $bm25 */
 	private $bm25;
@@ -120,7 +132,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$post_types        = $this->get_valid_post_types();
 			$target_taxonomies = [];
 			foreach ( $wp_taxonomies as $taxonomy => $taxonomy_object ) {
-				/** @var \WP_Taxonomy $taxonomy_object */
+				/** @var WP_Taxonomy $taxonomy_object */
 				if ( $taxonomy_object->hierarchical && ! empty( array_intersect( $taxonomy_object->object_type, $post_types ) ) ) {
 					if ( $this->apply_filters( 'is_category_taxonomy', true, $taxonomy, $taxonomy_object ) ) {
 						foreach ( $taxonomy_object->object_type as $post_type ) {
@@ -195,7 +207,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 		$data = [];
 		foreach ( $terms as $term ) {
-			/** @var \WP_Term $term */
+			/** @var WP_Term $term */
 			$data[ $term->slug ] = [
 				'name'       => $term->name,
 				'id'         => $term->term_taxonomy_id,
@@ -284,7 +296,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	/**
 	 * @param string $new_status
 	 * @param string $old_status
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function transition_post_status( $new_status, $old_status, $post ) {
@@ -313,9 +325,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @param int|\WP_Post|null $_post
+	 * @param int|WP_Post|null $_post
 	 *
-	 * @return \WP_Post[]|false
+	 * @return WP_Post[]|false
 	 */
 	public function get_related_posts( $_post = null ) {
 		if ( ! $this->is_valid_posts_index() ) {
@@ -327,7 +339,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		} else {
 			$_post = get_post( $_post );
 		}
-		if ( empty( $_post ) || ! $_post instanceof \WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) || $this->is_invalid_post_status( $_post->post_status ) ) {
+		if ( empty( $_post ) || ! $_post instanceof WP_Post || $this->is_invalid_post_type( $_post->post_type ) || $this->is_invalid_category( $_post->ID ) || $this->is_invalid_post_status( $_post->post_status ) ) {
 			return false;
 		}
 		if ( ! $this->app->post->get( 'setup_ranking', $_post->ID ) ) {
@@ -365,7 +377,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @param \WP_Query $query
+	 * @param WP_Query $query
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function pre_get_posts( $query ) {
@@ -419,7 +431,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @param \WP_Query $query
+	 * @param WP_Query $query
 	 * @param string $q
 	 */
 	private function keyword_search( $query, $q ) {
@@ -439,10 +451,10 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$query->set( 'paged', '' );
 			$posts_results = function ( $posts, $query ) use ( &$posts_results, $ranking, $q, $total_pages, $paged ) {
 				/** @var array $posts */
-				/** @var \WP_Query $query */
+				/** @var WP_Query $query */
 				usort( $posts, function ( $a, $b ) use ( $ranking ) {
-					/** @var \WP_Post $a */
-					/** @var \WP_Post $b */
+					/** @var WP_Post $a */
+					/** @var WP_Post $b */
 					$ra = $ranking[ $a->ID ];
 					$rb = $ranking[ $b->ID ];
 
@@ -460,7 +472,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @param \WP_Query $query
+	 * @param WP_Query $query
 	 */
 	private function related_post( $query ) {
 		global $post;
@@ -497,7 +509,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @param null|\WP_Post $_post
+	 * @param null|WP_Post $_post
 	 *
 	 * @return string
 	 */
@@ -860,7 +872,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @param string $post_id_column
 	 * @param string $term_relationships_table
 	 *
-	 * @return false|\Closure
+	 * @return false|Closure
 	 */
 	public function get_taxonomy_subquery( $term_taxonomy_ids = null, $post_table = 'p', $post_id_column = 'ID', $term_relationships_table = 'tr' ) {
 		! isset( $term_taxonomy_ids ) and $term_taxonomy_ids = $this->get_exclude_category_id();
@@ -869,7 +881,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		}
 
 		return function ( $query ) use ( $term_taxonomy_ids, $post_table, $post_id_column, $term_relationships_table ) {
-			/** @var \WP_Framework_Db\Classes\Models\Query\Builder $query */
+			/** @var Builder $query */
 			$query->table( $this->get_wp_table( 'term_relationships', $term_relationships_table ) )
 			      ->select_raw( '"X"' )
 			      ->where_column( "{$term_relationships_table}.object_id", "{$post_table}.{$post_id_column}" )
@@ -878,7 +890,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 * @return Builder
 	 */
 	private function from_posts() {
 		return $this->common_filter( $this->get_valid_post_types(), $this->wp_table( 'posts', 'p' ) );
@@ -886,12 +898,12 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 	/**
 	 * @param array $post_types
-	 * @param \WP_Framework_Db\Classes\Models\Query\Builder $query
+	 * @param Builder $query
 	 * @param bool $is_exclude_post_ids
 	 *
-	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 * @return Builder
 	 */
-	public function common_filter( array $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query, $is_exclude_post_ids = false ) {
+	public function common_filter( array $post_types, Builder $query, $is_exclude_post_ids = false ) {
 		$query->where( 'p.post_status', 'publish' );
 		if ( count( $post_types ) === 1 ) {
 			$query->where( 'p.post_type', reset( $post_types ) );
@@ -923,7 +935,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		$query = $this->from_posts()
 		              ->alias_left_join_wp( 'postmeta', 'pm', 'p.ID', 'pm.post_id' )
 		              ->where_not_exists( function ( $query ) use ( $key ) {
-			              /** @var \WP_Framework_Db\Classes\Models\Query\Builder $query */
+			              /** @var Builder $query */
 			              $query->table( $this->get_wp_table( 'postmeta', 'pm2' ) )
 			                    ->where_column( 'pm2.post_id', 'pm.post_id' )
 			                    ->where( 'pm2.meta_key', $this->app->post->get_meta_key( $key ) )

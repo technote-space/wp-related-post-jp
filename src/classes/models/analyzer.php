@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.0
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -10,6 +10,16 @@
 
 namespace Related_Post\Classes\Models;
 
+use Exception;
+use Related_Post\Classes\Models\Analyzer\Charfilter;
+use Related_Post\Classes\Models\Analyzer\Extractor;
+use Related_Post\Classes\Models\Analyzer\Tokenfilter;
+use Related_Post\Classes\Models\Analyzer\Tokenizer;
+use WP_Framework_Common\Traits\Package;
+use WP_Framework_Core\Interfaces\Singleton;
+use WP_Framework_Core\Traits\Hook;
+use WP_Post;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,12 +28,12 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Analyzer
  * @package Related_Post\Classes\Models
  */
-class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
+class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
+	use \WP_Framework_Core\Traits\Singleton, Hook, Package;
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 *
 	 * @return array ( word => count )
 	 */
@@ -32,7 +42,7 @@ class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 *
 	 * @return mixed
 	 */
@@ -60,7 +70,7 @@ class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 *
 	 * @return string
 	 */
@@ -76,13 +86,13 @@ class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework
 		foreach ( $filters as $filter ) {
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Extractor\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Extractor' ) ) {
-				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
-				/** @var \Related_Post\Classes\Models\Analyzer\Extractor $instance */
+				/** @var Singleton $filter */
+				/** @var Extractor $instance */
 				try {
 					$instance = $filter::get_instance( $this->app );
 
 					return $instance->extract( $post );
-				} catch ( \Exception $e ) {
+				} catch ( Exception $e ) {
 				}
 			}
 		}
@@ -107,8 +117,8 @@ class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework
 		foreach ( $filters as $filter ) {
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Charfilter\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Charfilter' ) ) {
-				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
-				/** @var \Related_Post\Classes\Models\Analyzer\Charfilter $instance */
+				/** @var Singleton $filter */
+				/** @var Charfilter $instance */
 				$instance = $filter::get_instance( $this->app );
 				$text     = $instance->filter( $text );
 			}
@@ -135,14 +145,14 @@ class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework
 			$tokenizer = $filter;
 			$filter    = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Tokenizer\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Tokenizer' ) ) {
-				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
-				/** @var \Related_Post\Classes\Models\Analyzer\Tokenizer $instance */
+				/** @var Singleton $filter */
+				/** @var Tokenizer $instance */
 				try {
 					$instance = $filter::get_instance( $this->app );
 					if ( $instance->is_valid() ) {
 						return [ $instance->parse( $text ), $tokenizer ];
 					}
-				} catch ( \Exception $e ) {
+				} catch ( Exception $e ) {
 				}
 			}
 		}
@@ -193,8 +203,8 @@ class Analyzer implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework
 			}
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Tokenfilter\\' . ucfirst( $filter );
 			if ( is_subclass_of( $filter, '\Related_Post\Classes\Models\Analyzer\Tokenfilter' ) ) {
-				/** @var \WP_Framework_Core\Interfaces\Singleton $filter */
-				/** @var \Related_Post\Classes\Models\Analyzer\Tokenfilter $instance */
+				/** @var Singleton $filter */
+				/** @var Tokenfilter $instance */
 				$instance = $filter::get_instance( $this->app );
 				$terms    = $instance->filter( $terms );
 			}

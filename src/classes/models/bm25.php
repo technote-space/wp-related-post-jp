@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.13
+ * @version 1.3.16
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -9,6 +9,12 @@
  */
 
 namespace Related_Post\Classes\Models;
+
+use WP_Framework_Common\Traits\Package;
+use WP_Framework_Core\Traits\Hook;
+use WP_Framework_Core\Traits\Singleton;
+use WP_Framework_Db\Classes\Models\Query\Builder;
+use WP_Post;
 
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
@@ -20,7 +26,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  */
 class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
+	use Singleton, Hook, Package;
 
 	/** @var Control $control */
 	private $control;
@@ -91,7 +97,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 * @param bool $update_word_now
 	 *
 	 * @return array
@@ -192,19 +198,19 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 
 	/**
 	 * @param array $post_types
-	 * @param \WP_Framework_Db\Classes\Models\Query\Builder $query
+	 * @param Builder $query
 	 * @param bool $is_exclude_post_ids
 	 *
-	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 * @return Builder
 	 */
-	private function from_common( $post_types, \WP_Framework_Db\Classes\Models\Query\Builder $query, $is_exclude_post_ids = false ) {
+	private function from_common( $post_types, Builder $query, $is_exclude_post_ids = false ) {
 		return $this->control->common_filter( $post_types, $query->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' ), $is_exclude_post_ids );
 	}
 
 	/**
 	 * @param array $post_types
 	 *
-	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 * @return Builder
 	 */
 	private function from_document( $post_types ) {
 		return $this->from_common( $post_types, $this->table( 'document', 'd' ) );
@@ -214,7 +220,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @param array $post_types
 	 * @param bool $is_exclude_post_ids
 	 *
-	 * @return \WP_Framework_Db\Classes\Models\Query\Builder
+	 * @return Builder
 	 */
 	private function from_document_word( $post_types, $is_exclude_post_ids = false ) {
 		return $this->from_common( $post_types, $this->table( 'rel_document_word', 'rw' )
@@ -242,7 +248,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				                 ->select( 'd.post_id' )
 				                 ->distinct()
 				                 ->where_not_exists( function ( $query ) {
-					                 /** @var \WP_Framework_Db\Classes\Models\Query\Builder $query */
+					                 /** @var Builder $query */
 					                 $query->table( $this->get_wp_table( 'postmeta', 'pm' ) )
 					                       ->where_column( 'pm.post_id', 'd.post_id' )
 					                       ->where( 'pm.meta_key', $this->app->post->get_meta_key( 'word_updated' ) )
@@ -327,7 +333,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	}
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 * @param bool $register
 	 *
 	 * @return array ( word_id => count )
