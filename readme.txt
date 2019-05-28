@@ -4,7 +4,7 @@ Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Requires PHP: 5.6
 Tested up to: 5.2
-Stable tag: 1.3.15
+Stable tag: 1.3.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,9 @@ This plugin needs PHP5.6 or higher.
 
 == Upgrade Notice ==
 
+= 1.3.16 =
+* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/104)
+
 = 1.3.15 =
 * [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/94)
 
@@ -52,7 +55,7 @@ This plugin needs PHP5.6 or higher.
 
 == Changelog ==
 
-= 1.3.11 =
+= 1.3.16 =
 
 * First release
 
