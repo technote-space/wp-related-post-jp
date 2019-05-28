@@ -10,6 +10,9 @@
 
 namespace Related_Post\Classes\Models\Analyzer\Tokenizer;
 
+use Exception;
+use Related_Post\Classes\Models\Analyzer\Tokenizer;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +21,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Yahoo
  * @package Related_Post\Classes\Models\Analyzer\Tokenizer
  */
-class Yahoo extends \Related_Post\Classes\Models\Analyzer\Tokenizer {
+class Yahoo extends Tokenizer {
 
 	/** @var \Related_Post\Classes\Models\Analyzer\Yahoo */
 	private $yahoo;
@@ -34,7 +37,7 @@ class Yahoo extends \Related_Post\Classes\Models\Analyzer\Tokenizer {
 	 * @param string $text
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function parse( $text ) {
 		return $this->yahoo->count( $text );

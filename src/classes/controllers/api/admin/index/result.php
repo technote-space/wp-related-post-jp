@@ -10,6 +10,12 @@
 
 namespace Related_Post\Classes\Controllers\Api\Admin\Index;
 
+use Related_Post\Classes\Models\Control;
+use WP_Error;
+use WP_Framework_Api\Classes\Controllers\Api\Base;
+use WP_REST_Request;
+use WP_REST_Response;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +24,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Result
  * @package Related_Post\Classes\Controllers\Api\Admin\Index
  */
-class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
+class Result extends Base {
 
 	/**
 	 * @return string
@@ -81,14 +87,14 @@ class Result extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	}
 
 	/**
-	 * @param \WP_REST_Request|array $params
+	 * @param WP_REST_Request|array $params
 	 *
-	 * @return int|\WP_Error|\WP_REST_Response
+	 * @return int|WP_Error|WP_REST_Response
 	 */
 	public function callback( $params ) {
-		/** @var \Related_Post\Classes\Models\Control $control */
-		$control = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+		/** @var Control $control */
+		$control = Control::get_instance( $this->app );
 
-		return new \WP_REST_Response( $control->get_index_result_response( $params['p'] ) );
+		return new WP_REST_Response( $control->get_index_result_response( $params['p'] ) );
 	}
 }

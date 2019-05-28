@@ -8,12 +8,13 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Interfaces\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
+/** @var Presenter $instance */
 ?>
-
 <style>
     .<?php $instance->id(); ?>-tab-content.active .on-exclude-word {
         display: none;

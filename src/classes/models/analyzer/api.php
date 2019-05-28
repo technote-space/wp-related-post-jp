@@ -10,6 +10,12 @@
 
 namespace Related_Post\Classes\Models\Analyzer;
 
+use Exception;
+use RuntimeException;
+use WP_Framework_Common\Traits\Package;
+use WP_Framework_Core\Traits\Hook;
+use WP_Framework_Core\Traits\Singleton;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -20,7 +26,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  */
 abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
+	use Singleton, Hook, Package;
 
 	/**
 	 * @return string
@@ -78,7 +84,7 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	 * @param int $trial
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function access( $text, $classes, $trial = 3 ) {
 		try {
@@ -101,14 +107,14 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 			curl_close( $ch );
 
 			if ( CURLE_OK !== $errno ) {
-				throw new \RuntimeException( $error, $errno );
+				throw new RuntimeException( $error, $errno );
 			}
 			if ( false === $result ) {
-				throw new \Exception( $this->translate( 'Invalid API Response.' ) );
+				throw new Exception( $this->translate( 'Invalid API Response.' ) );
 			}
 
 			return $this->parse_response( $result );
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			if ( $trial > 0 ) {
 				sleep( $this->get_retry_interval() );
 
@@ -148,7 +154,7 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	 * @param array $classes
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function count( $text, $classes = [] ) {
 		$limit = $this->get_text_limit();

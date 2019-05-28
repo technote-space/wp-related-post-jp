@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Models\Analyzer\Tokenfilter;
 
+use Related_Post\Classes\Models\Analyzer\Tokenfilter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Max
  * @package Related_Post\Classes\Models\Analyzer\Tokenfilter
  */
-class Max extends \Related_Post\Classes\Models\Analyzer\Tokenfilter {
+class Max extends Tokenfilter {
 
 	/**
 	 * @param array $terms ( word => count )

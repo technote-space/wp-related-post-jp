@@ -10,6 +10,9 @@
 
 namespace Related_Post\Classes\Controllers\Admin;
 
+use Related_Post\Classes\Models\Control;
+use WP_Framework_Admin\Classes\Controllers\Admin\Base;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +21,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Dashboard
  * @package Related_Post\Classes\Controllers\Admin
  */
-class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
+class Dashboard extends Base {
 
 	use \WP_Framework_Admin\Traits\Dashboard;
 
@@ -99,8 +102,8 @@ class Dashboard extends \WP_Framework_Admin\Classes\Controllers\Admin\Base {
 		$args['admin_page_url']  = admin_url( 'admin.php?page=' );
 		$args['no_reset_button'] = true;
 
-		/** @var \Related_Post\Classes\Models\Control $control */
-		$control                  = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+		/** @var Control $control */
+		$control                  = Control::get_instance( $this->app );
 		$args['category_data']    = $control->get_category_data();
 		$args['exclude_post_ids'] = $this->app->string->implode( $control->get_exclude_post_ids(), ', ' );
 

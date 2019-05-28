@@ -10,6 +10,11 @@
 
 namespace Related_Post\Classes\Models\Analyzer;
 
+use WP_Framework_Common\Traits\Package;
+use WP_Framework_Core\Traits\Hook;
+use WP_Framework_Core\Traits\Singleton;
+use WP_Post;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -20,10 +25,10 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  */
 abstract class Extractor implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core\Interfaces\Hook {
 
-	use \WP_Framework_Core\Traits\Singleton, \WP_Framework_Core\Traits\Hook, \WP_Framework_Common\Traits\Package;
+	use Singleton, Hook, Package;
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 *
 	 * @return string
 	 */

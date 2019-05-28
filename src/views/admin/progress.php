@@ -8,13 +8,14 @@
  * @link https://technote.space
  */
 
+use WP_Framework_Presenter\Interfaces\Presenter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	return;
 }
-/** @var \WP_Framework_Presenter\Interfaces\Presenter $instance */
+/** @var Presenter $instance */
 /** @var array $args */
 ?>
-
 <div id="<?php $instance->id(); ?>-switch-buttons">
 	<?php $instance->form( 'input/button', $args, [
 		'class' => 'index_on button-primary',

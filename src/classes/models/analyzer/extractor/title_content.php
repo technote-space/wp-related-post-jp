@@ -10,6 +10,9 @@
 
 namespace Related_Post\Classes\Models\Analyzer\Extractor;
 
+use Related_Post\Classes\Models\Analyzer\Extractor;
+use WP_Post;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,10 +21,10 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Title_content
  * @package Related_Post\Classes\Models\Analyzer\Extractor
  */
-class Title_content extends \Related_Post\Classes\Models\Analyzer\Extractor {
+class Title_content extends Extractor {
 
 	/**
-	 * @param \WP_Post $post
+	 * @param WP_Post $post
 	 *
 	 * @return string
 	 */

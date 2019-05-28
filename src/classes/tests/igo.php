@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Tests;
 
+use WP_Framework_Test\Classes\Tests\Base;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Igo
  * @package Related_Post\Classes\Tests
  */
-class Igo extends \WP_Framework_Test\Classes\Tests\Base {
+class Igo extends Base {
 
 	/** @var \Related_Post\Classes\Models\Analyzer\Igo */
 	private $igo;

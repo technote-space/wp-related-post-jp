@@ -10,6 +10,12 @@
 
 namespace Related_Post\Classes\Controllers\Api\Admin;
 
+use Related_Post\Classes\Models\Control;
+use WP_Error;
+use WP_Framework_Api\Classes\Controllers\Api\Base;
+use WP_REST_Request;
+use WP_REST_Response;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +24,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Progress
  * @package Related_Post\Classes\Controllers\Api\Admin
  */
-class Progress extends \WP_Framework_Api\Classes\Controllers\Api\Base {
+class Progress extends Base {
 
 	/**
 	 * @return string
@@ -56,13 +62,13 @@ class Progress extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 	}
 
 	/**
-	 * @param \WP_REST_Request|array $params
+	 * @param WP_REST_Request|array $params
 	 *
-	 * @return int|\WP_Error|\WP_REST_Response
+	 * @return int|WP_Error|WP_REST_Response
 	 */
 	public function callback( $params ) {
-		/** @var \Related_Post\Classes\Models\Control $control */
-		$control              = \Related_Post\Classes\Models\Control::get_instance( $this->app );
+		/** @var Control $control */
+		$control              = Control::get_instance( $this->app );
 		$posts_indexed        = ! empty( $control->cache_get( 'posts_indexed' ) );
 		$is_valid_posts_index = $control->is_valid_posts_index();
 		$total                = 0;
@@ -87,7 +93,7 @@ class Progress extends \WP_Framework_Api\Classes\Controllers\Api\Base {
 			}
 		}
 
-		return new \WP_REST_Response( [
+		return new WP_REST_Response( [
 			'posts_indexed'        => $posts_indexed,
 			'is_valid_posts_index' => $is_valid_posts_index,
 			'total'                => $total,

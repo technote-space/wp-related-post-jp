@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Models\Analyzer\Charfilter;
 
+use Related_Post\Classes\Models\Analyzer\Charfilter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Comment
  * @package Related_Post\Classes\Models\Analyzer\Charfilter
  */
-class Comment extends \Related_Post\Classes\Models\Analyzer\Charfilter {
+class Comment extends Charfilter {
 
 	/**
 	 * @param string $text

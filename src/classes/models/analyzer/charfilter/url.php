@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Models\Analyzer\Charfilter;
 
+use Related_Post\Classes\Models\Analyzer\Charfilter;
+
 if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	exit;
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
  * Class Url
  * @package Related_Post\Classes\Models\Analyzer\Charfilter
  */
-class Url extends \Related_Post\Classes\Models\Analyzer\Charfilter {
+class Url extends Charfilter {
 
 	/**
 	 * @param string $text
