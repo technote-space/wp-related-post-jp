@@ -1,5 +1,7 @@
 <?php
 
+namespace Igo;
+
 class Searcher {
 	private $keySetSize;
 	private $base;
@@ -65,6 +67,5 @@ class Searcher {
 			$fn->call($start, $offset + $this->lens->get($id) + 1, $id);
 		}
 	}
-
 }
-?>
+

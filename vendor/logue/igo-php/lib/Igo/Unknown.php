@@ -1,5 +1,7 @@
 <?php
 
+namespace Igo;
+
 /**
  * 未知語の検索を行うクラス
  */
@@ -42,4 +44,3 @@ class Unknown {
 		}
 	}
 }
-?>

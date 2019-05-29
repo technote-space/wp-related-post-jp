@@ -1,4 +1,7 @@
 <?php
+
+namespace Igo;
+
 /**
  * 形態素クラス
  */
@@ -22,4 +25,3 @@ class Morpheme {
 		$this->start = $start;
 	}
 }
-?>

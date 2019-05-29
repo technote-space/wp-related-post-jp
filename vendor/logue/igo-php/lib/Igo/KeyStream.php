@@ -1,4 +1,7 @@
 <?php
+
+namespace Igo;
+
 class KeyStream {
 	private $s;
 	private $cur;

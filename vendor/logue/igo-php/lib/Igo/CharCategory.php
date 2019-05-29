@@ -1,4 +1,5 @@
 <?php
+namespace Igo;
 
 class CharCategory {
 	private $categories;
@@ -28,24 +29,8 @@ class CharCategory {
 
 		$ary = array();
 		for ($i = 0; $i < $size; $i++) {
-			$ary[$i] = new Category($data[$i * 4], $data[$i * 4 + 1], $data[$i * 4 + 2] == 1, $data[$i * 4 + 3] == 1);
+			$ary[$i] = new Category($data[$i * 4], $data[$i * 4 + 1], $data[$i * 4 + 2] === 1, $data[$i * 4 + 3] === 1);
 		}
 		return $ary;
 	}
 }
-
-class Category {
-	public $id;
-	public $length;
-	public $invoke;
-	public $group;
-
-	public function __construct($i, $l, $iv, $g) {
-		$this->id = $i;
-		$this->length = $l;
-		$this->invoke = $iv;
-		$this->group = $g;
-	}
-}
-
-?>
