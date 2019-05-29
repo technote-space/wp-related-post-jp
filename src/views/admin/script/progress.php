@@ -32,9 +32,7 @@ $instance->js( 'mprogress.min.js' );
 				return;
 			}
 			is_valid_button = false;
-			api_class.ajax( 'index_on' ).done( function( json ) {
-
-			} ).fail( function( err ) {
+			api_class.ajax( 'index_on' ).fail( function( err ) {
 				console.log( err );
 			} ).always( function() {
 				is_valid_button = true;
@@ -48,9 +46,7 @@ $instance->js( 'mprogress.min.js' );
 				return;
 			}
 			is_valid_button = false;
-			api_class.ajax( 'index_off' ).done( function( json ) {
-
-			} ).fail( function( err ) {
+			api_class.ajax( 'index_off' ).fail( function( err ) {
 				console.log( err );
 			} ).always( function() {
 				is_valid_button = true;
@@ -64,9 +60,7 @@ $instance->js( 'mprogress.min.js' );
 				return;
 			}
 			is_valid_button = false;
-			api_class.ajax( 'index_clear' ).done( function( json ) {
-
-			} ).fail( function( err ) {
+			api_class.ajax( 'index_clear' ).fail( function( err ) {
 				console.log( err );
 			} ).always( function() {
 				is_valid_button = true;
