@@ -1,21 +1,8 @@
 <?php
-interface IntArray {
-	function get($idx);
-}
 
-class IntMemoryArray implements IntArray {
-	protected $array;
+namespace Igo\IntArray;
 
-	public function __construct(&$reader, $count) {
-		$this->array = $reader->getIntArray($count);
-	}
-
-	public function get($idx) {
-		return $this->array[$idx];
-	}
-}
-
-class IntDynamicArray implements IntArray {
+class IntDynamicArray implements IntArrayInterface {
 	protected $start;
 	protected $fileName;
 	protected $fp;
@@ -36,4 +23,3 @@ class IntDynamicArray implements IntArray {
 	}
 }
 
-?>
