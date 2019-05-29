@@ -16,6 +16,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 /** @var Presenter $instance */
 /** @var array $args */
 /** @var array $settings */
+/** @var bool $is_valid_rest_api */
 ?>
 <table class="form-table">
     <tr>
@@ -26,12 +27,14 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 			<?php $instance->form( 'input/checkbox', $args, $settings['auto_insert_related_post'] ); ?>
         </td>
     </tr>
-    <tr>
-        <th>
-            <label for="<?php $instance->h( $settings['use_admin_ajax']['id'] ); ?>"><?php $instance->h( $settings['use_admin_ajax']['title'] ); ?></label>
-        </th>
-        <td>
-			<?php $instance->form( 'input/checkbox', $args, $settings['use_admin_ajax'] ); ?>
-        </td>
-    </tr>
+	<?php if ( $is_valid_rest_api ): ?>
+        <tr>
+            <th>
+                <label for="<?php $instance->h( $settings['use_admin_ajax']['id'] ); ?>"><?php $instance->h( $settings['use_admin_ajax']['title'] ); ?></label>
+            </th>
+            <td>
+				<?php $instance->form( 'input/checkbox', $args, $settings['use_admin_ajax'] ); ?>
+            </td>
+        </tr>
+	<?php endif; ?>
 </table>
