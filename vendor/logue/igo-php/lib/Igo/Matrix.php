@@ -1,5 +1,7 @@
 <?php
 
+namespace Igo;
+
 /**
  * 形態素の連接コスト表を扱うクラス
  */
@@ -22,6 +24,4 @@ class Matrix {
 	public function linkCost($leftId, $rightId) {
 		return $this->matrix->get($rightId * $this->leftSize + $leftId);
 	}
-
 }
-?>

@@ -24,4 +24,10 @@ Thumbs.db
 *.sbr
 logs
 vendor/bin
+vendor/logue/igo-php/.project
+vendor/logue/igo-php/.buildpath
+vendor/logue/igo-php/.gitignore
+vendor/logue/igo-php/composer.json
+vendor/logue/igo-php/test/
+vendor/logue/igo-php/.settings/
 /cache

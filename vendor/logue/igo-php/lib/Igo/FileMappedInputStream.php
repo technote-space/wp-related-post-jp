@@ -1,5 +1,15 @@
 <?php
 
+namespace Igo;
+
+use Exception;
+use Igo\CharArray\CharDynamicArray;
+use Igo\CharArray\CharMemoryArray;
+use Igo\IntArray\IntDynamicArray;
+use Igo\IntArray\IntMemoryArray;
+use Igo\ShortArray\ShortDynamicArray;
+use Igo\ShortArray\ShortMemoryArray;
+
 class FileMappedInputStream {
 
 	private $cur;
@@ -10,7 +20,7 @@ class FileMappedInputStream {
 		$this->cur = 0;
 		$this->file = fopen($fileName, "rb");
 		if (!$this->file) {
-			die("dictionary reading failed.");
+			throw new Exception("dictionary reading failed.");
 		}
 		$this->fileName = $fileName;
 	}
@@ -96,4 +106,3 @@ class FileMappedInputStream {
 		return fclose($this->file);
 	}
 }
-?>

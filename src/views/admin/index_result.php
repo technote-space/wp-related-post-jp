@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.16
+ * @version 1.3.17
  * @author Technote
  * @since 1.0.1.9
  * @copyright Technote All Rights Reserved
@@ -47,7 +47,8 @@ include 'style/index_result.php';
                         <td><?php $instance->h( $n++ ); ?></td>
                         <td><?php $instance->h( $p->ID ); ?></td>
                         <td><?php $instance->url( get_permalink( $p->ID ), $p->post_title, false, true ); ?></td>
-                        <td><?php $instance->h( round( $p->score, 4 ) ); ?></td>
+                        <td><?php /** @noinspection PhpUndefinedFieldInspection */
+							$instance->h( round( $p->score, 4 ) ); ?></td>
                     </tr>
 				<?php endforeach; ?>
 			<?php endif; ?>

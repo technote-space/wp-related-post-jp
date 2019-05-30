@@ -30,11 +30,22 @@ class ComposerStaticInit47a758d4959e4d82591bf48fb8d1137f
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'I' => 
+        array (
+            'Igo' => 
+            array (
+                0 => __DIR__ . '/..' . '/logue/igo-php/lib',
+            ),
+        ),
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit47a758d4959e4d82591bf48fb8d1137f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit47a758d4959e4d82591bf48fb8d1137f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit47a758d4959e4d82591bf48fb8d1137f::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

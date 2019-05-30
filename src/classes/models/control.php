@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.16
+ * @version 1.3.17
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -161,10 +161,9 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 					if ( empty( $category ) ) {
 						return false;
 					}
-					$terms = get_terms( [
+					$terms = get_terms( array_keys( $target_taxonomies ), [
 						'get'                    => 'all',
 						'number'                 => 1,
-						'taxonomy'               => array_keys( $target_taxonomies ),
 						'update_term_meta_cache' => false,
 						'orderby'                => 'none',
 						'suppress_filter'        => true,
@@ -197,9 +196,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	public function get_category_data() {
 		$exclude_category_ids = $this->get_exclude_category_id();
 		$target_taxonomies    = $this->get_target_taxonomies();
-		$terms                = get_terms( [
+		$terms                = get_terms( array_keys( $target_taxonomies ), [
 			'get'                    => 'all',
-			'taxonomy'               => array_keys( $target_taxonomies ),
 			'update_term_meta_cache' => false,
 			'orderby'                => 'none',
 			'suppress_filter'        => true,

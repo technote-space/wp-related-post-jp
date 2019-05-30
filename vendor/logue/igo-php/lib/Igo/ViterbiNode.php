@@ -1,5 +1,7 @@
 <?php
 
+namespace Igo;
+
 /**
  * Viterbiアルゴリズムで使用されるノード
  */
@@ -26,6 +28,4 @@ class ViterbiNode {
 	public static function makeBOSEOS() {
 		return new ViterbiNode(0, 0, 0, 0, 0, 0, false);
 	}
-
 }
-?>

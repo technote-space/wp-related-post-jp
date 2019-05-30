@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.16
+ * @version 1.3.17
  * @author Technote
  * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
@@ -10,6 +10,8 @@
 
 namespace Related_Post\Classes\Models\Analyzer;
 
+use Exception;
+use Igo\Tagger;
 use WP_Framework_Common\Traits\Package;
 use WP_Framework_Core\Traits\Hook;
 use WP_Framework_Core\Traits\Singleton;
@@ -26,18 +28,16 @@ class Igo implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core
 
 	use Singleton, Hook, Package;
 
-	/** @var \Igo $igo */
+	/** @var Tagger $igo */
 	private $igo;
 
 	/**
 	 * initialize
+	 * @throws Exception
 	 */
 	protected function initialize() {
 		$this->set_memory_limit();
-		$library_dir = $this->app->define->plugin_dir . DS . 'library';
-		/** @noinspection PhpIncludeInspection */
-		require_once $library_dir . DS . 'igo-php-master' . DS . 'lib' . DS . 'Igo.php';
-		$this->igo = new \Igo( $library_dir . DS . 'ipadic' );
+		$this->igo = new Tagger( [ 'dict_dir' => $this->app->define->plugin_configs_dir . DS . 'ipadic' ] );
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Igo implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core
 		$ret   = [];
 		foreach ( $words as $word ) {
 			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
-			$ret[ $word ] ++;
+			$ret[ $word ]++;
 		}
 
 		return $ret;
