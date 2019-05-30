@@ -103,9 +103,10 @@ class Dashboard extends Base {
 		$args['no_reset_button'] = true;
 
 		/** @var Control $control */
-		$control                  = Control::get_instance( $this->app );
-		$args['category_data']    = $control->get_category_data();
-		$args['exclude_post_ids'] = $this->app->string->implode( $control->get_exclude_post_ids(), ', ' );
+		$control                   = Control::get_instance( $this->app );
+		$args['category_data']     = $control->get_category_data();
+		$args['exclude_post_ids']  = $this->app->string->implode( $control->get_exclude_post_ids(), ', ' );
+		$args['is_valid_rest_api'] = ! $this->app->utility->defined( 'WP_FRAMEWORK_MOCK_REST_REQUEST' );
 
 		return $args;
 	}
