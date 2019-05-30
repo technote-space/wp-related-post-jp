@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.3.16
+ * @version 1.3.17
  * @author Technote
  * @since 1.0.1.9
  * @copyright Technote All Rights Reserved

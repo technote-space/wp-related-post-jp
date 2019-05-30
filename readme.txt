@@ -4,7 +4,7 @@ Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Requires PHP: 5.6
 Tested up to: 5.2
-Stable tag: 1.3.16
+Stable tag: 1.3.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,12 @@ This plugin needs PHP5.6 or higher.
 
 == Upgrade Notice ==
 
+= 1.3.17 =
+* 使用しているLibraryをcomposer化。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/105)
+* WordPress v4.5 未満でカテゴリが正しく取得できないバグの修正。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/108)
+* 使用不可な設定の非表示化。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/109)
+* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/107)
+
 = 1.3.16 =
 * [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/104)
 
@@ -55,7 +61,7 @@ This plugin needs PHP5.6 or higher.
 
 == Changelog ==
 
-= 1.3.16 =
+= 1.3.17 =
 
 * First release
 
