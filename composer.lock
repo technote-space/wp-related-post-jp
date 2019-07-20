@@ -185,7 +185,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -223,7 +223,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -264,7 +264,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -343,7 +343,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -391,7 +391,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -428,7 +428,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -469,7 +469,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -509,7 +509,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -546,7 +546,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -584,7 +584,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -599,16 +599,16 @@
         },
         {
             "name": "wp-content-framework/test",
-            "version": "v0.0.14",
+            "version": "v0.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-content-framework/test.git",
-                "reference": "d69e12594bf06141a7b7a9d547054781077c98b5"
+                "reference": "906f6d076738a9dc51399c4f0bc3335cce170829"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-content-framework/test/zipball/d69e12594bf06141a7b7a9d547054781077c98b5",
-                "reference": "d69e12594bf06141a7b7a9d547054781077c98b5",
+                "url": "https://api.github.com/repos/wp-content-framework/test/zipball/906f6d076738a9dc51399c4f0bc3335cce170829",
+                "reference": "906f6d076738a9dc51399c4f0bc3335cce170829",
                 "shasum": ""
             },
             "require": {
@@ -633,7 +633,7 @@
                 "framework",
                 "wordpress"
             ],
-            "time": "2019-05-19T15:12:08+00:00"
+            "time": "2019-07-19T17:04:52+00:00"
         },
         {
             "name": "wp-content-framework/update",
@@ -660,7 +660,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -698,7 +698,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
@@ -736,7 +736,7 @@
             ],
             "authors": [
                 {
-                    "name": "technote",
+                    "name": "Technote",
                     "email": "technote.space@gmail.com",
                     "homepage": "https://technote.space"
                 }
