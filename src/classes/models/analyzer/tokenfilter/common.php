@@ -29,7 +29,7 @@ class Common extends Tokenfilter {
 		$ret = [];
 		foreach ( $terms as $word => $count ) {
 			$word = trim( $word );
-			if ( "" === $word ) {
+			if ( '' === $word ) {
 				continue;
 			}
 			$ret[ $word ] = ( isset( $ret[ $word ] ) ? $ret[ $word ] : 0 ) + $count;

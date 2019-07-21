@@ -90,7 +90,7 @@ class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 					$instance = $filter::get_instance( $this->app );
 
 					return $instance->extract( $post );
-				} catch ( Exception $e ) {
+				} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 				}
 			}
 		}
@@ -150,7 +150,7 @@ class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 					if ( $instance->is_valid() ) {
 						return [ $instance->parse( $text ), $tokenizer ];
 					}
-				} catch ( Exception $e ) {
+				} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 				}
 			}
 		}
@@ -167,8 +167,10 @@ class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 		$data = explode( ' ', $text );
 		$ret  = [];
 		foreach ( $data as $item ) {
-			! isset( $ret[ $item ] ) and $ret[ $item ] = 0;
-			$ret[ $item ] ++;
+			if ( ! isset( $ret[ $item ] ) ) {
+				$ret[ $item ] = 0;
+			}
+			$ret[ $item ]++;
 		}
 
 		return $ret;
@@ -196,7 +198,7 @@ class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 			} elseif ( ! is_array( $target ) ) {
 				$target = [ $target ];
 			}
-			if ( false !== $target && ! in_array( $tokenizer, $target ) ) {
+			if ( false !== $target && ! in_array( $tokenizer, $target, true ) ) {
 				continue;
 			}
 			$filter = $this->app->define->plugin_namespace . '\\Classes\\Models\\Analyzer\\Tokenfilter\\' . ucfirst( $filter );

@@ -28,7 +28,9 @@ class Max extends Tokenfilter {
 	public function filter( $terms ) {
 		$ret = [];
 		foreach ( $terms as $word => $count ) {
-			strlen( $word ) > 24 and $word = substr( $word, 0, 24 );
+			if ( strlen( $word ) > 24 ) {
+				$word = substr( $word, 0, 24 );
+			}
 			$ret[ $word ] = ( isset( $ret[ $word ] ) ? $ret[ $word ] : 0 ) + $count;
 		}
 

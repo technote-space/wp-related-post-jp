@@ -12,46 +12,51 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 return [
 
-	'\Related_Post\Classes\Models\Control' => [
+	'\Related_Post\Classes\Models\Control'      => [
 		'${prefix}allowed_wp_tables' => [
 			'allowed_wp_tables',
 		],
-
-		'transition_post_status' => [
+		'the_content'                => [
+			'the_content',
+		],
+	],
+	'\Related_Post\Classes\Models\Post'         => [
+		'transition_post_status'   => [
 			'transition_post_status',
 		],
-
-		'${prefix}app_initialized' => [
-			'setup_index_posts',
-		],
-		'${prefix}changed_option'  => [
-			'changed_option',
-		],
-
 		'pre_get_posts'            => [
 			'pre_get_posts',
 		],
 		'${prefix}on_related_post' => [
 			'on_related_post',
 		],
-
+		'admin_head-edit.php'      => [
+			'edit_post_page',
+		],
+		'wp_ajax_fetch-list'       => [
+			'edit_post_page' => 0,
+		],
+		'wp_ajax_inline-save'      => [
+			'edit_post_page' => 0,
+		],
+	],
+	'\Related_Post\Classes\Models\Update'       => [
+		'${prefix}app_initialized'      => [
+			'setup_index_posts',
+		],
+		'${prefix}changed_option'       => [
+			'changed_option',
+		],
 		'${prefix}post_load_admin_page' => [
 			'post_load_admin_page',
 		],
-		'admin_head-edit.php' => [
-			'edit_post_page',
-		],
-		'wp_ajax_fetch-list'  => [
-			'edit_post_page' => 0,
-		],
-		'wp_ajax_inline-save' => [
-			'edit_post_page' => 0,
-		],
-		'the_content' => [
-			'the_content',
-		],
-		'${prefix}app_activated' => [
+		'${prefix}app_activated'        => [
 			'init_posts_rankings',
+		],
+	],
+	'\Related_Post\Classes\Models\Analyzer\Igo' => [
+		'igo_memory_limit' => [
+			'igo_memory_limit',
 		],
 	],
 ];

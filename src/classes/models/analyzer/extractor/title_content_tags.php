@@ -16,10 +16,10 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 
 /**
- * Class Title_content_tags
+ * Class Title_Content_Tags
  * @package Related_Post\Classes\Models\Analyzer\Extractor
  */
-class Title_content_tags extends Extractor {
+class Title_Content_Tags extends Extractor {
 
 	/**
 	 * @param WP_Post $post

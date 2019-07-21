@@ -29,6 +29,6 @@ abstract class Charfilter implements \WP_Framework_Core\Interfaces\Singleton, \W
 	 *
 	 * @return string
 	 */
-	public abstract function filter( $text );
+	abstract public function filter( $text );
 
 }

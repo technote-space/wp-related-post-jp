@@ -9,6 +9,7 @@
 namespace Related_Post\Classes\Controllers\Api\Admin;
 
 use Related_Post\Classes\Models\Control;
+use Related_Post\Classes\Models\Update;
 use WP_Error;
 use WP_Framework_Api\Classes\Controllers\Api\Base;
 use WP_REST_Request;
@@ -63,10 +64,17 @@ class Progress extends Base {
 	 * @param WP_REST_Request|array $params
 	 *
 	 * @return int|WP_Error|WP_REST_Response
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
-	public function callback( $params ) {
+	public function callback(
+		/** @noinspection PhpUnusedParameterInspection */
+		$params
+	) {
 		/** @var Control $control */
-		$control              = Control::get_instance( $this->app );
+		/** @var Update $update */
+		$control = Control::get_instance( $this->app );
+		$update  = Update::get_instance( $this->app );
+
 		$posts_indexed        = ! empty( $control->cache_get( 'posts_indexed' ) );
 		$is_valid_posts_index = $control->is_valid_posts_index();
 		$total                = 0;
@@ -74,12 +82,14 @@ class Progress extends Base {
 		$processed            = 0;
 		$processed_rate       = 0;
 		$next                 = '';
+
 		if ( ! $posts_indexed && $is_valid_posts_index ) {
-			$total          = $control->get_total_posts_count();
-			$target         = $control->get_update_posts_count();
+			$total          = $update->get_total_posts_count();
+			$target         = $update->get_update_posts_count();
 			$processed      = $total - $target;
 			$processed_rate = ceil( $processed * 100 / $total );
-			list( $next, $process ) = $control->get_interval_lock_process();
+
+			list( $next, $process ) = $update->get_interval_lock_process();
 			if ( $next <= 0 ) {
 				if ( ! empty( $process ) ) {
 					$next = sprintf( $this->translate( 'Running %s...' ), $this->translate( $process ) );

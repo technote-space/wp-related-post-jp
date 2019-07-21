@@ -39,11 +39,12 @@ class Bigram implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 		$prev         = null;
 		$alpha        = false;
 		$alpha_buffer = '';
-		foreach ( preg_split( '//u', $text, - 1, PREG_SPLIT_NO_EMPTY ) as $item ) {
+		foreach ( preg_split( '//u', $text, -1, PREG_SPLIT_NO_EMPTY ) as $item ) {
 			if ( ctype_alpha( $item ) ) {
-				$alpha        = true;
 				$alpha_buffer .= $item;
-				$prev         = null;
+
+				$alpha = true;
+				$prev  = null;
 				continue;
 			} else {
 				if ( $alpha ) {
@@ -75,8 +76,10 @@ class Bigram implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 		$words = $this->words( $text );
 		$ret   = [];
 		foreach ( $words as $word ) {
-			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
-			$ret[ $word ] ++;
+			if ( ! isset( $ret[ $word ] ) ) {
+				$ret[ $word ] = 0;
+			}
+			$ret[ $word ]++;
 		}
 
 		return $ret;

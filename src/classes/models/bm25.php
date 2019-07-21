@@ -32,13 +32,13 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	/** @var Analyzer $analyzer */
 	private $analyzer;
 
-	/** @var array $_excluded */
-	private $_excluded;
+	/** @var array $excluded */
+	private $excluded;
 
 	/**
-	 * @var array $_avg_dl_cache
+	 * @var array $avg_dl_cache
 	 */
-	private $_avg_dl_cache = [];
+	private $avg_dl_cache = [];
 
 	/**
 	 * initialize
@@ -57,39 +57,48 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		$word_ids   = [];
 		$post_types = [];
 		if ( $this->app->db->transaction( function () use ( $post_id, &$word_ids, &$post_types, $update_word_ids ) {
-			$row = $this->table( 'document', 'd' )
-			            ->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' )
-			            ->select( [ 'd.document_id', 'p.post_type' ] )
-			            ->where( 'd.post_id', $post_id )
-			            ->row();
-
-			if ( ! empty( $row ) ) {
-				$document_id = $row['id'];
-				$post_type   = $row['post_type'];
-				$post_types  = $this->control->get_post_types( $post_type );
-				$word_ids    = $this->app->array->pluck( $this->table( 'rel_document_word' )->select( 'word_id' )->where( 'document_id', $document_id )->distinct()->get(), 'word_id' );
-				$this->table( 'rel_document_word' )->where( 'document_id', $document_id )->delete();
-				$this->table( 'document' )->where( 'post_id', $post_id )->delete();
-
-				if ( ! empty( $post_types ) ) {
-					$N = $this->calc_n( $post_types ) - 1;
-					// 更新しない word だけ 情報を更新
-					// 更新するものは更新側で情報を更新
-					$word_ids = array_diff( $word_ids, $update_word_ids );
-					$nis      = $this->calc_nis( $post_types, $word_ids );
-					foreach ( $word_ids as $word_id ) {
-						$ni = $this->app->array->get( $nis, $word_id, 0 );
-						$this->table( 'word' )->where_in( 'id', $word_ids )->update( [
-							'count' => $ni,
-							'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $N, $ni ),
-						] );
-					}
-				}
-			}
-
+			$this->delete_execute( $post_id, $word_ids, $post_types, $update_word_ids );
 		} ) ) {
 			if ( $init_ranking_flag && ! empty( $word_ids ) && ! empty( $post_types ) ) {
 				$this->setup_ranking( $post_types, $word_ids );
+			}
+		}
+	}
+
+	/**
+	 * @param int $post_id
+	 * @param array $word_ids
+	 * @param array $post_types
+	 * @param array $update_word_ids
+	 */
+	private function delete_execute( $post_id, &$word_ids, &$post_types, $update_word_ids ) {
+		$row = $this->table( 'document', 'd' )
+			->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' )
+			->select( [ 'd.document_id', 'p.post_type' ] )
+			->where( 'd.post_id', $post_id )
+			->row();
+
+		if ( ! empty( $row ) ) {
+			$document_id = $row['id'];
+			$post_type   = $row['post_type'];
+			$post_types  = $this->control->get_post_types( $post_type );
+			$word_ids    = $this->app->array->pluck( $this->table( 'rel_document_word' )->select( 'word_id' )->where( 'document_id', $document_id )->distinct()->get(), 'word_id' );
+			$this->table( 'rel_document_word' )->where( 'document_id', $document_id )->delete();
+			$this->table( 'document' )->where( 'post_id', $post_id )->delete();
+
+			if ( ! empty( $post_types ) ) {
+				$count_ln = $this->calc_n( $post_types ) - 1;
+				// 更新しない word だけ 情報を更新
+				// 更新するものは更新側で情報を更新
+				$word_ids = array_diff( $word_ids, $update_word_ids );
+				$nis      = $this->calc_nis( $post_types, $word_ids );
+				foreach ( $word_ids as $word_id ) {
+					$ni = $this->app->array->get( $nis, $word_id, 0 );
+					$this->table( 'word' )->where_in( 'id', $word_ids )->update( [
+						'count' => $ni,
+						'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $count_ln, $ni ),
+					] );
+				}
 			}
 		}
 	}
@@ -110,44 +119,58 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 
 		$data     = $this->parse( $post );
 		$word_ids = array_keys( $data );
-		! empty( $word_ids ) and $word_ids = array_combine( $word_ids, $word_ids );
-		$dl = array_sum( $data );
+		if ( ! empty( $word_ids ) ) {
+			$word_ids = array_combine( $word_ids, $word_ids );
+		}
+		$total_count = array_sum( $data );
 
-		if ( $this->app->db->transaction( function () use ( $post_id, $post_type, $post_types, $data, $dl, &$word_ids, $update_word_now ) {
-			$this->delete( $post_id, $word_ids, false );
-			$document_id = $this->table( 'document' )->insert( [
-				'post_id' => $post_id,
-				'count'   => $dl,
-			] );
-			if ( count( $data ) > 0 ) {
-				$max = max( $data );
-				$this->table( 'rel_document_word' )->insert(
-					$this->app->array->map( $data, function ( $count, $word_id ) use ( $document_id, $dl, $max ) {
-						return [
-							'document_id' => $document_id,
-							'word_id'     => $word_id,
-							'count'       => $count,
-							'tf'          => $this->calc_tf( $count, $dl, $max ),
-						];
-					} )
-				);
-			}
-
-			if ( $update_word_now ) {
-				$word_ids = $this->update_word( $post_types, $word_ids );
-			} else {
-				if ( ! empty( $word_ids ) ) {
-					$this->app->post->delete( $post_id, 'word_updated' );
-				}
-			}
-			$this->app->post->set( $post_id, 'indexed', 1 );
-			$this->app->post->delete( $post_id, 'setup_ranking' );
+		if ( $this->app->db->transaction( function () use ( $post_id, $post_types, $data, $total_count, &$word_ids, $update_word_now ) {
+			$this->update_execute( $post_id, $post_types, $data, $total_count, $word_ids, $update_word_now );
 		} ) ) {
 			// idf の変化がなくても tf は変化があるかもしれないため、この投稿は必ず更新
 			$this->setup_ranking( $post_types, $word_ids, $post_id );
 		}
 
 		return [ $post_types, $word_ids ];
+	}
+
+	/**
+	 * @param $post_id
+	 * @param $post_types
+	 * @param $data
+	 * @param $total_count
+	 * @param $word_ids
+	 * @param $update_word_now
+	 */
+	private function update_execute( $post_id, $post_types, $data, $total_count, &$word_ids, $update_word_now ) {
+		$this->delete( $post_id, $word_ids, false );
+		$document_id = $this->table( 'document' )->insert( [
+			'post_id' => $post_id,
+			'count'   => $total_count,
+		] );
+		if ( count( $data ) > 0 ) {
+			$max = max( $data );
+			$this->table( 'rel_document_word' )->insert(
+				$this->app->array->map( $data, function ( $count, $word_id ) use ( $document_id, $total_count, $max ) {
+					return [
+						'document_id' => $document_id,
+						'word_id'     => $word_id,
+						'count'       => $count,
+						'tf'          => $this->calc_tf( $count, $total_count, $max ),
+					];
+				} )
+			);
+		}
+
+		if ( $update_word_now ) {
+			$word_ids = $this->update_word( $post_types, $word_ids );
+		} else {
+			if ( ! empty( $word_ids ) ) {
+				$this->app->post->delete( $post_id, 'word_updated' );
+			}
+		}
+		$this->app->post->set( $post_id, 'indexed', 1 );
+		$this->app->post->delete( $post_id, 'setup_ranking' );
 	}
 
 	/**
@@ -158,37 +181,36 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	public function update_word( $post_types, $word_ids = null ) {
 		$this->app->db->transaction( function () use ( $post_types, &$word_ids ) {
-			$N = $this->calc_n( $post_types );
+			$count_ln = $this->calc_n( $post_types );
 			if ( ! isset( $word_ids ) ) {
-				$word_ids = $this->get_update_word_ids( $post_types, $N );
+				$word_ids = $this->get_update_word_ids( $post_types, $count_ln );
 			}
 
 			$nis   = $this->calc_nis( $post_types, $word_ids );
 			$words = $this->app->array->combine( $this->table( 'word' )->where_integer_in_raw( 'id', $word_ids )->select( [ 'word_id', 'count', 'idf' ] )->get(), 'word_id' );
 			foreach ( $word_ids as $word_id ) {
-				$ni  = $this->app->array->get( $nis, $word_id, 0 );
+				$ni  = $this->app->array->get( $nis, $word_id, 0 ) - 0;
 				$row = $this->app->array->get( $words, $word_id, false );
 				if ( empty( $row ) ) {
-					$c   = -1;
-					$idf = -1;
+					$count = -1;
+					$idf   = -1;
 				} else {
-					$c   = $this->app->array->get( $row, 'count' );
-					$idf = $this->app->array->get( $row, 'idf' );
+					$count = $this->app->array->get( $row, 'count' ) - 0;
+					$idf   = $this->app->array->get( $row, 'idf' ) - 0;
 				}
 				$new_c   = $ni;
-				$new_idf = $ni <= 0 ? 0 : round( $this->calc_idf( $N, $ni ), 6 );
-				if ( $c != $new_c || $idf != $new_idf ) {
+				$new_idf = $ni <= 0 ? 0 : round( $this->calc_idf( $count_ln, $ni ), 6 );
+				if ( $count !== $new_c || $idf !== $new_idf ) {
 					$this->table( 'word' )->where( 'id', $word_id )->update( [
 						'count' => $ni,
-						'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $N, $ni ),
+						'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $count_ln, $ni ),
 					] );
 				}
-				if ( $idf == $new_idf ) {
+				if ( $idf === $new_idf ) {
 					// idf の変化なし
 					unset( $word_ids[ $word_id ] );
 				}
 			}
-
 		} );
 
 		return $word_ids;
@@ -221,48 +243,52 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @return Builder
 	 */
 	private function from_document_word( $post_types, $is_exclude_post_ids = false ) {
-		return $this->from_common( $post_types, $this->table( 'rel_document_word', 'rw' )
-		                                             ->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' ), $is_exclude_post_ids );
+		return $this->from_common(
+			$post_types,
+			$this->table( 'rel_document_word', 'rw' )
+				->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' ), $is_exclude_post_ids
+		);
 	}
 
 	/**
 	 * @param array $post_types
-	 * @param int $N
+	 * @param int $count_ln
 	 *
 	 * @return array
 	 */
-	private function get_update_word_ids( $post_types, $N ) {
+	private function get_update_word_ids( $post_types, $count_ln ) {
 		$word_ids = [];
-		$this->app->db->transaction( function () use ( $post_types, $N, &$word_ids ) {
-			$prev_N = $this->cache_get( 'document_count' );
-			if ( $prev_N != $N ) {
-				$this->cache_set( 'document_count', $N );
+		$this->app->db->transaction( function () use ( $post_types, $count_ln, &$word_ids ) {
+			$prev_n = (int) $this->cache_get( 'document_count' );
+			if ( $prev_n !== $count_ln ) {
+				$this->cache_set( 'document_count', $count_ln );
 				$query    = $this->from_document( $post_types )
-				                 ->select( 'd.post_id' )
-				                 ->distinct();
+					->select( 'd.post_id' )
+					->distinct();
 				$post_ids = $this->app->array->pluck( $query->get(), 'post_id' );
 			} else {
 				$query    = $this->from_document( $post_types )
-				                 ->select( 'd.post_id' )
-				                 ->distinct()
-				                 ->where_not_exists( function ( $query ) {
-					                 /** @var Builder $query */
-					                 $query->table( $this->get_wp_table( 'postmeta', 'pm' ) )
-					                       ->where_column( 'pm.post_id', 'd.post_id' )
-					                       ->where( 'pm.meta_key', $this->app->post->get_meta_key( 'word_updated' ) )
-					                       ->select_raw( '"X"' );
-				                 } );
+					->select( 'd.post_id' )
+					->distinct()
+					->where_not_exists( function ( $query ) {
+						/** @var Builder $query */
+						$query->table( $this->get_wp_table( 'postmeta', 'pm' ) )
+							->where_column( 'pm.post_id', 'd.post_id' )
+							->where( 'pm.meta_key', $this->app->post->get_meta_key( 'word_updated' ) )
+							->select_raw( '"X"' );
+					} );
 				$post_ids = $this->app->array->pluck( $query->get(), 'post_id' );
 			}
 
 			$word_ids = $this->app->array->pluck( $this->table( 'rel_document_word', 'rw' )
-			                                           ->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' )
-			                                           ->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' )
-			                                           ->where_integer_in_raw( 'd.post_id', $post_ids )
-			                                           ->where( 'p.post_status', 'publish' )
-			                                           ->select( 'rw.word_id' )
-			                                           ->distinct()
-			                                           ->get(), 'word_id' );
+				->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' )
+				->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' )
+				->where_integer_in_raw( 'd.post_id', $post_ids )
+				->where( 'p.post_status', 'publish' )
+				->select( 'rw.word_id' )
+				->distinct()
+				->get(), 'word_id'
+			);
 			foreach ( $post_ids as $post_id ) {
 				$this->app->post->set( $post_id, 'word_updated', 1 );
 			}
@@ -280,7 +306,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	private function setup_ranking( $post_types, $word_ids, $post_id = null ) {
 		$post_ids = $this->get_update_post_ids( $post_types, $word_ids );
-		if ( ! empty( $post_id ) && ! in_array( $post_id, $post_ids ) ) {
+		if ( ! empty( $post_id ) && ! in_array( $post_id, $post_ids, true ) ) {
 			$post_ids[] = $post_id;
 		}
 
@@ -364,7 +390,9 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			foreach ( $data as $word => $count ) {
 				$row     = $this->app->array->get( $words, $word );
 				$word_id = $this->word_to_id( $word, $row, $register );
-				! empty( $word_id ) and $ret[ $word_id ] = $count;
+				if ( ! empty( $word_id ) ) {
+					$ret[ $word_id ] = $count;
+				}
 			}
 		} );
 
@@ -403,28 +431,29 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @return bool
 	 */
 	public function is_excluded( $word ) {
-		if ( ! isset( $this->_excluded ) ) {
-			$this->_excluded = $this->app->array->combine( $this->table( 'exclude_word' )->select( 'word' )->get(), 'word', 'word' );
+		if ( ! isset( $this->excluded ) ) {
+			$this->excluded = $this->app->array->combine( $this->table( 'exclude_word' )->select( 'word' )->get(), 'word', 'word' );
 		}
 
-		return isset( $this->_excluded[ $word ] );
+		return isset( $this->excluded[ $word ] );
 	}
 
 	/**
 	 * @link https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 	 *
 	 * @param int $count
-	 * @param int $dl
+	 * @param int $total_count
 	 * @param int $max
 	 *
 	 * @return float|int
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	private function calc_tf(
 		/** @noinspection PhpUnusedParameterInspection */
-		$count, $dl, $max
+		$count, $total_count, $max
 	) {
 		// term frequency
-		return $count / $dl;
+		return $count / $total_count;
 
 		// raw count
 		// return $count;
@@ -453,12 +482,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	private function calc_nis( $post_types, $word_ids ) {
 		$query = $this->from_document_word( $post_types )
-		              ->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
-		              ->select( [
-			              'rw.word_id',
-			              $this->raw( 'COUNT(DISTINCT d.document_id) as N' ),
-		              ] )
-		              ->group_by( 'rw.word_id' );
+			->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
+			->select( [
+				'rw.word_id',
+				$this->raw( 'COUNT(DISTINCT d.document_id) as N' ),
+			] )
+			->group_by( 'rw.word_id' );
 		if ( isset( $word_ids ) ) {
 			$query->where_integer_in_raw( 'rw.word_id', $word_ids );
 		}
@@ -467,20 +496,20 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	}
 
 	/**
-	 * @param int $N
-	 * @param int $n
+	 * @param int $count_ln
+	 * @param int $count_n
 	 *
 	 * @return float
 	 */
-	private function calc_idf( $N, $n ) {
+	private function calc_idf( $count_ln, $count_n ) {
 		// inverse document frequency
-		return log( $N / $n, 1.5 );
+		return log( $count_ln / $count_n, 1.5 );
 
 		// inverse document frequency smooth
-		// return log( 1 + $N / $n, 1.5 );
+		// return log( 1 + $count_ln / $count_n, 1.5 );
 
 		// probabilistic inverse document frequency
-		// return log( $N / $n - 1, 1.5 );
+		// return log( $count_ln / $count_n - 1, 1.5 );
 	}
 
 	/**
@@ -491,9 +520,10 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	private function get_update_post_ids( $post_types, $word_ids ) {
 		return $this->app->array->pluck( $this->from_document_word( $post_types )
-		                                      ->where_integer_in_raw( 'rw.word_id', $word_ids )
-		                                      ->select( 'd.post_id' )
-		                                      ->distinct()->get(), 'post_id' );
+			->where_integer_in_raw( 'rw.word_id', $word_ids )
+			->select( 'd.post_id' )
+			->distinct()->get(), 'post_id'
+		);
 	}
 
 	/**
@@ -503,18 +533,18 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	public function get_important_words( $post_id ) {
 		return $this->table( 'rel_document_word', 'rw' )
-		            ->alias_join( 'document', 'd', 'rw.document_id', 'd.document_id' )
-		            ->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
-		            ->where( 'd.post_id', $post_id )
-		            ->select( [
-			            'rw.word_id',
-			            $this->raw( 'rw.tf * w.idf as tfidf' ),
-			            'rw.count',
-			            'rw.tf',
-			            'w.word',
-			            'w.idf',
-		            ] )->limit( $this->control->get_important_words_count() )
-		            ->order_by_desc( $this->raw( 'tfidf' ) )->get();
+			->alias_join( 'document', 'd', 'rw.document_id', 'd.document_id' )
+			->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
+			->where( 'd.post_id', $post_id )
+			->select( [
+				'rw.word_id',
+				$this->raw( 'rw.tf * w.idf as tfidf' ),
+				'rw.count',
+				'rw.tf',
+				'w.word',
+				'w.idf',
+			] )->limit( $this->control->get_important_words_count() )
+			->order_by_desc( $this->raw( 'tfidf' ) )->get();
 	}
 
 	/**
@@ -523,7 +553,6 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	private function get_bm25_k1() {
 		return 2.0;
-		// return 1.2;
 	}
 
 	/**
@@ -540,13 +569,13 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @return float
 	 */
 	private function calc_avg_dl( $post_types ) {
-		$hash = sha1( json_encode( $post_types ) );
-		if ( ! isset( $this->_avg_dl_cache[ $hash ] ) ) {
-			$this->_avg_dl_cache[ $hash ] = $this->from_document( $post_types )
-			                                     ->average( 'count' );
+		$hash = sha1( wp_json_encode( $post_types ) );
+		if ( ! isset( $this->avg_dl_cache[ $hash ] ) ) {
+			$this->avg_dl_cache[ $hash ] = $this->from_document( $post_types )
+				->average( 'count' );
 		}
 
-		return $this->_avg_dl_cache[ $hash ];
+		return $this->avg_dl_cache[ $hash ];
 	}
 
 	/**
@@ -568,45 +597,31 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			return [];
 		}
 
-		$subquery = $this->builder();
-		$first    = true;
-		foreach ( $words as $word ) {
-			$word_id = $word['word_id'];
-			$n       = $word['count'];
-			$select  = [
-				$this->raw( "{$word_id} as word_id" ),
-				$this->raw( "{$n} as n" ),
-			];
-			if ( $first ) {
-				$first = false;
-				$subquery->select( $select );
-			} else {
-				$subquery->union( $this->builder()->select( $select ) );
-			}
+		$subquery = $this->build_word_table( $words );
+		if ( ! isset( $count ) ) {
+			$count = $this->control->get_ranking_count();
 		}
-
-		! isset( $count ) and $count = $this->control->get_ranking_count();
 		if ( isset( $page ) && $page > 1 ) {
 			$offset = ( $page - 1 ) * $count;
 		} else {
 			$offset = null;
 		}
 		$threshold = $this->control->get_score_threshold( $is_search );
-		$k1        = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
-		$b         = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
+		$param_k1  = $this->apply_filters( 'bm25_k1', $this->get_bm25_k1() );
+		$param_b   = $this->apply_filters( 'bm25_b', $this->get_bm25_b() );
 		$avgdl     = $this->apply_filters( 'avg_dl', $this->calc_avg_dl( $post_types ) );
 
 		$select = [ 'd.post_id' ];
 		if ( $threshold > 0 || ! $is_count ) {
-			$select[] = $this->raw( "SUM( w.idf * t.n * ( rw.tf * ( $k1 + 1 ) ) / ( rw.tf + $k1 * ( 1 - $b + $b * d.count / $avgdl ) ) ) as score" );
+			$select[] = $this->raw( "SUM( w.idf * t.n * ( rw.tf * ( $param_k1 + 1 ) ) / ( rw.tf + $param_k1 * ( 1 - $param_b + $param_b * d.count / $avgdl ) ) ) as score" );
 		}
 
 		$query = $this->from_document_word( $post_types, $is_exclude_post_ids )
-		              ->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
-		              ->join_sub( $subquery, 't', 't.word_id', 'rw.word_id' )
-		              ->where( 'd.post_id', '!=', $post_id )
-		              ->select( $select )
-		              ->group_by( 'd.post_id' );
+			->alias_join( 'word', 'w', 'rw.word_id', 'w.word_id' )
+			->join_sub( $subquery, 't', 't.word_id', 'rw.word_id' )
+			->where( 'd.post_id', '!=', $post_id )
+			->select( $select )
+			->group_by( 'd.post_id' );
 
 		if ( $threshold > 0 ) {
 			$max_query       = clone $query;
@@ -617,6 +632,32 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		$query = $this->builder()->from_sub( $query, 't' );
 
 		return $is_count ? $query->count() : $query->order_by_desc( $this->raw( 'score' ) )->limit( $count )->offset( $offset )->get();
+	}
+
+	/**
+	 * @param array $words
+	 *
+	 * @return Builder
+	 */
+	private function build_word_table( $words ) {
+		$subquery = $this->builder();
+		$first    = true;
+		foreach ( $words as $word ) {
+			$word_id = $word['word_id'];
+			$count_n = $word['count'];
+			$select  = [
+				$this->raw( "{$word_id} as word_id" ),
+				$this->raw( "{$count_n} as n" ),
+			];
+			if ( $first ) {
+				$first = false;
+				$subquery->select( $select );
+			} else {
+				$subquery->union( $this->builder()->select( $select ) );
+			}
+		}
+
+		return $subquery;
 	}
 
 }

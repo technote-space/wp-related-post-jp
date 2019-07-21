@@ -11,16 +11,15 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 
 return [
-
-	// extractor
 	'extractor'     => [
-//		'title_content_tags',
+		/**
+		 * title_content_tags
+		 * title_content
+		 * content
+		 * title
+		 */
 		'title_content',
-//		'content',
-//		'title',
 	],
-
-	// char filter
 	'char_filters'  => [
 		'shortcode',
 		'code',
@@ -30,22 +29,19 @@ return [
 		'reference',
 		'kana',
 	],
-
-	// tokenizer
 	'tokenizer'     => [
-		'bigram', // if setting [use_bigram_tokenizer] = true
-
+		/**
+		 * goo // クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
+		 * bigram // if setting [use_bigram_tokenizer] = true
+		 */
+		'bigram',
 		'yahoo',
-//		// 'goo', // クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
 		'igo',
 	],
-
-	// token filter
 	'token_filters' => [
 		'common',
 		'wakati' => [ 'yahoo', 'goo', 'igo' ],
 		'bigram' => [ 'bigram' ],
 		'max',
 	],
-
 ];

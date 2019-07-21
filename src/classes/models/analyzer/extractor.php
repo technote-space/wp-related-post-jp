@@ -30,6 +30,6 @@ abstract class Extractor implements \WP_Framework_Core\Interfaces\Singleton, \WP
 	 *
 	 * @return string
 	 */
-	public abstract function extract( $post );
+	abstract public function extract( $post );
 
 }

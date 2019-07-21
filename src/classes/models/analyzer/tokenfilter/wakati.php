@@ -40,7 +40,7 @@ class Wakati extends Tokenfilter {
 				continue;
 			}
 			$word         = mb_convert_kana( $word, 'c' );
-			$word         = mb_strtolower( $word, "utf-8" );
+			$word         = mb_strtolower( $word, 'utf-8' );
 			$ret[ $word ] = ( isset( $ret[ $word ] ) ? $ret[ $word ] : 0 ) + $count;
 		}
 

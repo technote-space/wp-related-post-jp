@@ -39,10 +39,19 @@ class Igo implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core
 	}
 
 	/**
+	 * @noinspection PhpUnusedPrivateMethodInspection
+	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+	 * @return string
+	 */
+	private function igo_memory_limit() {
+		return $this->apply_filters( 'igo_memory_limit', '256M' );
+	}
+
+	/**
 	 * set memory limit
 	 */
 	private function set_memory_limit() {
-		ini_set( 'memory_limit', $this->apply_filters( 'igo_memory_limit', '256M' ) );
+		wp_raise_memory_limit( 'igo' );
 	}
 
 	/**
@@ -76,14 +85,22 @@ class Igo implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core
 	 * @return array
 	 */
 	public function words( $text, $classes = [] ) {
-		return array_values( array_map( function ( $m ) {
-			return $m->surface;
-		}, empty( $classes ) ? $this->parse( $text ) : array_filter( $this->parse( $text ), function ( $m ) use ( $classes ) {
-			$feature = explode( ',', $m->feature );
-			$class   = reset( $feature );
+		return array_values(
+			array_map(
+				function ( $data ) {
+					return $data->surface;
+				},
+				empty( $classes ) ? $this->parse( $text ) : array_filter(
+					$this->parse( $text ),
+					function ( $data ) use ( $classes ) {
+						$feature = explode( ',', $data->feature );
+						$class   = reset( $feature );
 
-			return in_array( $class, $classes );
-		} ) ) );
+						return in_array( $class, $classes, true );
+					}
+				)
+			)
+		);
 	}
 
 	/**
@@ -96,7 +113,9 @@ class Igo implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core
 		$words = $this->words( $text, $classes );
 		$ret   = [];
 		foreach ( $words as $word ) {
-			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
+			if ( ! isset( $ret[ $word ] ) ) {
+				$ret[ $word ] = 0;
+			}
 			$ret[ $word ]++;
 		}
 

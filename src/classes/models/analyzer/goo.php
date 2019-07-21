@@ -67,10 +67,10 @@ class Goo extends Api {
 	/**
 	 * @return array
 	 */
-	protected function get_curl_options() {
+	protected function get_additional_post_options() {
 		return [
-			CURLOPT_HTTPHEADER => [
-				'Content-Type: application/json',
+			'headers' => [
+				'Content-Type' => 'application/json',
 			],
 		];
 	}
@@ -78,10 +78,17 @@ class Goo extends Api {
 	/**
 	 * @param array $params
 	 *
-	 * @return string
+	 * @return mixed
 	 */
 	protected function get_post_fields( $params ) {
-		return json_encode( $params );
+		return wp_json_encode( $params );
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_data_format() {
+		return 'body';
 	}
 
 	/**
@@ -108,8 +115,10 @@ class Goo extends Api {
 		$data = $this->app->array->flatten( $data );
 		$ret  = [];
 		foreach ( $data as $word ) {
-			! isset( $ret[ $word ] ) and $ret[ $word ] = 0;
-			$ret[ $word ] ++;
+			if ( ! isset( $ret[ $word ] ) ) {
+				$ret[ $word ] = 0;
+			}
+			$ret[ $word ]++;
 		}
 
 		return $ret;

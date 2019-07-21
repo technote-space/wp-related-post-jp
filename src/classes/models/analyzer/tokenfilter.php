@@ -29,6 +29,6 @@ abstract class Tokenfilter implements \WP_Framework_Core\Interfaces\Singleton, \
 	 *
 	 * @return array ( word => count )
 	 */
-	public abstract function filter( $terms );
+	abstract public function filter( $terms );
 
 }

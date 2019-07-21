@@ -9,7 +9,6 @@
 namespace Related_Post\Classes\Models\Analyzer;
 
 use Exception;
-use RuntimeException;
 use WP_Framework_Common\Traits\Package;
 use WP_Framework_Core\Traits\Hook;
 use WP_Framework_Core\Traits\Singleton;
@@ -29,7 +28,7 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	/**
 	 * @return string
 	 */
-	protected abstract function get_url();
+	abstract protected function get_url();
 
 	/**
 	 * @param string $text
@@ -37,27 +36,13 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	 *
 	 * @return array
 	 */
-	protected abstract function get_params( $text, $classes );
+	abstract protected function get_params( $text, $classes );
 
 	/**
 	 * @return array
 	 */
-	protected function get_curl_options() {
+	protected function get_additional_post_options() {
 		return [];
-	}
-
-	/**
-	 * @param resource $ch
-	 */
-	protected function pre_send( $ch ) {
-
-	}
-
-	/**
-	 * @param resource $ch
-	 */
-	protected function post_send( $ch ) {
-
 	}
 
 	/**
@@ -65,15 +50,22 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	 *
 	 * @return array
 	 */
-	protected abstract function parse_response( $res );
+	abstract protected function parse_response( $res );
 
 	/**
 	 * @param array $params
 	 *
-	 * @return string
+	 * @return mixed
 	 */
 	protected function get_post_fields( $params ) {
-		return http_build_query( $params );
+		return $params;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_data_format() {
+		return 'query';
 	}
 
 	/**
@@ -86,32 +78,16 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	 */
 	private function access( $text, $classes, $trial = 3 ) {
 		try {
-			$ch      = curl_init( $this->get_url() );
-			$options = $this->get_curl_options();
-			$options += [
-				CURLOPT_POST           => true,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_POSTFIELDS     => $this->get_post_fields( $this->get_params( $text, $classes ) ),
-			];
-			curl_setopt_array( $ch, $options );
-
-			$this->pre_send( $ch );
-			$result = curl_exec( $ch );
-			$this->post_send( $ch );
-
-			$errno = curl_errno( $ch );
-			$error = curl_error( $ch );
-
-			curl_close( $ch );
-
-			if ( CURLE_OK !== $errno ) {
-				throw new RuntimeException( $error, $errno );
-			}
-			if ( false === $result ) {
-				throw new Exception( $this->translate( 'Invalid API Response.' ) );
+			$response = wp_remote_post( $this->get_url(), $this->get_post_options( $text, $classes ) );
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message() );
 			}
 
-			return $this->parse_response( $result );
+			if ( empty( $response['response']['code'] ) || 200 !== $response['response']['code'] ) {
+				throw new Exception( $response['response']['message'] );
+			}
+
+			return $this->parse_response( $response['body'] );
 		} catch ( Exception $e ) {
 			if ( $trial > 0 ) {
 				sleep( $this->get_retry_interval() );
@@ -124,21 +100,37 @@ abstract class Api implements \WP_Framework_Core\Interfaces\Singleton, \WP_Frame
 	}
 
 	/**
+	 * @param string $text
+	 * @param array $classes
+	 *
+	 * @return array
+	 */
+	private function get_post_options( $text, $classes ) {
+		$options = $this->get_additional_post_options();
+		$options = array_replace_recursive( $options, [
+			'body'        => $this->get_post_fields( $this->get_params( $text, $classes ) ),
+			'data_format' => $this->get_data_format(),
+		] );
+
+		return $options;
+	}
+
+	/**
 	 * @param $data
 	 *
 	 * @return array ( word => count )
 	 */
-	protected abstract function parse_data( $data );
+	abstract protected function parse_data( $data );
 
 	/**
 	 * @return int
 	 */
-	protected abstract function get_retry_count();
+	abstract protected function get_retry_count();
 
 	/**
 	 * @return int
 	 */
-	protected abstract function get_retry_interval();
+	abstract protected function get_retry_interval();
 
 	/**
 	 * @return int

@@ -29,7 +29,7 @@ abstract class Tokenizer implements \WP_Framework_Core\Interfaces\Singleton, \WP
 	 *
 	 * @return array ( word => count )
 	 */
-	public abstract function parse( $text );
+	abstract public function parse( $text );
 
 	/**
 	 * @return bool
