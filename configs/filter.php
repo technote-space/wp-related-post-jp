@@ -40,7 +40,6 @@ return [
 		'${prefix}post_load_admin_page' => [
 			'post_load_admin_page',
 		],
-
 		'admin_head-edit.php' => [
 			'edit_post_page',
 		],
@@ -50,11 +49,9 @@ return [
 		'wp_ajax_inline-save' => [
 			'edit_post_page' => 0,
 		],
-
 		'the_content' => [
 			'the_content',
 		],
-
 		'${prefix}app_activated' => [
 			'init_posts_rankings',
 		],

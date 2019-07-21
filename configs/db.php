@@ -13,8 +13,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 
 return [
-
-	'word' => [
+	'word'              => [
 		'columns' => [
 			'word'  => [
 				'type' => 'VARCHAR(24)',
@@ -37,8 +36,7 @@ return [
 			],
 		],
 	],
-
-	'document' => [
+	'document'          => [
 		'columns' => [
 			'post_id' => [
 				'type'     => 'BIGINT(20)',
@@ -57,7 +55,6 @@ return [
 			],
 		],
 	],
-
 	'rel_document_word' => [
 		'columns' => [
 			'document_id' => [
@@ -91,8 +88,7 @@ return [
 			],
 		],
 	],
-
-	'ranking'      => [
+	'ranking'           => [
 		'columns' => [
 			'post_id'      => [
 				'type'     => 'BIGINT(20)',
@@ -119,8 +115,7 @@ return [
 			],
 		],
 	],
-
-	'exclude_word' => [
+	'exclude_word'      => [
 		'columns' => [
 			'word' => [
 				'type' => 'VARCHAR(24)',
@@ -133,6 +128,4 @@ return [
 			],
 		],
 	],
-
 ];
-

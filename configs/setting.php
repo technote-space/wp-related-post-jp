@@ -13,10 +13,8 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 
 return [
-
 	8 => [
-
-		'Search' => [
+		'Search'   => [
 			10 => [
 				'use_keyword_search' => [
 					'label'   => 'Whether to use indexed results for keyword search.',
@@ -25,7 +23,6 @@ return [
 				],
 			],
 		],
-
 		'Analyzer' => [
 			10 => [
 				'use_bigram_tokenizer' => [
@@ -35,9 +32,7 @@ return [
 				],
 			],
 		],
-
-		'Index' => [
-
+		'Index'    => [
 			10 => [
 				'ranking_number'                    => [
 					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
@@ -61,12 +56,12 @@ return [
 					'max'     => 1,
 				],
 				'auto_insert_related_post'          => [
-					'label'   => "Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)",
+					'label'   => 'Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)',
 					'type'    => 'bool',
 					'default' => false,
 				],
 				'related_posts_title'               => [
-					'label'     => "Related posts title",
+					'label'     => 'Related posts title',
 					'default'   => 'More from my site',
 					'translate' => true,
 				],
@@ -126,11 +121,8 @@ return [
 			],
 		],
 	],
-
 	9 => [
-
 		'Yahoo' => [
-
 			10 => [
 				'yahoo_client_id'      => [
 					'label' => 'Yahoo! Client ID',
@@ -151,30 +143,28 @@ return [
 					'min'     => 1,
 				],
 			],
-
 		],
-
-		// クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
-		//		'Goo' => array(
-		//			10 => array(
-		//				'goo_app_id'         => array(
-		//					'label' => 'Goo App ID',
-		//				),
-		//				'goo_retry_count'    => array(
-		//					'label'   => 'Retry count',
-		//					'type'    => 'int',
-		//					'default' => 3,
-		//					'min'     => 0,
-		//				),
-		//				'goo_retry_interval' => array(
-		//					'label'   => 'Retry interval',
-		//					'type'    => 'int',
-		//					'default' => 5,
-		//					'min'     => 1,
-		//				),
-		//			),
-		//		),
-
+		/**
+		 * クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
+		 * 'Goo' => array(
+		 * 10 => array(
+		 * 'goo_app_id'         => array(
+		 * 'label' => 'Goo App ID',
+		 * ),
+		 * 'goo_retry_count'    => array(
+		 * 'label'   => 'Retry count',
+		 * 'type'    => 'int',
+		 * 'default' => 3,
+		 * 'min'     => 0,
+		 * ),
+		 * 'goo_retry_interval' => array(
+		 * 'label'   => 'Retry interval',
+		 * 'type'    => 'int',
+		 * 'default' => 5,
+		 * 'min'     => 1,
+		 * ),
+		 * ),
+		 * ),
+		 * */
 	],
-
 ];
