@@ -1,48 +1,52 @@
 <?php
 /**
- * @version 1.3.16
- * @author Technote
- * @since 1.0.0.0
- * @copyright Technote All Rights Reserved
- * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
- * @link https://technote.space
+ * Class Bigram Test
+ *
+ * @package Tests
  */
 
-namespace Related_Post\Classes\Tests;
+use PHPUnit\Framework\TestCase;
 
-use WP_Framework_Test\Classes\Tests\Base;
-
-if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
-	exit;
-}
+use Related_Post\Classes\Models\Analyzer\Bigram;
 
 /**
- * Class Bigram
- * @package Related_Post\Classes\Tests
+ * @noinspection PhpUndefinedClassInspection
+ * Bigram test case.
+ *
+ * @mixin TestCase
  */
-class Bigram extends Base {
+class BigramTest extends WP_UnitTestCase {
 
-	/** @var \Related_Post\Classes\Models\Analyzer\Bigram */
-	private $bigram;
+	/**
+	 * @var WP_Framework
+	 */
+	protected static $app;
 
-	public function _setup() {
-		$this->bigram = \Related_Post\Classes\Models\Analyzer\Bigram::get_instance( $this->app );
+	/** @var Bigram */
+	private static $bigram;
+
+	/**
+	 * @SuppressWarnings(StaticAccess)
+	 */
+	public static function setUpBeforeClass() {
+		static::$app    = WP_Framework::get_instance( WP_RELATED_POST_JP );
+		static::$bigram = Bigram::get_instance( static::$app );
 	}
 
 	/**
-	 * @dataProvider _test_words_provider
+	 * @dataProvider data_provider_test_words
 	 *
 	 * @param string $text
 	 * @param array $expected
 	 */
 	public function test_words( $text, $expected ) {
-		$this->assertEquals( $expected, $this->bigram->words( $text ) );
+		$this->assertEquals( $expected, static::$bigram->words( $text ) );
 	}
 
 	/**
 	 * @return array
 	 */
-	public function _test_words_provider() {
+	public function data_provider_test_words() {
 		return [
 			[ '', [] ],
 			[ ' 　 ', [ '  ', '  ' ] ],
