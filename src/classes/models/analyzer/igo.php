@@ -34,24 +34,8 @@ class Igo implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Core
 	 * @throws Exception
 	 */
 	protected function initialize() {
-		$this->set_memory_limit();
+		$this->app->utility->raise_memory_limit( $this->apply_filters( 'igo_memory_limit', '256M' ) );
 		$this->igo = new Tagger( [ 'dict_dir' => $this->app->define->plugin_configs_dir . DS . 'ipadic' ] );
-	}
-
-	/**
-	 * @noinspection PhpUnusedPrivateMethodInspection
-	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-	 * @return string
-	 */
-	private function igo_memory_limit() {
-		return $this->apply_filters( 'igo_memory_limit', '256M' );
-	}
-
-	/**
-	 * set memory limit
-	 */
-	private function set_memory_limit() {
-		wp_raise_memory_limit( 'igo' );
 	}
 
 	/**

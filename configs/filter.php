@@ -12,7 +12,7 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 return [
 
-	'\Related_Post\Classes\Models\Control'      => [
+	'\Related_Post\Classes\Models\Control' => [
 		'${prefix}allowed_wp_tables' => [
 			'allowed_wp_tables',
 		],
@@ -20,7 +20,7 @@ return [
 			'the_content',
 		],
 	],
-	'\Related_Post\Classes\Models\Post'         => [
+	'\Related_Post\Classes\Models\Post'    => [
 		'transition_post_status'   => [
 			'transition_post_status',
 		],
@@ -40,7 +40,7 @@ return [
 			'edit_post_page' => 0,
 		],
 	],
-	'\Related_Post\Classes\Models\Update'       => [
+	'\Related_Post\Classes\Models\Update'  => [
 		'${prefix}app_initialized'      => [
 			'setup_index_posts',
 		],
@@ -52,11 +52,6 @@ return [
 		],
 		'${prefix}app_activated'        => [
 			'init_posts_rankings',
-		],
-	],
-	'\Related_Post\Classes\Models\Analyzer\Igo' => [
-		'igo_memory_limit' => [
-			'igo_memory_limit',
 		],
 	],
 ];
