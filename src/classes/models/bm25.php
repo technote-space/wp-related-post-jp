@@ -139,7 +139,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		$total_count = array_sum( $data );
 
 		if ( $this->app->db->transaction( function () use ( $post_id, $post_types, $data, $total_count, &$word_ids, $update_word_now ) {
-			$word_ids = $this->update_execute( $post_id, $post_types, $data, $total_count, $word_ids, $update_word_now );
+			$this->update_execute( $post_id, $post_types, $data, $total_count, $word_ids, $update_word_now );
 		} ) ) {
 			// idf の変化がなくても tf は変化があるかもしれないため、この投稿は必ず更新
 			$this->setup_ranking( $post_types, $word_ids, $post_id );
@@ -155,10 +155,8 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 * @param $total_count
 	 * @param $word_ids
 	 * @param $update_word_now
-	 *
-	 * @return array
 	 */
-	private function update_execute( $post_id, $post_types, $data, $total_count, $word_ids, $update_word_now ) {
+	private function update_execute( $post_id, $post_types, $data, $total_count, &$word_ids, $update_word_now ) {
 		$this->delete( $post_id, $word_ids, false );
 		$document_id = $this->table( 'document' )->insert( [
 			'post_id' => $post_id,
@@ -188,8 +186,6 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 
 		$this->app->post->set( $post_id, 'indexed', 1 );
 		$this->app->post->delete( $post_id, 'setup_ranking' );
-
-		return $word_ids;
 	}
 
 	/**
