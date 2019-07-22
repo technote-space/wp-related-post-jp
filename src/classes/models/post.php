@@ -73,7 +73,7 @@ class Post implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		}
 
 		if ( $query->is_search() ) {
-			if ( $this->apply_filters( 'use_keyword_search' ) && $this->cache_get( 'is_valid_posts_search' ) ) {
+			if ( $this->apply_filters( 'use_keyword_search' ) && $this->get_control()->cache_get( 'is_valid_posts_search' ) ) {
 				$search = $query->get( 's' );
 				if ( ! empty( $search ) ) {
 					$this->keyword_search( $query, $search );
@@ -100,8 +100,8 @@ class Post implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				} else {
 					if ( $this->apply_filters( 'index_background_when_update_post' ) ) {
 						$this->app->post->delete( $post->ID, 'indexed' );
-						$this->cache_set( 'posts_indexed', false );
-						$this->cache_set( 'word_updated', false );
+						$this->get_control()->cache_set( 'posts_indexed', false );
+						$this->get_control()->cache_set( 'word_updated', false );
 					} else {
 						$this->get_bm25()->update( $post );
 					}

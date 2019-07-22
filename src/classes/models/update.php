@@ -8,7 +8,6 @@
 
 namespace Related_Post\Classes\Models;
 
-use Closure;
 use WP_Framework_Common\Traits\Package;
 use WP_Framework_Common\Traits\Uninstall;
 use WP_Framework_Core\Traits\Hook;
@@ -62,7 +61,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function setup_index_posts() {
-		if ( $this->cache_get( 'posts_indexed' ) || ! $this->get_control()->is_valid_posts_index() || $this->is_process_running() ) {
+		if ( $this->get_control()->cache_get( 'posts_indexed' ) || ! $this->get_control()->is_valid_posts_index() || $this->is_process_running() ) {
 			return;
 		}
 
@@ -195,7 +194,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * index posts
 	 */
 	private function index_posts() {
-		if ( $this->cache_get( 'posts_indexed' ) || $this->is_process_running() ) {
+		if ( $this->get_control()->cache_get( 'posts_indexed' ) || $this->is_process_running() ) {
 			return;
 		}
 
@@ -210,7 +209,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 		set_time_limit( 0 );
 		$uuid = $this->lock_process();
 
-		if ( $this->cache_get( 'db_truncate_required' ) ) {
+		if ( $this->get_control()->cache_get( 'db_truncate_required' ) ) {
 			$this->db_truncate();
 
 			return;
@@ -233,8 +232,8 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 			}
 
 			if ( $this->get_setup_ranking_posts( true ) <= 0 ) {
-				$this->cache_set( 'posts_indexed', true );
-				$this->cache_set( 'is_valid_posts_search', true );
+				$this->get_control()->cache_set( 'posts_indexed', true );
+				$this->get_control()->cache_set( 'is_valid_posts_search', true );
 			}
 		}
 
@@ -246,7 +245,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * db truncate
 	 */
 	private function db_truncate() {
-		$this->cache_set( 'db_truncate_required', false );
+		$this->get_control()->cache_set( 'db_truncate_required', false );
 		$this->app->post->delete_all( 'indexed' );
 		$this->app->post->delete_all( 'setup_ranking' );
 		$this->app->db->truncate( 'document' );
@@ -294,8 +293,8 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @return bool|string
 	 */
 	private function update_word() {
-		if ( ! $this->cache_get( 'word_updated' ) ) {
-			$this->cache_set( 'word_updated', true );
+		if ( ! $this->get_control()->cache_get( 'word_updated' ) ) {
+			$this->get_control()->cache_set( 'word_updated', true );
 
 			$uuid  = $this->lock_process( true, 'word index process' );
 			$cache = [];
@@ -354,68 +353,6 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	}
 
 	/**
-	 * @param array|null $term_taxonomy_ids
-	 * @param string $post_table
-	 * @param string $post_id_column
-	 * @param string $term_rs_table
-	 *
-	 * @return false|Closure
-	 */
-	public function get_taxonomy_subquery( $term_taxonomy_ids = null, $post_table = 'p', $post_id_column = 'ID', $term_rs_table = 'tr' ) {
-		if ( ! isset( $term_taxonomy_ids ) ) {
-			$term_taxonomy_ids = $this->get_control()->get_exclude_category_id();
-		}
-		if ( empty( $term_taxonomy_ids ) ) {
-			return false;
-		}
-
-		return function ( $query ) use ( $term_taxonomy_ids, $post_table, $post_id_column, $term_rs_table ) {
-			/** @var Builder $query */
-			$query->table( $this->get_wp_table( 'term_relationships', $term_rs_table ) )
-				->select_raw( '"X"' )
-				->where_column( "{$term_rs_table}.object_id", "{$post_table}.{$post_id_column}" )
-				->where_integer_in_raw( "{$term_rs_table}.term_taxonomy_id", $term_taxonomy_ids );
-		};
-	}
-
-	/**
-	 * @return Builder
-	 */
-	private function from_posts() {
-		return $this->common_filter( $this->get_control()->get_valid_post_types(), $this->wp_table( 'posts', 'p' ) );
-	}
-
-	/**
-	 * @param array $post_types
-	 * @param Builder $query
-	 * @param bool $is_exclude_post_ids
-	 *
-	 * @return Builder
-	 */
-	public function common_filter( array $post_types, Builder $query, $is_exclude_post_ids = false ) {
-		$query->where( 'p.post_status', 'publish' );
-		if ( count( $post_types ) === 1 ) {
-			$query->where( 'p.post_type', reset( $post_types ) );
-		} else {
-			$query->where_in( 'p.post_type', $post_types );
-		}
-
-		$subquery = $this->get_taxonomy_subquery();
-		if ( $subquery ) {
-			$query->where_not_exists( $subquery );
-		}
-
-		if ( $is_exclude_post_ids ) {
-			$exclude_post_ids = $this->get_control()->get_exclude_post_ids();
-			if ( $exclude_post_ids ) {
-				$query->where_integer_not_in_raw( 'p.ID', $exclude_post_ids );
-			}
-		}
-
-		return $query;
-	}
-
-	/**
 	 * @param bool $is_count
 	 * @param int $limit
 	 * @param string $key
@@ -427,7 +364,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 			return $is_count ? 0 : [];
 		}
 
-		$query = $this->from_posts()
+		$query = $this->get_control()->from_posts()
 			->alias_left_join_wp( 'postmeta', 'pm', 'p.ID', 'pm.post_id' )
 			->where_not_exists( function ( $query ) use ( $key ) {
 				/** @var Builder $query */
@@ -478,7 +415,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 			return $count;
 		}
 
-		$count = $this->from_posts()->distinct()->count( 'p.ID' );
+		$count = $this->get_control()->from_posts()->distinct()->count( 'p.ID' );
 
 		// index, ranking
 		$count *= 2;
@@ -492,7 +429,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @return int
 	 */
 	public function get_update_posts_count() {
-		if ( $this->cache_get( 'db_truncate_required' ) ) {
+		if ( $this->get_control()->cache_get( 'db_truncate_required' ) ) {
 			return $this->get_total_posts_count();
 		}
 
@@ -525,7 +462,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @return bool
 	 */
 	public function off_posts_index() {
-		if ( $this->cache_get( 'posts_indexed' ) ) {
+		if ( $this->get_control()->cache_get( 'posts_indexed' ) ) {
 			return false;
 		}
 		if ( ! $this->get_control()->is_valid_posts_index() ) {
@@ -565,10 +502,10 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * init posts index
 	 */
 	public function init_posts_index() {
-		$this->cache_set( 'db_truncate_required', true );
-		$this->cache_set( 'posts_indexed', false );
-		$this->cache_set( 'is_valid_posts_search', false );
-		$this->cache_set( 'word_updated', false );
+		$this->get_control()->cache_set( 'db_truncate_required', true );
+		$this->get_control()->cache_set( 'posts_indexed', false );
+		$this->get_control()->cache_set( 'is_valid_posts_search', false );
+		$this->get_control()->cache_set( 'word_updated', false );
 		delete_site_transient( $this->get_control()->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_control()->get_update_posts_count_transient_key() );
 		$this->get_control()->unlock_process( 60 );
@@ -580,7 +517,8 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function init_posts_rankings() {
-		$this->cache_set( 'posts_indexed', false );
+		$this->get_control()->cache_set( 'posts_indexed', false );
+		$this->app->post->delete_all( 'indexed' );
 		$this->app->post->delete_all( 'setup_ranking' );
 		delete_site_transient( $this->get_control()->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_control()->get_update_posts_count_transient_key() );
@@ -612,7 +550,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 		$this->clear_event();
 		$this->get_control()->unlock_process();
 		$this->unlock_interval_process();
-		$this->cache_set( 'db_truncate_required', false );
+		$this->get_control()->cache_set( 'db_truncate_required', false );
 		delete_site_transient( $this->get_control()->get_total_posts_count_transient_key() );
 		delete_site_transient( $this->get_control()->get_update_posts_count_transient_key() );
 	}

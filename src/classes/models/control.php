@@ -8,9 +8,11 @@
 
 namespace Related_Post\Classes\Models;
 
+use Closure;
 use WP_Framework_Common\Traits\Package;
 use WP_Framework_Core\Traits\Hook;
 use WP_Framework_Core\Traits\Singleton;
+use WP_Framework_Db\Classes\Models\Query\Builder;
 use WP_Framework_Presenter\Traits\Presenter;
 use WP_Post;
 use WP_Taxonomy;
@@ -42,6 +44,17 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 
 	/** @var array $target_taxonomies */
 	private $target_taxonomies;
+
+	/**
+	 * @return Bm25
+	 */
+	private function get_bm25() {
+		if ( ! isset( $this->bm25 ) ) {
+			$this->bm25 = Bm25::get_instance( $this->app );
+		}
+
+		return $this->bm25;
+	}
 
 	/**
 	 * @noinspection PhpUnusedPrivateMethodInspection
@@ -230,14 +243,99 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @return Bm25
+	 * @param array $post_types
+	 * @param Builder $query
+	 * @param bool $is_exclude_post_ids
+	 *
+	 * @return Builder
 	 */
-	private function get_bm25() {
-		if ( ! isset( $this->bm25 ) ) {
-			$this->bm25 = Bm25::get_instance( $this->app );
+	public function common_filter( array $post_types, Builder $query, $is_exclude_post_ids = false ) {
+		$query->where( 'p.post_status', 'publish' );
+		if ( count( $post_types ) === 1 ) {
+			$query->where( 'p.post_type', reset( $post_types ) );
+		} else {
+			$query->where_in( 'p.post_type', $post_types );
 		}
 
-		return $this->bm25;
+		$subquery = $this->get_taxonomy_subquery();
+		if ( $subquery ) {
+			$query->where_not_exists( $subquery );
+		}
+
+		if ( $is_exclude_post_ids ) {
+			$exclude_post_ids = $this->get_exclude_post_ids();
+			if ( $exclude_post_ids ) {
+				$query->where_integer_not_in_raw( 'p.ID', $exclude_post_ids );
+			}
+		}
+
+		return $query;
+	}
+
+	/**
+	 * @param array|null $term_taxonomy_ids
+	 * @param string $post_table
+	 * @param string $post_id_column
+	 * @param string $term_rs_table
+	 *
+	 * @return false|Closure
+	 */
+	public function get_taxonomy_subquery( $term_taxonomy_ids = null, $post_table = 'p', $post_id_column = 'ID', $term_rs_table = 'tr' ) {
+		if ( ! isset( $term_taxonomy_ids ) ) {
+			$term_taxonomy_ids = $this->get_exclude_category_id();
+		}
+		if ( empty( $term_taxonomy_ids ) ) {
+			return false;
+		}
+
+		return function ( $query ) use ( $term_taxonomy_ids, $post_table, $post_id_column, $term_rs_table ) {
+			/** @var Builder $query */
+			$query->table( $this->get_wp_table( 'term_relationships', $term_rs_table ) )
+				->select_raw( '"X"' )
+				->where_column( "{$term_rs_table}.object_id", "{$post_table}.{$post_id_column}" )
+				->where_integer_in_raw( "{$term_rs_table}.term_taxonomy_id", $term_taxonomy_ids );
+		};
+	}
+
+	/**
+	 * @return Builder
+	 */
+	public function from_posts() {
+		return $this->common_filter( $this->get_valid_post_types(), $this->wp_table( 'posts', 'p' ) );
+	}
+
+	/**
+	 * @param array $post_types
+	 * @param Builder $query
+	 * @param bool $is_exclude_post_ids
+	 *
+	 * @return Builder
+	 */
+	private function from_common( $post_types, Builder $query, $is_exclude_post_ids = false ) {
+		return $this->common_filter( $post_types, $query->alias_join_wp( 'posts', 'p', 'd.post_id', 'p.ID' ), $is_exclude_post_ids );
+	}
+
+	/**
+	 * @param array $post_types
+	 *
+	 * @return Builder
+	 */
+	public function from_document( $post_types ) {
+		return $this->from_common( $post_types, $this->table( 'document', 'd' ) );
+	}
+
+	/**
+	 * @param array $post_types
+	 * @param bool $is_exclude_post_ids
+	 *
+	 * @return Builder
+	 */
+	public function from_document_word( $post_types, $is_exclude_post_ids = false ) {
+		return $this->from_common(
+			$post_types,
+			$this->table( 'rel_document_word', 'rw' )
+				->alias_join( 'document', 'd', 'd.document_id', 'rw.document_id' ), $is_exclude_post_ids
+		);
 	}
 
 	/**
