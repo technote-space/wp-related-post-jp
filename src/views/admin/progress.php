@@ -1,8 +1,6 @@
 <?php
 /**
- * @version 1.3.16
  * @author Technote
- * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -29,14 +27,14 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 	] ); ?>
 </div>
 <div id="<?php $instance->id(); ?>-progressbar-wrap">
-    <div class="progressbar"></div>
+	<div class="progressbar"></div>
 </div>
 <div id="<?php $instance->id(); ?>-info-wrap">
-    <div class="loading"></div>
-    <div class="next"></div>
+	<div class="loading"></div>
+	<div class="next"></div>
 </div>
 <div id="<?php $instance->id(); ?>-finished-wrap">
-    <div class="message"><?php $instance->h( 'Posts index has successfully completed.', true ); ?></div>
+	<div class="message"><?php $instance->h( 'Posts index has successfully completed.', true ); ?></div>
 	<?php $instance->form( 'input/button', $args, [
 		'class' => 'index_clear button-primary',
 		'name'  => 'index_clear',

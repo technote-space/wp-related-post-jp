@@ -1,8 +1,6 @@
 <?php
 /**
- * @version 1.3.9
  * @author Technote
- * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -13,16 +11,15 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 }
 
 return [
-
-	// extractor
 	'extractor'     => [
-//		'title_content_tags',
+		/**
+		 * title_content_tags
+		 * title_content
+		 * content
+		 * title
+		 */
 		'title_content',
-//		'content',
-//		'title',
 	],
-
-	// char filter
 	'char_filters'  => [
 		'shortcode',
 		'code',
@@ -32,22 +29,19 @@ return [
 		'reference',
 		'kana',
 	],
-
-	// tokenizer
 	'tokenizer'     => [
-		'bigram', // if setting [use_bigram_tokenizer] = true
-
+		/**
+		 * goo // クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
+		 * bigram // if setting [use_bigram_tokenizer] = true
+		 */
+		'bigram',
 		'yahoo',
-//		// 'goo', // クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
 		'igo',
 	],
-
-	// token filter
 	'token_filters' => [
 		'common',
 		'wakati' => [ 'yahoo', 'goo', 'igo' ],
 		'bigram' => [ 'bigram' ],
 		'max',
 	],
-
 ];

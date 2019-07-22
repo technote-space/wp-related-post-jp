@@ -1,51 +1,59 @@
 # WP Related Post JP
 
+[![Build Status](https://travis-ci.com/technote-space/wp-related-post-jp.svg?branch=master)](https://travis-ci.com/technote-space/wp-related-post-jp)
+[![CodeFactor](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp/badge)](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)](http://php.net/)
 [![WordPress: >=3.9.3](https://img.shields.io/badge/WordPress-%3E%3D3.9.3-brightgreen.svg)](https://wordpress.org/)
 
+![バナー](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/banner-772x250.png)
+
 投稿同士の類似度の計算を行うWordpressのプラグインです。  
 関連記事の提供や全文検索を可能にします。
 
-## スクリーンショット
-- 設定画面
-
-![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-1.png)
-
-![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-7.png)
-
-- 処理中
-
-![処理中画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-2.png)
-
-- 有効化前
-  - 通常の検索の場合「WordPress」と「あああああ」を含まないとヒットしません。
-
-![有効化前](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-3.png)
-
-- 有効化後
-  - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能です。
-
-![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-4.png)
-
-- 関連記事の確認
-  - 投稿一覧から選択した記事の関連記事及び類似度のスコアを確認できます。
-  
-![関連記事](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-5.png)
-
-- 重要語の確認
-  - 投稿一覧から選択した記事の重要語を確認できます。
- 
-![重要語](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/master/screenshot-6.png)
+[最新バージョン](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/wp-related-post-jp.zip)
 
 ## 要件
 - PHP 5.6 以上
 - WordPress 3.9.3 以上
 
+## スクリーンショット
+- 設定画面
+
+![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-1.png)
+
+![設定画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-7.png)
+
+- 処理中
+
+![処理中画面](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-2.png)
+
+- 有効化前
+  - 通常の検索の場合「WordPress」と「あああああ」を含まないとヒットしません。
+
+![有効化前](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-3.png)
+
+- 有効化後
+  - 検索語からスコアを計算し高い順に表示するため、完全一致しない場合でも検索結果を出すことが可能です。
+
+![有効化後](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-4.png)
+
+- 関連記事の確認
+  - 投稿一覧から選択した記事の関連記事及び類似度のスコアを確認できます。
+  
+![関連記事](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-5.png)
+
+- 重要語の確認
+  - 投稿一覧から選択した記事の重要語を確認できます。
+ 
+![重要語](https://raw.githubusercontent.com/technote-space/wp-related-post-jp/images/assets/screenshot-6.png)
+
 ## 導入手順
-1. ZIPダウンロード  
-2. wp-content/plugins に展開  
-3. 管理画面から有効化  
+1. 最新版をGitHubからダウンロード  
+[wp-related-post-jp.zip](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/wp-related-post-jp.zip)
+2. 「プラグインのアップロード」からインストール
+![install](https://raw.githubusercontent.com/technote-space/screenshots/master/misc/install-wp-plugin.png)
+3. プラグインを有効化 
 4. 左メニュー「WP Related Post JP」 > 「進捗」から「インデックス処理を有効化」を押下
 
 投稿データのインデックス化が終わるまではキーワード検索に使用されません。  
@@ -155,7 +163,8 @@ add_filter( 'related_post/extractor_result', function ($d, $post) {
 `related_post/related_posts_content` をフィルタすることで関連記事の表示を変更することが可能です。  
 
 例：
-```
+```php
+<?php
 add_filter( 'related_post/related_posts_content', function (
 	/** @noinspection PhpUnusedParameterInspection */
 	$content, $control, $title, $post, $related_posts

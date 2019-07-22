@@ -4,7 +4,8 @@ Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Requires PHP: 5.6
 Tested up to: 5.2
-Stable tag: 1.3.18
+Stable tag: 1.3.19
+Donate link: https://paypal.me/technote0space
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +15,8 @@ WP Related Post JP provides functions to get related posts.
 
 You can get related post based on post title or contents.
 [日本語の説明](https://technote.space/wp-related-post-jp "Documentation in Japanese")
+[GitHub (More details)](https://github.com/technote-space/wp-related-post-jp)
+[Issues (Reporting a new bug or feature request)](https://github.com/technote-space/wp-related-post-jp/issues)
 
 This plugin needs PHP5.6 or higher.
 
@@ -25,47 +28,6 @@ This plugin needs PHP5.6 or higher.
 
 == Screenshots ==
 
-1. Settings
-2. Progress
-3. Before
-4. After
-
 == Upgrade Notice ==
 
-= 1.3.18 =
-* 細かいバグの修正
-* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/115)
-
-= 1.3.17 =
-* 使用しているLibraryをcomposer化。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/105)
-* WordPress v4.5 未満でカテゴリが正しく取得できないバグの修正。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/108)
-* 使用不可な設定の非表示化。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/109)
-* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/107)
-
-= 1.3.16 =
-* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/104)
-
-= 1.3.15 =
-* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/94)
-
-= 1.3.14 =
-* wp-json の代わりに admin-ajax.php を使用するかどうか の設定をダッシュボードに追加。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/89)
-* post_status = all の場合にボタンが一覧に表示されないバグを修正。 [詳細](https://github.com/technote-space/wp-related-post-jp/issues/90)
-* [すべての差分](https://github.com/technote-space/wp-related-post-jp/pull/93)
-
-= 1.3.9 =
-* 評価による足切り機能を追加しました。
-* 　（ダッシュボードの除外設定から関連記事と検索それぞれ設定できます）
-* パフォーマンス改善に関する様々な修正を行いました [詳細](https://github.com/wp-content-framework/core/issues/138)
-
-= 1.3.8 =
-* README に書いてある filter の仕様 は 1/30 の v1.3.0 以降のバージョンから変更されました。
-* related_post『-』... ⇒ related_post『/』... のように スラッシュ区切りになります。
-* また v1.3.8 からは simplicity2 に対応しているので simplicity2利用者も functions.php への追加は基本的に不要になります。
-
 == Changelog ==
-
-= 1.3.18 =
-
-* First release
-

@@ -1,8 +1,6 @@
 <?php
 /**
- * @version 1.3.16
  * @author Technote
- * @since 1.0.0.0
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -75,12 +73,23 @@ class Yahoo extends Api {
 			'特殊'   => 13,
 		];
 
-		$ret = implode( ',', array_unique( array_filter( array_map( function ( $class ) use ( $map ) {
-			return isset( $map[ $class ] ) ? $map[ $class ] : false;
-		}, $classes ), function ( $d ) {
-			return false !== $d;
-		} ) ) );
-		"" === $ret and $ret = $map['名詞'];
+		$ret = implode( ',',
+			array_unique(
+				array_filter(
+					array_map(
+						function ( $class ) use ( $map ) {
+							return isset( $map[ $class ] ) ? $map[ $class ] : false;
+						}, $classes
+					),
+					function ( $data ) {
+						return false !== $data;
+					}
+				)
+			)
+		);
+		if ( '' === $ret ) {
+			$ret = $map['名詞'];
+		}
 
 		return $ret;
 	}
@@ -88,11 +97,11 @@ class Yahoo extends Api {
 	/**
 	 * @return array
 	 */
-	protected function get_curl_options() {
+	protected function get_additional_post_options() {
 		$app_id = $this->apply_filters( 'yahoo_client_id' );
 
 		return [
-			CURLOPT_USERAGENT => "Yahoo AppID: $app_id",
+			'user-agent' => "Yahoo AppID: $app_id",
 		];
 	}
 
@@ -104,7 +113,7 @@ class Yahoo extends Api {
 	 */
 	protected function parse_response( $res ) {
 		$xml   = simplexml_load_string( $res );
-		$json  = json_encode( $xml );
+		$json  = wp_json_encode( $xml );
 		$array = json_decode( $json, true );
 		if ( ! isset( $array['uniq_result']['word_list']['word'] ) ) {
 			throw new Exception( $this->translate( 'Invalid API Response.' ) );
@@ -119,8 +128,8 @@ class Yahoo extends Api {
 	 * @return array
 	 */
 	protected function parse_data( $data ) {
-		$data = array_filter( $data, function ( $d ) {
-			return isset( $d['surface'], $d['count'] );
+		$data = array_filter( $data, function ( $data ) {
+			return isset( $data['surface'], $data['count'] );
 		} );
 
 		return $this->app->array->combine( $data, 'surface', 'count' );

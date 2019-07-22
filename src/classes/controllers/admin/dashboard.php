@@ -1,8 +1,6 @@
 <?php
 /**
- * @version 1.3.17
  * @author Technote
- * @since 1.0.2.1
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -75,7 +73,9 @@ class Dashboard extends Base {
 	 */
 	protected function before_update() {
 		$exclude_categories = $this->app->input->post( 'exclude_categories' );
-		! is_array( $exclude_categories ) and $exclude_categories = [];
+		if ( ! is_array( $exclude_categories ) ) {
+			$exclude_categories = [];
+		}
 		$this->app->input->set_post( $this->get_filter_prefix() . 'exclude_categories', implode( ',', $exclude_categories ) );
 
 		$exclude_ids = $this->app->array->filter( $this->app->string->explode( $this->app->input->post( 'exclude_ids' ), [ ',', ' ' ] ), function ( $id ) {
@@ -117,6 +117,7 @@ class Dashboard extends Base {
 	 * @param array $option
 	 *
 	 * @return array
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	protected function filter_detail(
 		/** @noinspection PhpUnusedParameterInspection */
@@ -135,6 +136,7 @@ class Dashboard extends Base {
 	 * @param array $option
 	 *
 	 * @return array
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	protected function filter_type_setting(
 		/** @noinspection PhpUnusedParameterInspection */

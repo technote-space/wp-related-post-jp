@@ -1,8 +1,6 @@
 <?php
 /**
- * @version 1.3.16
  * @author Technote
- * @since 1.0.1.9
  * @copyright Technote All Rights Reserved
  * @license http://www.opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2
  * @link https://technote.space
@@ -10,7 +8,7 @@
 
 namespace Related_Post\Classes\Controllers\Api\Admin\Index;
 
-use Related_Post\Classes\Models\Control;
+use Related_Post\Classes\Models\Update;
 use WP_Error;
 use WP_Framework_Api\Classes\Controllers\Api\Base;
 use WP_REST_Request;
@@ -92,9 +90,9 @@ class Result extends Base {
 	 * @return int|WP_Error|WP_REST_Response
 	 */
 	public function callback( $params ) {
-		/** @var Control $control */
-		$control = Control::get_instance( $this->app );
+		/** @var Update $update */
+		$update = Update::get_instance( $this->app );
 
-		return new WP_REST_Response( $control->get_index_result_response( $params['p'] ) );
+		return new WP_REST_Response( $update->get_index_result_response( $params['p'] ) );
 	}
 }

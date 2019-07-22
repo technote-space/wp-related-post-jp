@@ -1,0 +1,110 @@
+language: php
+
+sudo: false
+dist: trusty
+
+git:
+  depth: 3
+
+notifications:
+  email: false
+  slack:
+    secure: mrIr8t8u+1LIwsZkjGJyz0Uo5I0EsLVsAFiQlnOqfUX05Yoo9YfciTha7xaPRxtLa87Dg/btwId7oJuLDI95YHHkot9o3cWgZ7vgZU2qkoQSfm8w8+TcPPogm1r/Hbdo1vxTYQ90rt/ezUmL7mRHF+/5JEsOD5tci6SFtzhis8uxUiYW3OhTmEaC907e8xIQMJgGPR2CUSWbYfh3/69leKiPsosYMXi/K5umGB4wDAedwnlNXNtssXGXBqtCbt74do5xG1NndmgzEDi3Qbyt8M/C4d75bEoNQfS3uYQcHyCf3n6aoxi+tQcb5H+iPgt5N3o+etCYBOL36BqFakG/fVPY6JDs/JwrJFozsweWrM2I9sOGqCWWrtVJ1ET1nmloy1I2Ef75ALtWJXRhFFFr5oqJoygDaKyII9QQTuf5n6svu9j8UdXwWbNEybK8ieL3yl4Dp+0zqJND/MbCrsrWHYsH/W1X0tyr3vsvhAYGtl35bbj4ps4WhI1PqAk7OPHnvv9BZjh49sLwkowaWS0Cx7ECsxw1bXayFsizGTUzz+Wq/bOOf4vzFZb80Eqzui5988DhXdPCUfCvaewfCHTjZ37Tpsf6xOuYcmDX24HvxxVilwcb+x7i3WHdOt+O8+mkKlFwXd5h2F/pc03p71aq66rlbCR3AqBIlJa3TCH16cE=
+
+branches:
+  only:
+    - master
+    - "/^v[0-9\\.]+/"
+
+cache:
+  yarn: true
+  directories:
+    - "${HOME}/.composer/cache"
+    - node_modules
+    - "${TRAVIS_BUILD_DIR}/.plugin"
+    - "${TRAVIS_BUILD_DIR}/.work/cache"
+
+stages:
+  - name: check
+    if: branch = master and tag IS blank and type IN (pull_request, api, cron)
+  - name: test
+    if: branch = master and tag IS blank and type IN (pull_request, api)
+  - name: deploy
+    if: tag IS present
+
+before_script:
+  - git clone --depth=1 https://github.com/wp-content-framework/travis-ci.git travis-ci
+  - bash travis-ci/bin/prepare.sh
+
+jobs:
+  fast_finish: true
+  include:
+    - stage: check
+      language: php
+      php: '7.2'
+      script: bash travis-ci/bin/php/phpcs.sh
+    - stage: check
+      language: php
+      php: '7.2'
+      script: bash travis-ci/bin/php/phpmd.sh
+
+
+    - stage: test
+      language: php
+      php: '7.3'
+      env:
+        - WP_VERSION=trunk
+        - ACTIVATE_POPULAR_PLUGINS=1
+      script: bash travis-ci/bin/php/wp-test.sh
+    - stage: test
+      language: php
+      php: '7.3'
+      env:
+        - WP_VERSION=latest
+        - WP_MULTISITE=1
+      script: bash travis-ci/bin/php/wp-test.sh
+    - stage: test
+      language: php
+      php: '7.0'
+      env:
+        - WP_VERSION=5.0
+      script: bash travis-ci/bin/php/wp-test.sh
+    - stage: test
+      language: php
+      php: '5.6'
+      env:
+        - WP_VERSION=5.0
+        - WP_MULTISITE=1
+      script: bash travis-ci/bin/php/wp-test.sh
+    - stage: test
+      language: php
+      php: '5.6'
+      env: WP_VERSION=4.9
+      script: bash travis-ci/bin/php/wp-test.sh
+    - stage: test
+      language: php
+      php: '5.6'
+      env: WP_VERSION=3.9
+      script: bash travis-ci/bin/php/wp-test.sh
+
+
+    - stage: deploy
+      language: node_js
+      node_js: '11'
+      dist: trusty
+      script: skip
+      before_deploy:
+        - source travis-ci/bin/deploy/env.sh
+        - bash travis-ci/bin/deploy/create.sh
+      deploy:
+        provider: releases
+        skip_cleanup: true
+        name: ${RELEASE_TITLE}
+        tag_name: ${RELEASE_TAG}
+        draft: true
+        api_key:
+          secure: J3gAHZlnh1vWAjwqpoVM+Gh+HM9uycwppExCoLKTkl9QBQ3BihNgIhdb/CSdDhIVIzneN5Jeop5KcmCOTuRanQ1ZFVoaQnbdEsV/Rrz4kjCKJ1stC1fAgGwf+wD802tw2bzzxcPq0M0PrRPcnxTUELeByxEbcRJeevdAKV8O2bqIpry9M8SDK6vd532IwUrOnOPn9ph3ggulu16zbZW8G2DM9t2d9NTk/veqK2rWMUuU7LqDOSUFTmlsf7zRdG4uf877Cp+YjbDro/KKTZMXRfPvf23NFNLPFP+lAJ7XNgM17TQoU1t0z5x9c/WELaWQ31wKy4b+AJo2DSLmqO7sWx+FTSsk3T+5I0SPiGf4LOk6V0mLOV0q+q4+jYyq7UKV6pSESAs05Rz5p8g04JJt4iHrD35yP2velkqzjTx2Ik/PjG3TIhVfjbx6Wi327yH1P7h/x3TCPMU2THhLJnvP7kzc4DPlF25/cIYK82uYwvbGxTLc7QGFmW0gVUtw8D/gYyovABbi5S0CXqo29vOSoDm9SBYbm7sgexmD/ZIheo20mQNwfqditCNoDDMkRwEUy3wlU/NJwOjGSfBNZA8qQBQ6i4tpcbJNJrWzWWJmyjnOdfCQsyuJMpLwo0az+88RgQkefqFInjOzXpSrsZOGWcTqr2x77rLav7kxl7LPCwY=
+        file: ${RELEASE_FILE}
+        overwrite: true
+        on:
+          tags: true
