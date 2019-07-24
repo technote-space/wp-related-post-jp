@@ -101,10 +101,10 @@ jobs:
         skip_cleanup: true
         name: ${RELEASE_TITLE}
         tag_name: ${RELEASE_TAG}
-        draft: true
         api_key:
           secure: J3gAHZlnh1vWAjwqpoVM+Gh+HM9uycwppExCoLKTkl9QBQ3BihNgIhdb/CSdDhIVIzneN5Jeop5KcmCOTuRanQ1ZFVoaQnbdEsV/Rrz4kjCKJ1stC1fAgGwf+wD802tw2bzzxcPq0M0PrRPcnxTUELeByxEbcRJeevdAKV8O2bqIpry9M8SDK6vd532IwUrOnOPn9ph3ggulu16zbZW8G2DM9t2d9NTk/veqK2rWMUuU7LqDOSUFTmlsf7zRdG4uf877Cp+YjbDro/KKTZMXRfPvf23NFNLPFP+lAJ7XNgM17TQoU1t0z5x9c/WELaWQ31wKy4b+AJo2DSLmqO7sWx+FTSsk3T+5I0SPiGf4LOk6V0mLOV0q+q4+jYyq7UKV6pSESAs05Rz5p8g04JJt4iHrD35yP2velkqzjTx2Ik/PjG3TIhVfjbx6Wi327yH1P7h/x3TCPMU2THhLJnvP7kzc4DPlF25/cIYK82uYwvbGxTLc7QGFmW0gVUtw8D/gYyovABbi5S0CXqo29vOSoDm9SBYbm7sgexmD/ZIheo20mQNwfqditCNoDDMkRwEUy3wlU/NJwOjGSfBNZA8qQBQ6i4tpcbJNJrWzWWJmyjnOdfCQsyuJMpLwo0az+88RgQkefqFInjOzXpSrsZOGWcTqr2x77rLav7kxl7LPCwY=
         file: ${RELEASE_FILE}
+        body: ${RELEASE_BODY}
         overwrite: true
         on:
           tags: true
