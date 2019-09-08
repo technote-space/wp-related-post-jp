@@ -1,5 +1,6 @@
 # WP Related Post JP
 
+[![Build Status](https://github.com/technote-space/wp-related-post-jp/workflows/Build/badge.svg)](https://github.com/technote-space/wp-related-post-jp/actions)
 [![Build Status](https://travis-ci.com/technote-space/wp-related-post-jp.svg?branch=master)](https://travis-ci.com/technote-space/wp-related-post-jp)
 [![CodeFactor](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp/badge)](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
@@ -11,7 +12,28 @@
 投稿同士の類似度の計算を行うWordpressのプラグインです。  
 関連記事の提供や全文検索を可能にします。
 
-[最新バージョン](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/wp-related-post-jp.zip)
+[最新バージョン](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/release.zip)
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [要件](#%E8%A6%81%E4%BB%B6)
+- [スクリーンショット](#%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88)
+- [導入手順](#%E5%B0%8E%E5%85%A5%E6%89%8B%E9%A0%86)
+- [特徴](#%E7%89%B9%E5%BE%B4)
+    - [ElasticsearchのようなAnalyzer](#elasticsearch%E3%81%AE%E3%82%88%E3%81%86%E3%81%AAanalyzer)
+    - [Okapi BM25 アルゴリズムによる文章類似度計算](#okapi-bm25-%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E3%81%AB%E3%82%88%E3%82%8B%E6%96%87%E7%AB%A0%E9%A1%9E%E4%BC%BC%E5%BA%A6%E8%A8%88%E7%AE%97)
+- [主な設定](#%E4%B8%BB%E3%81%AA%E8%A8%AD%E5%AE%9A)
+- [関連記事を表示](#%E9%96%A2%E9%80%A3%E8%A8%98%E4%BA%8B%E3%82%92%E8%A1%A8%E7%A4%BA)
+  - [テーマの用意している仕組みを利用する場合](#%E3%83%86%E3%83%BC%E3%83%9E%E3%81%AE%E7%94%A8%E6%84%8F%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E4%BB%95%E7%B5%84%E3%81%BF%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E5%A0%B4%E5%90%88)
+  - [直接出力する場合](#%E7%9B%B4%E6%8E%A5%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E5%A0%B4%E5%90%88)
+- [インデックス対象を変更](#%E3%82%A4%E3%83%B3%E3%83%87%E3%83%83%E3%82%AF%E3%82%B9%E5%AF%BE%E8%B1%A1%E3%82%92%E5%A4%89%E6%9B%B4)
+- [関連記事の表示を変更](#%E9%96%A2%E9%80%A3%E8%A8%98%E4%BA%8B%E3%81%AE%E8%A1%A8%E7%A4%BA%E3%82%92%E5%A4%89%E6%9B%B4)
+- [Author](#author)
+- [プラグイン作成用フレームワーク](#%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E4%BD%9C%E6%88%90%E7%94%A8%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%83%AF%E3%83%BC%E3%82%AF)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## 要件
 - PHP 5.6 以上
@@ -50,7 +72,7 @@
 
 ## 導入手順
 1. 最新版をGitHubからダウンロード  
-[wp-related-post-jp.zip](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/wp-related-post-jp.zip)
+[release.zip](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/release.zip)
 2. 「プラグインのアップロード」からインストール
 ![install](https://raw.githubusercontent.com/technote-space/screenshots/master/misc/install-wp-plugin.png)
 3. プラグインを有効化 

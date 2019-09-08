@@ -182,31 +182,33 @@ class Post implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 
 		$paged = $query->get( 'paged' ); // phpcs:ignore Generic.Formatting.MultipleStatementAlignment.NotSameWarning
 		list( $ranking, $total_pages ) = $this->get_posts_ranking_from_keyword( $search, $posts_per_page, $paged );
-		if ( ! empty( $ranking ) ) {
-			$query->set( 's', '' );
-			$query->set( 'post__in', array_keys( $ranking ) );
-			$query->set( 'orderby', false );
-			$query->set( 'paged', '' );
-			$posts_results = function ( $posts, $query ) use ( &$posts_results, $ranking, $search, $total_pages, $paged ) {
-				/** @var array $posts */
-				/** @var WP_Query $query */
-				usort( $posts, function ( $post1, $post2 ) use ( $ranking ) {
-					/** @var WP_Post $post1 */
-					/** @var WP_Post $post2 */
-					$ranking1 = $ranking[ $post1->ID ];
-					$ranking2 = $ranking[ $post2->ID ];
-
-					return $ranking1 === $ranking2 ? 0 : ( $ranking1 < $ranking2 ? 1 : -1 );
-				} );
-				$query->set( 's', $search );
-				$query->set( 'paged', $paged );
-				$query->max_num_pages = $total_pages;
-				remove_filter( 'posts_results', $posts_results );
-
-				return $posts;
-			};
-			add_filter( 'posts_results', $posts_results, 10, 2 );
+		if ( empty( $ranking ) ) {
+			return;
 		}
+
+		$query->set( 's', '' );
+		$query->set( 'post__in', array_keys( $ranking ) );
+		$query->set( 'orderby', false );
+		$query->set( 'paged', '' );
+		$posts_results = function ( $posts, $query ) use ( &$posts_results, $ranking, $search, $total_pages, $paged ) {
+			/** @var array $posts */
+			/** @var WP_Query $query */
+			usort( $posts, function ( $post1, $post2 ) use ( $ranking ) {
+				/** @var WP_Post $post1 */
+				/** @var WP_Post $post2 */
+				$ranking1 = $ranking[ $post1->ID ];
+				$ranking2 = $ranking[ $post2->ID ];
+
+				return $ranking1 === $ranking2 ? 0 : ( $ranking1 < $ranking2 ? 1 : -1 );
+			} );
+			$query->set( 's', $search );
+			$query->set( 'paged', $paged );
+			$query->max_num_pages = $total_pages;
+			remove_filter( 'posts_results', $posts_results );
+
+			return $posts;
+		};
+		add_filter( 'posts_results', $posts_results, 10, 2 );
 	}
 
 	/**

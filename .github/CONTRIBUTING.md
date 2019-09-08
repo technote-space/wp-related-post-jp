@@ -4,6 +4,7 @@
 [pr]: https://github.com/technote-space/wp-related-post-jp/compare
 [phpcs]: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage
 [phpmd]: https://phpmd.org/documentation/index.html
+[wp-test]: https://developer.wordpress.org/cli/commands/scaffold/plugin-tests/
 [code-of-conduct]: CODE_OF_CONDUCT.md
 
 When contributing to this repository, please first discuss the change you wish to make via [issue][issues] with the owners of this repository before making a change. 
@@ -20,6 +21,7 @@ Please note we have a [Contributor Code of Conduct][code-of-conduct], please fol
 1. Make sure the tests pass on your machine: `composer bin:test`, which contains
    - [`PHPCS`][phpcs]
    - [`PHPMD`][phpmd]
+   - [`WordPress Plugin Tests`][wp-test]
    - `Build test`
 1. Create a new branch: `git checkout -b my-branch-name`
 1. Make your change, add tests, and make sure the tests still pass.
