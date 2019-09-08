@@ -11,7 +11,10 @@
 投稿同士の類似度の計算を行うWordpressのプラグインです。  
 関連記事の提供や全文検索を可能にします。
 
-[最新バージョン](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/wp-related-post-jp.zip)
+[最新バージョン](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/release.zip)
+
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 ## 要件
 - PHP 5.6 以上
@@ -50,7 +53,7 @@
 
 ## 導入手順
 1. 最新版をGitHubからダウンロード  
-[wp-related-post-jp.zip](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/wp-related-post-jp.zip)
+[release.zip](https://github.com/technote-space/wp-related-post-jp/releases/latest/download/release.zip)
 2. 「プラグインのアップロード」からインストール
 ![install](https://raw.githubusercontent.com/technote-space/screenshots/master/misc/install-wp-plugin.png)
 3. プラグインを有効化 
