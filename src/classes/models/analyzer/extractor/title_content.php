@@ -27,7 +27,7 @@ class Title_Content extends Extractor {
 	 * @return string
 	 */
 	public function extract( $post ) {
-		return str_repeat( $post->post_title . ' ', 3 ) . $post->post_content;
+		return str_repeat( $post->post_title . ' ', $this->apply_filters( 'title_weight', 3 ) ) . $post->post_content;
 	}
 
 }
