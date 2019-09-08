@@ -154,7 +154,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @return array
+	 * @return \WP_Term[]
 	 */
 	private function get_exclude_category() {
 		if ( ! isset( $this->exclude_cats ) ) {
@@ -163,30 +163,40 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 			$target_taxonomies = $this->get_target_taxonomies();
 			if ( ! empty( $target_taxonomies ) ) {
 				$exclude_cats = array_filter( array_map( function ( $category ) use ( $target_taxonomies ) {
-					$category = trim( $category );
-					if ( empty( $category ) ) {
-						return false;
-					}
-					$terms = get_terms( array_keys( $target_taxonomies ), [
-						'get'                    => 'all',
-						'number'                 => 1,
-						'update_term_meta_cache' => false,
-						'orderby'                => 'none',
-						'suppress_filter'        => true,
-						'slug'                   => $category,
-					] );
-					if ( is_wp_error( $terms ) || empty( $terms ) ) {
-						return false;
-					}
-					$term = array_shift( $terms );
-
-					return $term;
+					return $this->get_category_term( $category, $target_taxonomies );
 				}, $raw_exclude_cats ) );
 			}
 			$this->exclude_cats = $this->apply_filters( 'get_exclude_category', $exclude_cats, $raw_exclude_cats, $target_taxonomies );
 		}
 
 		return $this->exclude_cats;
+	}
+
+	/**
+	 * @param $category
+	 * @param $target_taxonomies
+	 *
+	 * @return \WP_Term|false
+	 */
+	private function get_category_term( $category, $target_taxonomies ) {
+		$category = trim( $category );
+		if ( empty( $category ) ) {
+			return false;
+		}
+		$terms = get_terms( array_keys( $target_taxonomies ), [
+			'get'                    => 'all',
+			'number'                 => 1,
+			'update_term_meta_cache' => false,
+			'orderby'                => 'none',
+			'suppress_filter'        => true,
+			'slug'                   => $category,
+		] );
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
+			return false;
+		}
+		$term = array_shift( $terms );
+
+		return $term;
 	}
 
 	/**
