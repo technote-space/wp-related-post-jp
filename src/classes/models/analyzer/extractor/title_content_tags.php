@@ -27,7 +27,7 @@ class Title_Content_Tags extends Extractor {
 	 * @return string
 	 */
 	public function extract( $post ) {
-		return str_repeat( $post->post_title . ' ', 3 ) . str_repeat( implode( ' ', wp_get_post_tags( $post->ID, [ 'fields' => 'names' ] ) ) . ' ', 5 ) . $post->post_content;
+		return str_repeat( $post->post_title . ' ', $this->apply_filters( 'title_weight', 3 ) ) . str_repeat( implode( ' ', wp_get_post_tags( $post->ID, [ 'fields' => 'names' ] ) ) . ' ', $this->apply_filters( 'tag_weight', 5 ) ) . $post->post_content;
 	}
 
 }
