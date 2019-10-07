@@ -21,16 +21,12 @@ cache:
   directories:
     - "${HOME}/.composer/cache"
     - node_modules
-    - "${TRAVIS_BUILD_DIR}/.plugin"
-    - "${TRAVIS_BUILD_DIR}/.work/cache"
 
 stages:
   - name: check
     if: branch = master and tag IS blank and type IN (pull_request, api, cron)
   - name: test
     if: branch = master and tag IS blank and type IN (pull_request, api)
-  - name: deploy
-    if: tag IS present
 
 before_script:
   - git clone --depth=1 https://github.com/wp-content-framework/travis-ci.git travis-ci
@@ -54,7 +50,6 @@ jobs:
       php: '7.3'
       env:
         - WP_VERSION=trunk
-        - ACTIVATE_POPULAR_PLUGINS=1
       script: bash travis-ci/bin/php/wp-test.sh
     - stage: test
       language: php
@@ -86,24 +81,3 @@ jobs:
       php: '5.6'
       env: WP_VERSION=3.9
       script: bash travis-ci/bin/php/wp-test.sh
-
-
-    - stage: deploy
-      language: node_js
-      node_js: '11'
-      dist: trusty
-      script: skip
-      before_deploy:
-        - source travis-ci/bin/deploy/env.sh
-        - bash travis-ci/bin/deploy/create.sh
-      deploy:
-        provider: releases
-        skip_cleanup: true
-        name: ${RELEASE_TITLE}
-        tag_name: ${RELEASE_TAG}
-        api_key:
-          secure: J3gAHZlnh1vWAjwqpoVM+Gh+HM9uycwppExCoLKTkl9QBQ3BihNgIhdb/CSdDhIVIzneN5Jeop5KcmCOTuRanQ1ZFVoaQnbdEsV/Rrz4kjCKJ1stC1fAgGwf+wD802tw2bzzxcPq0M0PrRPcnxTUELeByxEbcRJeevdAKV8O2bqIpry9M8SDK6vd532IwUrOnOPn9ph3ggulu16zbZW8G2DM9t2d9NTk/veqK2rWMUuU7LqDOSUFTmlsf7zRdG4uf877Cp+YjbDro/KKTZMXRfPvf23NFNLPFP+lAJ7XNgM17TQoU1t0z5x9c/WELaWQ31wKy4b+AJo2DSLmqO7sWx+FTSsk3T+5I0SPiGf4LOk6V0mLOV0q+q4+jYyq7UKV6pSESAs05Rz5p8g04JJt4iHrD35yP2velkqzjTx2Ik/PjG3TIhVfjbx6Wi327yH1P7h/x3TCPMU2THhLJnvP7kzc4DPlF25/cIYK82uYwvbGxTLc7QGFmW0gVUtw8D/gYyovABbi5S0CXqo29vOSoDm9SBYbm7sgexmD/ZIheo20mQNwfqditCNoDDMkRwEUy3wlU/NJwOjGSfBNZA8qQBQ6i4tpcbJNJrWzWWJmyjnOdfCQsyuJMpLwo0az+88RgQkefqFInjOzXpSrsZOGWcTqr2x77rLav7kxl7LPCwY=
-        file: ${RELEASE_FILE}
-        overwrite: true
-        on:
-          tags: true
