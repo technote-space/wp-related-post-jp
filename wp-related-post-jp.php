@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/technote-space/wp-related-post-jp
  * Description: WP Related Post JP provides functions to get related posts.
  * Author: Technote
- * Version: 1.3.21
+ * Version: 1.3.22
  * Author URI: https://technote.space
  * Text Domain: wrpj
  * Domain Path: /languages/
