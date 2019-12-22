@@ -26,6 +26,22 @@ if ( strpos( wp_get_theme()->get_template(), 'simplicity2' ) !== false ) {
 	} );
 }
 
+// JIN用
+if ( strpos( wp_get_theme()->get_template(), 'jin' ) !== false ) {
+	add_action( 'get_template_part_include/related-entries', function () {
+		do_action( 'related_post/on_related_post' );
+	} );
+}
+
+// SWELL用
+if ( strpos( wp_get_theme()->get_template(), 'swell' ) !== false ) {
+	add_filter( 'loos_related_post_args', function ( $args ) {
+		do_action( 'related_post/on_related_post' );
+
+		return $args;
+	} );
+}
+
 if ( ! function_exists( 'wp_related_posts' ) ) {
 	function wp_related_posts() {
 		/** @var Control $control */
@@ -45,5 +61,17 @@ if ( ! function_exists( 'get_related_posts' ) ) {
 		$control = Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
 
 		return $control->get_related_posts( $_post );
+	}
+}
+
+// sango用
+if ( strpos( wp_get_theme()->get_template(), 'sango' ) !== false ) {
+	function sng_get_related_posts_array() {
+		$posts = get_related_posts();
+		if ( false === $posts ) {
+			return [];
+		}
+
+		return $posts;
 	}
 }
