@@ -36,7 +36,7 @@ if ( ! function_exists( 'wp_related_posts' ) ) {
 
 if ( ! function_exists( 'get_related_posts' ) ) {
 	/**
-	 * @param null|WP_Post $_post
+	 * @param int|WP_Post|null $_post
 	 *
 	 * @return WP_Post[]|false
 	 */
@@ -44,6 +44,6 @@ if ( ! function_exists( 'get_related_posts' ) ) {
 		/** @var Control $control */
 		$control = Control::get_instance( WP_Framework::get_instance( WP_RELATED_POST_JP ) );
 
-		return $control->get_related_posts( $_post->ID );
+		return $control->get_related_posts( $_post );
 	}
 }
