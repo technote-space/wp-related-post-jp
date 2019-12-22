@@ -222,10 +222,15 @@ class Post implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				$query->set( 'category__in', null );
 				$query->set( 'tag__in', null );
 				$query->set( 'orderby', null );
-
 				$query->set( 'p', -1 );
-				$posts_results = function () use ( &$posts_results, $related_posts ) {
+				$number = $query->get( 'posts_per_page' );
+
+				$posts_results = function () use ( &$posts_results, $related_posts, $number ) {
 					remove_filter( 'posts_results', $posts_results );
+
+					if ( $number ) {
+						return array_slice( $related_posts, 0, $number );
+					}
 
 					return $related_posts;
 				};
