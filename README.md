@@ -99,12 +99,11 @@
 
 - tokenizer  
   - bigram
-  - yahoo
   - igo 
 - token filter  
   - common
     - 空白文字を除去
-  - wakati (tokenizer: yahoo, igo)
+  - wakati (tokenizer: igo)
     - 数字のみや記号のみを除外など
   - bigram (tokenizer: bigram)
     - 記号を含むものを除外など
