@@ -5,9 +5,12 @@
  * @package Tests
  */
 
-use PHPUnit\Framework\TestCase;
+namespace Related_Post\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Related_Post\Classes\Models\Analyzer\Igo;
+use WP_Framework;
+use WP_UnitTestCase;
 
 /**
  * @noinspection PhpUndefinedClassInspection

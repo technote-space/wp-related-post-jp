@@ -30,17 +30,12 @@ return [
 		'kana',
 	],
 	'tokenizer'     => [
-		/**
-		 * goo // クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
-		 * bigram // if setting [use_bigram_tokenizer] = true
-		 */
 		'bigram',
-		'yahoo',
 		'igo',
 	],
 	'token_filters' => [
 		'common',
-		'wakati' => [ 'yahoo', 'goo', 'igo' ],
+		'wakati' => [ 'igo' ],
 		'bigram' => [ 'bigram' ],
 		'max',
 	],

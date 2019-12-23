@@ -32,37 +32,6 @@ return [
 		],
 		'Index'    => [
 			10 => [
-				'ranking_number'                    => [
-					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
-					'type'    => 'int',
-					'default' => 10,
-					'min'     => 1,
-					'max'     => 25,
-				],
-				'ranking_threshold'                 => [
-					'label'   => "Threshold of related posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
-					'type'    => 'float',
-					'default' => 0,
-					'min'     => 0,
-					'max'     => 1,
-				],
-				'search_threshold'                  => [
-					'label'   => 'Threshold of search posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.',
-					'type'    => 'float',
-					'default' => 0,
-					'min'     => 0,
-					'max'     => 1,
-				],
-				'auto_insert_related_post'          => [
-					'label'   => 'Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)',
-					'type'    => 'bool',
-					'default' => false,
-				],
-				'related_posts_title'               => [
-					'label'     => 'Related posts title',
-					'default'   => 'More from my site',
-					'translate' => true,
-				],
 				'target_post_types'                 => [
 					'label'   => "Target post types (comma separated)\nIf change this, it's necessary to run posts index ranking again.",
 					'default' => 'post',
@@ -118,51 +87,40 @@ return [
 				],
 			],
 		],
-	],
-	9 => [
-		'Yahoo' => [
+		'Display'  => [
 			10 => [
-				'yahoo_client_id'      => [
-					'label' => 'Yahoo! Client ID',
-				],
-				'yahoo_secret'         => [
-					'label' => 'Yahoo! Secret',
-				],
-				'yahoo_retry_count'    => [
-					'label'   => 'Retry count',
+				'ranking_number'           => [
+					'label'   => "Max number of ranking for each post\nIf change this, it's necessary to run posts index ranking again.",
 					'type'    => 'int',
-					'default' => 3,
-					'min'     => 0,
-				],
-				'yahoo_retry_interval' => [
-					'label'   => 'Retry interval',
-					'type'    => 'int',
-					'default' => 5,
+					'default' => 10,
 					'min'     => 1,
+					'max'     => 25,
+				],
+				'ranking_threshold'        => [
+					'label'   => "Threshold of related posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.\nIf change this, it's necessary to run posts index ranking again.",
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
+				'search_threshold'         => [
+					'label'   => 'Threshold of search posts, which is used to eliminate posts whose radio of score to the maximum score is lower than this value.',
+					'type'    => 'float',
+					'default' => 0,
+					'min'     => 0,
+					'max'     => 1,
+				],
+				'auto_insert_related_post' => [
+					'label'   => 'Auto insert related posts (or add <?php wp_related_posts()?> to your single post template)',
+					'type'    => 'bool',
+					'default' => false,
+				],
+				'related_posts_title'      => [
+					'label'     => 'Related posts title',
+					'default'   => 'More from my site',
+					'translate' => true,
 				],
 			],
 		],
-		/**
-		 * クレジットの表記が必要 ( https://labs.goo.ne.jp/jp/apiterm/ )
-		 * 'Goo' => array(
-		 * 10 => array(
-		 * 'goo_app_id'         => array(
-		 * 'label' => 'Goo App ID',
-		 * ),
-		 * 'goo_retry_count'    => array(
-		 * 'label'   => 'Retry count',
-		 * 'type'    => 'int',
-		 * 'default' => 3,
-		 * 'min'     => 0,
-		 * ),
-		 * 'goo_retry_interval' => array(
-		 * 'label'   => 'Retry interval',
-		 * 'type'    => 'int',
-		 * 'default' => 5,
-		 * 'min'     => 1,
-		 * ),
-		 * ),
-		 * ),
-		 * */
 	],
 ];

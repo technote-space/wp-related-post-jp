@@ -2,6 +2,7 @@
 
 [![CI Status](https://github.com/technote-space/wp-related-post-jp/workflows/CI/badge.svg)](https://github.com/technote-space/wp-related-post-jp/actions)
 [![Build Status](https://travis-ci.com/technote-space/wp-related-post-jp.svg?branch=master)](https://travis-ci.com/technote-space/wp-related-post-jp)
+[![codecov](https://codecov.io/gh/technote-space/wp-related-post-jp/branch/master/graph/badge.svg)](https://codecov.io/gh/technote-space/wp-related-post-jp)
 [![CodeFactor](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp/badge)](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![PHP: >=5.6](https://img.shields.io/badge/PHP-%3E%3D5.6-orange.svg)](http://php.net/)
@@ -99,12 +100,11 @@
 
 - tokenizer  
   - bigram
-  - yahoo
   - igo 
 - token filter  
   - common
     - 空白文字を除去
-  - wakati (tokenizer: yahoo, igo)
+  - wakati (tokenizer: igo)
     - 数字のみや記号のみを除外など
   - bigram (tokenizer: bigram)
     - 記号を含むものを除外など
@@ -123,10 +123,6 @@ https://mieruca-ai.com/ai/tf-idf_okapi-bm25/
   - true：  
   文字列を２文字ずつ取り出して文章を構成する単語として使用します。
   - false： 
-    - ヤフーの設定をしている場合：  
-    ヤフーの日本語形態素解析サービスを使用して単語を分割します。  
-    利用制限があるため検索で使用する場合に制限に引っかかる可能性があります。
-    - ヤフーの設定をしていない場合：  
     Igoという形態素解析器を使用します。  
     ローカルで動作させるため利用制限等はありませんが処理速度等はサーバに依存します。
 
@@ -148,8 +144,15 @@ add_action( 'get_template_part_related-list', function () {
 	do_action( 'related_post/on_related_post' );
 } );
 </pre>
-このプラグインの functions.php にはあらかじめ [Cocoon](https://wp-cocoon.com/) 及び [Simplicity2](https://wp-simplicity.com/) 用のコードが記述されているため、
-それらを使用している方は別途設定は必要ありません。
+
+このプラグインの functions.php にはあらかじめいくつかのテーマ用のコードが記述されているため、それらを使用している方は別途設定は必要ありません。
+
+- [Cocoon](https://wp-cocoon.com/)
+- [Simplicity2](https://wp-simplicity.com/)
+- [JIN](https://jin-theme.com/)
+- [SWELL](https://swell-theme.com/)
+- [SANGO](https://saruwakakun.design/)
+
 
 ### 直接出力する場合
 以下のコードを貼り付けると関連記事が表示されます。
