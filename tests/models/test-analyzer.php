@@ -102,4 +102,33 @@ class AnalyzerTest extends WP_UnitTestCase {
 			],
 		];
 	}
+
+	private function get_post() {
+		return new WP_Post( (object) [
+			'post_author'           => 1,
+			'post_content'          => '&nbsp;テスト&amp;テスト&apos;テスト',
+			'post_content_filtered' => '',
+			'post_title'            => '&nbsp;タイトル&amp;タイトル&apos;タイトル',
+			'post_excerpt'          => '',
+			'post_status'           => 'draft',
+			'post_type'             => 'post',
+			'comment_status'        => '',
+			'ping_status'           => '',
+			'post_password'         => '',
+			'to_ping'               => '',
+			'pinged'                => '',
+			'post_parent'           => 0,
+			'menu_order'            => 0,
+			'guid'                  => '',
+			'import_id'             => 0,
+			'context'               => '',
+		] );
+	}
+
+	public function test_parse() {
+		$this->assertEquals( [
+			'たいとる' => 9,
+			'てすと'  => 3,
+		], static::$analyzer->parse( $this->get_post() ) );
+	}
 }
