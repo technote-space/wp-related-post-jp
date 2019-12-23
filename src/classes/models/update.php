@@ -531,15 +531,6 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function post_load_admin_page() {
-		if ( $this->apply_filters( 'use_bigram_tokenizer' ) ) {
-			$this->app->setting->remove_setting( 'yahoo_client_id' );
-			$this->app->setting->remove_setting( 'yahoo_secret' );
-			$this->app->setting->remove_setting( 'yahoo_retry_count' );
-			$this->app->setting->remove_setting( 'yahoo_retry_interval' );
-			$this->app->setting->remove_setting( 'goo_app_id' );
-			$this->app->setting->remove_setting( 'goo_retry_count' );
-			$this->app->setting->remove_setting( 'goo_retry_interval' );
-		}
 		$this->app->setting->remove_setting( 'assets_version' );
 	}
 
