@@ -65,10 +65,7 @@ class Clear extends Base {
 	 * @return int|WP_Error|WP_REST_Response
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
-	public function callback(
-		/** @noinspection PhpUnusedParameterInspection */
-		$params
-	) {
+	public function callback( $params ) {
 		/** @var Update $update */
 		$update = Update::get_instance( $this->app );
 

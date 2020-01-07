@@ -66,10 +66,7 @@ class Progress extends Base {
 	 * @return int|WP_Error|WP_REST_Response
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
-	public function callback(
-		/** @noinspection PhpUnusedParameterInspection */
-		$params
-	) {
+	public function callback( $params ) {
 		/** @var Control $control */
 		/** @var Update $update */
 		$control = Control::get_instance( $this->app );
