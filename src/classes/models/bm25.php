@@ -523,8 +523,11 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				'rw.tf',
 				'w.word',
 				'w.idf',
-			] )->limit( $this->get_control()->get_important_words_count() )
-			->order_by_desc( $this->raw( 'tfidf' ) )->get();
+			] )
+			->limit( $this->get_control()->get_important_words_count() )
+			->order_by_desc( $this->raw( 'tfidf' ) )
+			->get()
+			->to_array();
 	}
 
 	/**
@@ -609,7 +612,7 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 		}
 		$query = $this->builder()->from_sub( $query, 't' );
 
-		return $is_count ? $query->count() : $query->order_by_desc( $this->raw( 'score' ) )->limit( $count )->offset( $offset )->get();
+		return $is_count ? $query->count() : $query->order_by_desc( $this->raw( 'score' ) )->limit( $count )->offset( $offset )->get()->to_array();
 	}
 
 	/**

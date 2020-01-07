@@ -8,6 +8,7 @@
 
 namespace Related_Post\Classes\Models;
 
+use WP_Framework_Common\Classes\Models\Collection;
 use WP_Framework_Common\Traits\Package;
 use WP_Framework_Common\Traits\Uninstall;
 use WP_Framework_Core\Traits\Hook;
@@ -266,7 +267,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 		$at_once  = $this->apply_filters( 'index_num_at_once' );
 		$interval = $this->apply_filters( 'index_each_interval' ) * 1000;
 		$posts    = $this->get_update_posts( false, $at_once );
-		if ( ! empty( $posts ) ) {
+		if ( ! $posts->is_empty() ) {
 			foreach ( $posts as $post ) {
 				if ( $this->get_executing_uuid() !== $uuid ) {
 					break;
@@ -327,7 +328,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 		$at_once  = $this->apply_filters( 'update_ranking_num_at_once' );
 		$interval = $this->apply_filters( 'update_ranking_each_interval' ) * 1000;
 		$posts    = $this->get_setup_ranking_posts( false, $at_once );
-		if ( ! empty( $posts ) ) {
+		if ( ! $posts->is_empty() ) {
 			foreach ( $posts as $post ) {
 				if ( $this->get_executing_uuid() !== $uuid ) {
 					break;
@@ -357,11 +358,11 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @param int $limit
 	 * @param string $key
 	 *
-	 * @return array|int
+	 * @return Collection|int
 	 */
 	private function get_update_posts( $is_count, $limit = 1, $key = 'indexed' ) {
 		if ( $limit <= 0 ) {
-			return $is_count ? 0 : [];
+			return $is_count ? 0 : $this->collection();
 		}
 
 		$query = $this->get_control()->from_posts()
@@ -400,7 +401,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @param bool $is_count
 	 * @param int $limit
 	 *
-	 * @return array|int
+	 * @return Collection|int
 	 */
 	private function get_setup_ranking_posts( $is_count = false, $limit = 1 ) {
 		return $this->get_update_posts( $is_count, $limit, 'setup_ranking' );
@@ -513,7 +514,6 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 
 	/**
 	 * init posts index
-	 * @noinspection PhpUnusedPrivateMethodInspection
 	 * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
 	 */
 	private function init_posts_rankings() {
@@ -599,7 +599,7 @@ class Update implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 			->get();
 		$has_next = count( $rows ) > $per_page;
 
-		return [ array_slice( $rows, 0, $per_page ), $has_next ];
+		return [ $rows->take( $per_page )->to_array(), $has_next ];
 	}
 
 	/**

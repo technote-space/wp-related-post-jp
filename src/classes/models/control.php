@@ -462,25 +462,24 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return array
 	 */
 	private function filter_ranking( $wp_post ) {
-		return array_filter(
-			array_map(
-				function ( $data ) {
-					$post_id = $data['rank_post_id'];
-					$score   = $data['score'];
-					$post    = get_post( $post_id );
-					if ( ! $post || 'publish' !== $post->post_status ) {
-						return false;
-					}
-					$post->score = $score;
+		return $this->table( 'ranking' )
+			->where( 'post_id', $wp_post->ID )
+			->select( [ 'rank_post_id', 'score' ] )
+			->order_by_desc( 'score' )
+			->get()
+			->map( function ( $data ) {
+				$post_id = $data['rank_post_id'];
+				$score   = $data['score'];
+				$post    = get_post( $post_id );
+				if ( ! $post || 'publish' !== $post->post_status ) {
+					return false;
+				}
+				$post->score = $score;
 
-					return $post;
-				},
-				$this->table( 'ranking' )->where( 'post_id', $wp_post->ID )->select( [ 'rank_post_id', 'score' ] )->order_by_desc( 'score' )->get()
-			),
-			function ( $post ) {
+				return $post;
+			} )->filter( function ( $post ) {
 				return false !== $post;
-			}
-		);
+			} )->to_array();
 	}
 
 	/**
