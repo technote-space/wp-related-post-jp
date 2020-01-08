@@ -26,7 +26,7 @@ class Url extends Charfilter {
 	 * @return string
 	 */
 	public function filter( $text ) {
-		return preg_replace( '/(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)/', '', $text );
+		return preg_replace( '/(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+\$,%#]+)/', '', $text );
 	}
 
 }

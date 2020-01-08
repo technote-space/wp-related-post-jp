@@ -32,7 +32,7 @@ class Bigram extends Tokenfilter {
 				//　全角記号を含む
 				continue;
 			}
-			if ( preg_match( '#[ -/:;-@\[-\`\{-\~]+#', $word ) ) {
+			if ( preg_match( '#[ -/:;-@\[-`{-~]+#', $word ) ) {
 				// 半角記号を含む
 				continue;
 			}

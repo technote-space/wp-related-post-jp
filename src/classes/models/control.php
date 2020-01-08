@@ -154,7 +154,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	}
 
 	/**
-	 * @return \WP_Term[]
+	 * @return WP_Term[]
 	 */
 	private function get_exclude_category() {
 		if ( ! isset( $this->exclude_cats ) ) {
@@ -176,7 +176,7 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @param $category
 	 * @param $target_taxonomies
 	 *
-	 * @return \WP_Term|false
+	 * @return WP_Term|false
 	 */
 	private function get_category_term( $category, $target_taxonomies ) {
 		$category = trim( $category );
@@ -194,9 +194,8 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return false;
 		}
-		$term = array_shift( $terms );
 
-		return $term;
+		return array_shift( $terms );
 	}
 
 	/**
@@ -463,25 +462,24 @@ class Control implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_
 	 * @return array
 	 */
 	private function filter_ranking( $wp_post ) {
-		return array_filter(
-			array_map(
-				function ( $data ) {
-					$post_id = $data['rank_post_id'];
-					$score   = $data['score'];
-					$post    = get_post( $post_id );
-					if ( ! $post || 'publish' !== $post->post_status ) {
-						return false;
-					}
-					$post->score = $score;
+		return $this->table( 'ranking' )
+			->where( 'post_id', $wp_post->ID )
+			->select( [ 'rank_post_id', 'score' ] )
+			->order_by_desc( 'score' )
+			->get()
+			->map( function ( $data ) {
+				$post_id = $data['rank_post_id'];
+				$score   = $data['score'];
+				$post    = get_post( $post_id );
+				if ( ! $post || 'publish' !== $post->post_status ) {
+					return false;
+				}
+				$post->score = $score;
 
-					return $post;
-				},
-				$this->table( 'ranking' )->where( 'post_id', $wp_post->ID )->select( [ 'rank_post_id', 'score' ] )->order_by_desc( 'score' )->get()
-			),
-			function ( $post ) {
+				return $post;
+			} )->filter( function ( $post ) {
 				return false !== $post;
-			}
-		);
+			} )->to_array();
 	}
 
 	/**
