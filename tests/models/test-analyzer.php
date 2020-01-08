@@ -110,7 +110,7 @@ class AnalyzerTest extends WP_UnitTestCase {
 	private function get_post() {
 		return new WP_Post( (object) [
 			'post_author'           => 1,
-			'post_content'          => '&nbsp;テスト&amp;テスト&apos;テスト',
+			'post_content'          => '&nbsp;テスト&amp;テスト&apos;テスト&apos;123&apos;あ&apos;＄％＆&amp;`&amp;aaaaaaaaaaaaaaaaaaaaaaaaa',
 			'post_content_filtered' => '',
 			'post_title'            => '&nbsp;タイトル&amp;タイトル&apos;タイトル',
 			'post_excerpt'          => '',
@@ -129,10 +129,57 @@ class AnalyzerTest extends WP_UnitTestCase {
 		] );
 	}
 
-	public function test_parse() {
+	public function test_parse1() {
+		$this->set_filter_value( 'extractor', 'title_content' );
 		$this->assertEquals( [
-			'たいとる' => 9,
-			'てすと'  => 3,
+			'たいとる'                     => 9,
+			'てすと'                      => 3,
+			'aaaaaaaaaaaaaaaaaaaaaaaa' => 1,
 		], static::$analyzer->parse( $this->get_post() ) );
+	}
+
+	public function test_parse2() {
+		$this->set_filter_value( 'extractor', 'title' );
+		$this->assertEquals( [
+			'たいとる' => 3,
+		], static::$analyzer->parse( $this->get_post() ) );
+	}
+
+	public function test_parse3() {
+		$this->set_filter_value( 'extractor', 'content' );
+		$this->assertEquals( [
+			'てすと'                      => 3,
+			'aaaaaaaaaaaaaaaaaaaaaaaa' => 1,
+		], static::$analyzer->parse( $this->get_post() ) );
+	}
+
+	public function test_parse4() {
+		$this->set_filter_value( 'extractor', 'title_content_tags' );
+		$this->assertEquals( [
+			'たいとる'                     => 9,
+			'てすと'                      => 3,
+			'aaaaaaaaaaaaaaaaaaaaaaaa' => 1,
+		], static::$analyzer->parse( $this->get_post() ) );
+	}
+
+	public function test_parse5() {
+		$this->set_filter_value( 'extractor', 'title_content' );
+		$this->set_filter_value( 'get_option', '1' );
+		$this->assertEquals( [
+			'タイ' => 9,
+			'イト' => 9,
+			'トル' => 9,
+			'テス' => 3,
+			'スト' => 3,
+			'12' => 1,
+			'23' => 1,
+			'aa' => 24,
+		], static::$analyzer->parse( $this->get_post() ) );
+	}
+
+	private function set_filter_value( $key, $value ) {
+		$cache         = static::$app->get_shared_object( '_hook_cache' );
+		$cache[ $key ] = $value;
+		static::$app->set_shared_object( '_hook_cache', $cache );
 	}
 }

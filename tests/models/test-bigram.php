@@ -52,9 +52,9 @@ class BigramTest extends WP_UnitTestCase {
 	public function data_provider_test_words() {
 		return [
 			[ '', [] ],
-			[ ' 　 ', [ '  ', '  ' ] ],
-			[ 'ab c d  efg', [ 'ab', 'c', 'd', '  ', 'efg' ] ],
-			[ '　あ いう　　えお ', [ ' あ', 'あ ', ' い', 'いう', 'う ', '  ', ' え', 'えお', 'お ' ] ],
+			[ ' 　 ', [] ],
+			[ 'ab c d  efg', [ 'ab', 'ef', 'fg' ] ],
+			[ '　あ いう　　えおか ', [ 'いう', 'えお', 'おか' ] ],
 			[
 				'今日の天気は晴れです。 とてもHotです。',
 				[
@@ -68,18 +68,19 @@ class BigramTest extends WP_UnitTestCase {
 					'れで',
 					'です',
 					'す。',
-					'。 ',
-					' と',
 					'とて',
 					'ても',
-					'Hot',
+					'もH',
+					'Ho',
+					'ot',
+					'tで',
 					'です',
 					'す。',
 				],
 			],
 			[
 				'こんにちは。Hello World!',
-				[ 'こん', 'んに', 'にち', 'ちは', 'は。', 'Hello', 'World' ],
+				[ 'こん', 'んに', 'にち', 'ちは', 'は。', '。H', 'He', 'el', 'll', 'lo', 'Wo', 'or', 'rl', 'ld', 'd!' ],
 			],
 		];
 	}
