@@ -30,41 +30,20 @@ class Bigram implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_C
 	 * @return array
 	 */
 	public function words( $text ) {
-		// charfilter では行わない前処理
-
-		// 改行等を除去
-		$text = str_replace( [ ' ', '　', "\r", "\n", "\t" ], ' ', $text );
-
-		$ret          = [];
-		$prev         = null;
-		$alpha        = false;
-		$alpha_buffer = '';
-		foreach ( preg_split( '//u', $text, -1, PREG_SPLIT_NO_EMPTY ) as $item ) {
-			if ( ctype_alpha( $item ) ) {
-				$alpha_buffer .= $item;
-
-				$alpha = true;
-				$prev  = null;
+		$data = [];
+		foreach ( explode( ' ', str_replace( [ ' ', '　', "\r", "\n", "\t" ], ' ', $text ) ) as $value ) {
+			$array = preg_split( '//u', $value, -1, PREG_SPLIT_NO_EMPTY );
+			$end   = count( $array ) - 2;
+			if ( $end < 0 ) {
 				continue;
-			} else {
-				if ( $alpha ) {
-					if ( ! empty( $alpha_buffer ) ) {
-						$ret[]        = $alpha_buffer;
-						$alpha_buffer = '';
-					}
-					$alpha = false;
-				}
 			}
-			if ( isset( $prev ) ) {
-				$ret[] = $prev . $item;
+
+			foreach ( range( 0, $end ) as $idx ) {
+				$data[] = $array[ $idx ] . $array[ $idx + 1 ];
 			}
-			$prev = $item;
-		}
-		if ( $alpha && ! empty( $alpha_buffer ) ) {
-			$ret[] = $alpha_buffer;
 		}
 
-		return $ret;
+		return $data;
 	}
 
 	/**
