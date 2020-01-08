@@ -28,14 +28,14 @@ class Wakati extends Tokenfilter {
 	public function filter( $terms ) {
 		$ret = [];
 		foreach ( $terms as $word => $count ) {
-			if ( preg_match( '#^\d+$#', $word ) ) {
+			if ( preg_match( '#\A\d+\z#', $word ) ) {
 				continue;
 			}
 			if ( mb_strlen( $word ) === 1 && preg_match( '#[ぁ-んァ-ヶー\w]#', $word ) ) {
 				// １文字のひらがな、カタカナ、英数字のみ
 				continue;
 			}
-			if ( preg_match( '#^[0-9 -/:;-@\[-`{-~.,！　”“＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」【】『』［］、〟。・★☆■□◆◇…―※]+$#u', $word ) ) {
+			if ( preg_match( '#\A[0-9 -/:;-@\[-`{-~.,！　”“＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」【】『』［］、〟。・★☆■□◆◇…―※]+\z#u', $word ) ) {
 				// 半角数字記号、全角記号のみ
 				continue;
 			}

@@ -46,9 +46,7 @@ require_once 'style/index_result.php';
 						<td><?php $instance->h( $p->ID ); ?></td>
 						<td><?php $instance->url( get_permalink( $p->ID ), $p->post_title, false, true ); ?></td>
 						<td>
-							<?php /** @noinspection PhpUndefinedFieldInspection */
-							$instance->h( round( $p->score, 4 ) );
-							?>
+							<?php $instance->h( round( $p->score, 4 ) ); ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
