@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40620b79e948e5f5f5194779b1f9f643",
+    "content-hash": "b3d600281a3f889ba8e28002d12b37ed",
     "packages": [
         {
             "name": "matthiasmullie/minify",
@@ -117,16 +117,16 @@
         },
         {
             "name": "technote/igo-php",
-            "version": "v0.3.3",
+            "version": "v0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/technote-space/igo-php.git",
-                "reference": "fb6b17c7e5b5971391b06804443a0c010765095f"
+                "reference": "5934ba4ed316d6176e71de18ae9ae64543aa3c68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/technote-space/igo-php/zipball/fb6b17c7e5b5971391b06804443a0c010765095f",
-                "reference": "fb6b17c7e5b5971391b06804443a0c010765095f",
+                "url": "https://api.github.com/repos/technote-space/igo-php/zipball/5934ba4ed316d6176e71de18ae9ae64543aa3c68",
+                "reference": "5934ba4ed316d6176e71de18ae9ae64543aa3c68",
                 "shasum": ""
             },
             "require": {
@@ -169,7 +169,7 @@
                 "morphological analysis",
                 "php"
             ],
-            "time": "2020-02-02T07:04:12+00:00"
+            "time": "2020-02-15T08:25:18+00:00"
         },
         {
             "name": "wp-content-framework/admin",
