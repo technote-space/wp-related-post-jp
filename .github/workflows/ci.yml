@@ -13,13 +13,15 @@ jobs:
     env:
       LINT: 1
     steps:
+      - uses: technote-space/auto-cancel-redundant-job@v1
+        with:
+          EXCLUDE_MERGED: 'true'
       - name: Set running flag
         run: echo "::set-env name=RUNNING::1"
       - uses: actions/checkout@v2
       - uses: technote-space/get-git-comment-action@v1
       - uses: technote-space/get-diff-action@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PREFIX_FILTER: assets/js/
           SUFFIX_FILTER: |
             .js
@@ -61,7 +63,6 @@ jobs:
       - uses: technote-space/get-git-comment-action@v1
       - uses: technote-space/get-diff-action@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PREFIX_FILTER: |
             configs/
             src/
@@ -103,7 +104,6 @@ jobs:
       - uses: technote-space/get-git-comment-action@v1
       - uses: technote-space/get-diff-action@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PREFIX_FILTER: |
             configs/
             src/
@@ -148,7 +148,6 @@ jobs:
       - uses: technote-space/get-git-comment-action@v1
       - uses: technote-space/get-diff-action@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PREFIX_FILTER: assets/js/
           SUFFIX_FILTER: |
             .js
@@ -163,6 +162,9 @@ jobs:
         if: "! env.GIT_DIFF"
       - name: Set running flag
         if: matrix.node == '12' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        run: echo "::set-env name=RUNNING::1"
+      - name: Set running flag
+        if: matrix.node == '12' && startsWith(github.ref, 'refs/tags/v')
         run: echo "::set-env name=RUNNING::1"
       - name: Set running flag
         run: |
@@ -229,7 +231,6 @@ jobs:
       - uses: technote-space/get-git-comment-action@v1
       - uses: technote-space/get-diff-action@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PREFIX_FILTER: |
             configs/
             src/
@@ -244,15 +245,19 @@ jobs:
         if: matrix.ACTIVATE_POPULAR_PLUGINS == 1 && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         run: echo "::set-env name=RUNNING::1"
       - name: Set running flag
+        if: matrix.ACTIVATE_POPULAR_PLUGINS == 1 && startsWith(github.ref, 'refs/tags/v')
+        run: echo "::set-env name=RUNNING::1"
+      - name: Set running flag
         run: |
           if [[ ! -f composer.json ]] || ! < composer.json jq -r '.scripts | keys[]' | grep -qe '^phpunit$'; then
             echo "::set-env name=RUNNING::"
           fi
 
       - name: Switch PHP version
-        env:
-          PHP_VERSION: ${{ matrix.php }}
-        run: sudo ln -sf "/usr/bin/php$PHP_VERSION" /etc/alternatives/php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
         if: env.RUNNING
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -349,9 +354,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Switch PHP version
-        env:
-          PHP_VERSION: '5.6'
-        run: sudo ln -sf "/usr/bin/php$PHP_VERSION" /etc/alternatives/php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '5.6'
+          coverage: xdebug
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
@@ -371,8 +377,6 @@ jobs:
         with:
           files: release.zip
           draft: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publishRelease:
     name: Create Release
@@ -407,8 +411,6 @@ jobs:
     if: always()
     steps:
       - uses: technote-space/workflow-conclusion-action@v1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: 8398a7/action-slack@v2
         with:
           status: failure
