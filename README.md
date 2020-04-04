@@ -1,7 +1,6 @@
 # WP Related Post JP
 
 [![CI Status](https://github.com/technote-space/wp-related-post-jp/workflows/CI/badge.svg)](https://github.com/technote-space/wp-related-post-jp/actions)
-[![Build Status](https://travis-ci.com/technote-space/wp-related-post-jp.svg?branch=master)](https://travis-ci.com/technote-space/wp-related-post-jp)
 [![codecov](https://codecov.io/gh/technote-space/wp-related-post-jp/branch/master/graph/badge.svg)](https://codecov.io/gh/technote-space/wp-related-post-jp)
 [![CodeFactor](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp/badge)](https://www.codefactor.io/repository/github/technote-space/wp-related-post-jp)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2%2B-blue.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
