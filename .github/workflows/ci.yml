@@ -217,7 +217,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.0', '7.3', '5.6']
-        WP_VERSION: ['latest', '5.0']
+        WP_VERSION: ['latest']
         WP_MULTISITE: ['0', '1']
         include:
           - php: '7.3'
@@ -271,12 +271,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
         if: env.RUNNING
+      - uses: actions/cache@v1
+        with:
+          path: .plugin
+          key: plugin-cache-${{ github.run_id }}
+          restore-keys: |
+            plugin-cache-
+        if: env.RUNNING && matrix.ACTIVATE_POPULAR_PLUGINS == 1
       - name: Prepare setting
         run: git clone --depth=1 https://github.com/wp-content-framework/travis-ci.git travis-ci && bash travis-ci/bin/prepare.sh
         env:
           WP_VERSION: ${{ matrix.WP_VERSION }}
           WP_MULTISITE: ${{ matrix.WP_MULTISITE }}
           ACTIVATE_POPULAR_PLUGINS: ${{ matrix.ACTIVATE_POPULAR_PLUGINS }}
+        if: env.RUNNING
+      - run: sudo systemctl start mysql
         if: env.RUNNING
       - name: Run tests
         run: bash travis-ci/bin/php/wp-test.sh
@@ -313,6 +322,10 @@ jobs:
             echo "::set-env name=RUNNING::"
           fi
 
+      - uses: technote-space/load-config-action@v1
+        with:
+          CONFIG_FILENAME: gh-pages.json
+        if: env.RUNNING
       - name: Get Yarn Cache Directory
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -329,14 +342,6 @@ jobs:
         run: |
           git clone --depth=1 https://github.com/wp-content-framework/travis-ci.git travis-ci
           bash travis-ci/bin/deploy/gh-pages.sh
-        env:
-          TRAVIS_BUILD_DIR: ${{ github.workspace }}
-          GH_PAGES_APP_ID:
-          GH_PAGES_PLUGIN_SCRIPT: ./index.min.js
-          GH_PAGES_PLUGIN_STYLE:
-          GH_PAGES_TITLE:
-          GH_PAGES_TEMPLATE: gutenberg
-          GH_PAGES_TRACKING_ID: UA-78163306-3
         if: env.RUNNING
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
