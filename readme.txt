@@ -4,7 +4,7 @@ Tags: related posts, recommend, recommendation, tf-idf
 Requires at least: 3.9.3
 Requires PHP: 5.6
 Tested up to: 5.3
-Stable tag: next-v1.3.27
+Stable tag: v1.3.27
 Donate link: https://paypal.me/technote0space
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
