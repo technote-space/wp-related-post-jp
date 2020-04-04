@@ -1,9 +1,9 @@
 === WP Related Post JP ===
 Contributors: technote0space
 Tags: related posts, recommend, recommendation, tf-idf
-Requires at least: 3.9.3
+Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 5.3
+Tested up to: 5.4
 Stable tag: v1.3.27
 Donate link: https://paypal.me/technote0space
 License: GPLv2 or later
