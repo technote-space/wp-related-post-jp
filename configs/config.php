@@ -12,6 +12,9 @@ if ( ! defined( 'WP_RELATED_POST_JP' ) ) {
 
 return [
 
+	// required wordpress version
+	'required_wordpress_version'     => '5.0',
+
 	// main menu title
 	'main_menu_title'                => 'WP Related Post JP',
 
