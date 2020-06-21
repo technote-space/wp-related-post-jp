@@ -84,7 +84,7 @@ class Progress extends Base {
 			$total          = $update->get_total_posts_count();
 			$target         = $update->get_update_posts_count();
 			$processed      = $total - $target;
-			$processed_rate = ceil( $processed * 100 / $total );
+			$processed_rate = $total > 0 ? ceil( $processed * 100 / $total ) : 0;
 
 			list( $next, $process ) = $update->get_interval_lock_process();
 			if ( $next <= 0 ) {
