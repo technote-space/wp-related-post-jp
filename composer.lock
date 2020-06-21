@@ -169,12 +169,6 @@
                 "morphological analysis",
                 "php"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-12T13:04:39+00:00"
         },
         {
@@ -221,12 +215,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:19:26+00:00"
         },
         {
@@ -271,12 +259,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-19T06:20:24+00:00"
         },
@@ -324,12 +306,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:19:28+00:00"
         },
         {
@@ -376,12 +352,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:20:27+00:00"
         },
         {
@@ -426,12 +396,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-19T06:19:59+00:00"
         },
@@ -486,12 +450,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:20:47+00:00"
         },
         {
@@ -535,12 +493,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-19T06:20:55+00:00"
         },
@@ -587,12 +539,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-18T13:57:34+00:00"
         },
@@ -641,12 +587,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:19:18+00:00"
         },
         {
@@ -690,12 +630,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-18T13:57:40+00:00"
         },
@@ -742,12 +676,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:20:11+00:00"
         },
         {
@@ -792,12 +720,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-19T06:20:07+00:00"
         },
@@ -844,12 +766,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:20:50+00:00"
         },
         {
@@ -895,12 +811,6 @@
                 "framework",
                 "wordpress"
             ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-06-19T06:19:23+00:00"
         },
         {
@@ -945,12 +855,6 @@
             "keywords": [
                 "framework",
                 "wordpress"
-            ],
-            "funding": [
-                {
-                    "url": "https://paypal.me/technote0space",
-                    "type": "custom"
-                }
             ],
             "time": "2020-06-12T12:59:51+00:00"
         },
@@ -1043,20 +947,6 @@
             "keywords": [
                 "Xdebug",
                 "performance"
-            ],
-            "funding": [
-                {
-                    "url": "https://packagist.com",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/composer",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-06-04T11:16:35+00:00"
         },
@@ -1270,12 +1160,6 @@
                 "BSD-3-Clause"
             ],
             "description": "Official version of pdepend to be handled with Composer",
-            "funding": [
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/pdepend/pdepend",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-06-20T10:53:13+00:00"
         },
         {
@@ -2477,16 +2361,6 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "funding": [
-                {
-                    "url": "https://github.com/Ocramius",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/roave/security-advisories",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-06-19T13:23:43+00:00"
         },
         {
@@ -3115,20 +2989,6 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-22T10:56:48+00:00"
         },
         {
@@ -3200,20 +3060,6 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-30T21:06:01+00:00"
         },
         {
@@ -3264,20 +3110,6 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-30T17:48:24+00:00"
         },
         {
@@ -3335,20 +3167,6 @@
                 "ctype",
                 "polyfill",
                 "portable"
-            ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-12T16:14:59+00:00"
         },
@@ -3409,20 +3227,6 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-11T07:51:54+00:00"
         },
         {
@@ -3534,6 +3338,5 @@
     "platform-dev": [],
     "platform-overrides": {
         "php": "5.6"
-    },
-    "plugin-api-version": "1.1.0"
+    }
 }
