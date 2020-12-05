@@ -107,10 +107,10 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 				$word_ids = array_diff( $word_ids, $update_word_ids );
 				$nis      = $this->calc_nis( $post_types, $word_ids );
 				foreach ( $word_ids as $word_id ) {
-					$ni = $this->app->array->get( $nis, $word_id, 0 );
+					$ni_value = $this->app->array->get( $nis, $word_id, 0 );
 					$this->table( 'word' )->where_in( 'id', $word_ids )->update( [
-						'count' => $ni,
-						'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $count_ln, $ni ),
+						'count' => $ni_value,
+						'idf'   => $ni_value <= 0 ? 0 : $this->calc_idf( $count_ln, $ni_value ),
 					] );
 				}
 			}
@@ -204,8 +204,8 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 			$nis   = $this->calc_nis( $post_types, $word_ids );
 			$words = $this->app->array->combine( $this->table( 'word' )->where_integer_in_raw( 'id', $word_ids )->select( [ 'word_id', 'count', 'idf' ] )->get(), 'word_id' );
 			foreach ( $word_ids as $word_id ) {
-				$ni  = $this->app->array->get( $nis, $word_id, 0 ) - 0;
-				$row = $this->app->array->get( $words, $word_id, false );
+				$ni_value = $this->app->array->get( $nis, $word_id, 0 ) - 0;
+				$row      = $this->app->array->get( $words, $word_id, false );
 				if ( empty( $row ) ) {
 					$count = -1;
 					$idf   = -1;
@@ -213,12 +213,12 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 					$count = $this->app->array->get( $row, 'count' ) - 0;
 					$idf   = $this->app->array->get( $row, 'idf' ) - 0;
 				}
-				$new_c   = $ni;
-				$new_idf = $ni <= 0 ? 0 : round( $this->calc_idf( $count_ln, $ni ), 6 );
+				$new_c   = $ni_value;
+				$new_idf = $ni_value <= 0 ? 0 : round( $this->calc_idf( $count_ln, $ni_value ), 6 );
 				if ( $count !== $new_c || $idf !== $new_idf ) {
 					$this->table( 'word' )->where( 'id', $word_id )->update( [
-						'count' => $ni,
-						'idf'   => $ni <= 0 ? 0 : $this->calc_idf( $count_ln, $ni ),
+						'count' => $ni_value,
+						'idf'   => $ni_value <= 0 ? 0 : $this->calc_idf( $count_ln, $ni_value ),
 					] );
 				}
 				if ( $idf === $new_idf ) {
@@ -430,7 +430,9 @@ class Bm25 implements \WP_Framework_Core\Interfaces\Singleton, \WP_Framework_Cor
 	 */
 	private function calc_tf(
 		/** @noinspection PhpUnusedParameterInspection */
-		$count, $total_count, $max
+		$count,
+		$total_count,
+		$max
 	) {
 		// term frequency
 		return $count / $total_count;
