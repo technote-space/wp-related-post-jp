@@ -90,7 +90,7 @@ class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 					$instance = $filter::get_instance( $this->app );
 
 					return $instance->extract( $post );
-				} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+				} catch ( Exception $error ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 				}
 			}
 		}
@@ -150,7 +150,7 @@ class Analyzer implements Singleton, \WP_Framework_Core\Interfaces\Hook {
 					if ( $instance->is_valid() ) {
 						return [ $instance->parse( $text ), $tokenizer ];
 					}
-				} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+				} catch ( Exception $error ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 				}
 			}
 		}
